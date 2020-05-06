@@ -390,7 +390,8 @@ THEME."
   "Cycle through themes defined in `dotspacemacs-themes'.
 When BACKWARD is non-nil, or with universal-argument, cycle backwards."
   (interactive "P")
-  (let* ((themes (if backward (reverse dotspacemacs-themes) dotspacemacs-themes))
+  (let* ((theme-names (mapcar 'spacemacs//get-theme-name dotspacemacs-themes))
+         (themes (if backward (reverse theme-names) theme-names))
          (next-theme (car (or (cdr (memq spacemacs--cur-theme themes))
                               ;; if current theme isn't in cycleable themes, start
                               ;; over
@@ -416,6 +417,16 @@ When BACKWARD is non-nil, or with universal-argument, cycle backwards."
     (with-no-warnings
       (setq spacemacs--cur-theme theme))
     (spacemacs/post-theme-init theme)))
+
+(defun spacemacs/theme-loader ()
+  "Call appropriate theme loader based on completion framework."
+  (interactive)
+  (cond
+   ((configuration-layer/layer-used-p 'helm)
+    (call-interactively 'spacemacs/helm-themes))
+   ((configuration-layer/layer-used-p 'ivy)
+    (call-interactively 'counsel-load-theme))
+   (t (call-interactively 'load-theme))))
 
 (defun spacemacs/post-theme-init (theme)
   "Some processing that needs to be done when the current theme
