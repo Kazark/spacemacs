@@ -64,6 +64,7 @@
   - [[#spacemacs-visual][Spacemacs-visual]]
 - [[#music][Music]]
   - [[#alda-layer][Alda Layer]]
+  - [[#extempore][Extempore]]
   - [[#pianobar][Pianobar]]
   - [[#spotify][Spotify]]
   - [[#tidalcycles][TidalCycles]]
@@ -989,6 +990,16 @@ Features:
 - Play portions of a buffer, or the entire buffer,
   through a running Alda server.
 
+** Extempore
+[[file:+lang/extempore/README.org][+lang/extempore/README.org]]
+
+This layer adds support for the [[https://github.com/digego/extempore][Extempore]] programming environment.
+
+Features:
+- run Extempore (inferior extempore buffer)
+- connect to & evaluate code
+- eldoc support
+
 ** Pianobar
 [[file:+music/pianobar/README.org][+music/pianobar/README.org]]
 
@@ -1234,7 +1245,6 @@ Features:
 - REPL via [[https://github.com/clojure-emacs/cider][CIDER]]
 - Code formatting via [[https://github.com/clojure-emacs/cider][CIDER]] using [[https://github.com/weavejester/cljfmt][Cljfmt]]
 - Refactoring via [[https://github.com/clojure-emacs/clj-refactor.el][clj-refactor]]
-- Linting via [[https://github.com/clojure-emacs/squiggly-clojure][squiggly-clojure]], [[https://github.com/borkdude/clj-kondo][clj-kondo]] or [[https://github.com/candid82/joker][joker]]
 - Aligning of code forms via [[https://github.com/clojure-emacs/clojure-mode][clojure-mode]]
 - Debugging with [[https://github.com/clojure-emacs/sayid][sayid]]
 - Clojure cheatsheet
@@ -1991,7 +2001,7 @@ Features:
 - Complete and jump to define with [[https://github.com/xcwen/ac-php][company-php]]
 - Run tests with PHPUnit
 - Reformat code with PHP CBF
-- Debug your programs with XDebug (via [[https://github.com/ahungry/geben][geben]])
+- Debug your programs with XDebug (via [[https://github.com/ahungry/geben][geben]] or [[https://github.com/emacs-lsp/dap-mode][dap-mode]])
 - Refactor source files with help of [[https://github.com/emacs-php/phpactor.el][phpactor.el]]
 - Support for the [[https://langserver.org/][Language Server Protocol]] (experimental)
 
