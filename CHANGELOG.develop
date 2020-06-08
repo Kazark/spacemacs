@@ -661,6 +661,7 @@ Other:
   - Replace =spacemacs/close-compilation-window= with
     =spacemacs/show-hide-compilation-window= (thanks to Hans Jang)
   - Avoid unnecessary packages installation of tern layer
+  - Fixed terminal mode line indicator overlapping (thanks to duianto)
 - Other:
   - New function =configuration-layer/message= to display message in
     =*Messages*= buffer (thanks to Sylvain Benner)
@@ -1433,6 +1434,7 @@ Other:
 **** Cfengine
 - New packages:
   - Added =ob-cfengine3= (thanks to Nick Anderson)
+  - Added =mustache-mode=
 - Improvements:
   - Configure =org-babel= for =cfengine= source blocks
    (thanks to Sylvain Benner)
@@ -2389,6 +2391,7 @@ Other:
 - Fixed key remapping after =cl= package deprecation (thanks to Damien Picard)
 - Fixed =bepo= layout, commented out broken evil-window :common bindings
   (thanks to CharlesHD)
+- Added evil-lisp-state mapping (thanks to Damien Picard)
 **** Kivy
 - Added the =kivy= package (thanks to Nasser Alshammari and Ryota Kayanuma)
 **** LaTeX
@@ -3084,8 +3087,8 @@ Other:
 - Disabled =sbt-supershell= in =sbt-mode= (thanks to Rodolfo Hansen)
 - Enable new DAP and lsp-treemacs integration via metals
   (thanks to Rodolfo Hansen)
-- Turn off ability to convert to Unicode arrows deprecated in Scala (and remove
-  =scala-use-unicode-arrows= variable)
+- Turned off ability to convert to Unicode arrows deprecated in Scala (and remove
+  =scala-use-unicode-arrows= variable) (thanks to Keith Pinson)
 **** Scheme
 - Added missing =parinfer= package declaration (thanks to Kalle Lindqvist)
 - Update install docs for Chicken 5 changes (thanks to Grant Shangreaux)
@@ -3198,6 +3201,7 @@ Other:
 - Install orgit only when org package is used (thanks to Boris Buliga)
 - Defer git-gutter loading (thanks to Aaron Jensen)
 - Remove redundant arg from git-gutter timer (thanks to bmag)
+- Added Git Blame Transient State (thanks to duianto)
 **** Spotify
 - Replaced helm-spotify package with helm-spotify-plus
   (thanks to Leonard Lausen)
@@ -3298,6 +3302,7 @@ Other:
 - Updated =doom-themes= list to reflect upstream
   (thanks to Dominic Pearson, Muneeb Shaikh)
 - Added highly accessible =modus-themes= (thanks to Muneeb Shaikh)
+- Added =doom-gruvbox-light= theme (thanks to John Stevenson)
 **** Tmux
 - Prevent =tmux-command= at GUI mode (thanks to Isaac Zeng)
 - Fixed regression in tmux by setting keybindings using =use-package=
