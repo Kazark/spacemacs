@@ -129,7 +129,7 @@ Cancels autosave on exiting perspectives mode."
           (concat " "
                   (mapconcat (lambda (persp)
                                (spacemacs//layout-format-name
-                                persp (position persp persp-list)))
+                                persp (cl-position persp persp-list)))
                              persp-list " | "))))
     (concat
      formatted-persp-list
@@ -830,7 +830,8 @@ containing the buffer."
       (dolist (window-config
                (append (persp-parameter 'gui-eyebrowse-window-configs persp)
                        (persp-parameter 'term-eyebrowse-window-configs persp)))
-        (eyebrowse--rename-window-config-buffers window-config old new)))))
+        (eyebrowse--rename-window-config-buffers window-config old new)))
+    new))
 
 
 ;; layout local variables

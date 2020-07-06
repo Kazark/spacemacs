@@ -110,7 +110,7 @@
 
 (defun spacemacs/go-run-tests (args)
   (interactive)
-  (compilation-start (concat "go test " (when go-test-verbose "-v ") args " " go-use-test-args)
+  (compilation-start (concat go-test-command " " (when go-test-verbose "-v ") args " " go-use-test-args)
                      nil (lambda (n) go-test-buffer-name) nil))
 
 (defun spacemacs/go-run-package-tests ()
@@ -125,6 +125,7 @@
   (interactive)
   (if (string-match "_test\\.go" buffer-file-name)
       (save-excursion
+        (move-end-of-line nil)
         (re-search-backward "^func[ ]+\\(([[:alnum:]]*?[ ]?[*]?\\([[:alnum:]]+\\))[ ]+\\)?\\(Test[[:alnum:]_]+\\)(.*)")
         (spacemacs/go-run-tests
          (cond (go-use-testify-for-testing (concat "-run='Test" (match-string-no-properties 2) "' -testify.m='" (match-string-no-properties 3) "'"))
@@ -148,7 +149,7 @@
 (defun spacemacs/go-run-main ()
   (interactive)
   (shell-command
-   (format "go run %s %s"
+   (format (concat go-run-command " %s %s")
            (shell-quote-argument (or (file-remote-p (buffer-file-name (buffer-base-buffer)) 'localname)
                                      (buffer-file-name (buffer-base-buffer))))
            go-run-args)))

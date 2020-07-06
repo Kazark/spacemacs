@@ -438,6 +438,10 @@ indent handling like has been reported for `go-mode'.
 If it does deactivate it here.
 (default t)")
 
+(defvar dotspacemacs-home-shorten-agenda-source nil
+  "If nil the home buffer shows the full path of agenda items
+and todos. If non nil only the file name is shown.")
+
 (defvar dotspacemacs--pretty-ignore-subdirs
   '(".cache/junk")
   "Subdirectories of `spacemacs-start-directory' to ignore when
@@ -828,7 +832,7 @@ error recovery."
                           "exists in filesystem" "path")
     (setq dotspacemacs-configuration-layers
           (mapcar (lambda (l) (if (listp l) (car l) l))
-                  dotspacemacs-configuration-layers))
+                  (remove nil dotspacemacs-configuration-layers)))
     (spacemacs//test-list 'configuration-layer/get-layer-path
                           'dotspacemacs-configuration-layers
                           "can be found" "layer")
