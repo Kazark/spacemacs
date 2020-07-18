@@ -259,7 +259,7 @@ sane way, here is the complete list of changed key bindings
   - ~SPC m i t~ org-agenda-set-tags
   - ~SPC m i t~ org-set-tags
   - ~SPC m p~ org-priority
-  - ~SPC m s A~ org-archive-subtree
+  - ~SPC m s A~ org-archive-subtree-default
   - ~SPC m s N~ widen
   - ~SPC m s S~ org-sort
   - ~SPC m s b~ org-tree-to-indirect-buffer
@@ -295,6 +295,18 @@ sane way, here is the complete list of changed key bindings
 ***** Ruby
 - Key bindings:
   - Changed ~SPC m h d~ to ~SPC m h h~ for =robe-doc= (thanks to Paweł Siudak)
+  - Changed ~SPC m T {~ to ~SPC m r {~ for =ruby-toggle-block= (thanks to Codruț
+    Constantin Gușoi)
+  - Changed ~SPC m T '~ to ~SPC m r '~ for =ruby-toggle-string-quotes= (thanks
+    to Codruț Constantin Gușoi)
+  - Added ~SPC m i f~ for =spacemacs/ruby-insert-frozen-string-literal-comment=
+    (thanks to Codruț Constantin Gușoi)
+  - Added ~SPC m i s~ for =spacemacs/ruby-insert-shebang= (thanks to Codruț
+    Constantin Gușoi)
+  - Added ~SPC m r }~ for =ruby-toggle-block= (thanks to Codruț Constantin
+    Gușoi)
+  - Added ~SPC m r "~ for =ruby-toggle-string-quotes= (thanks to Codruț
+    Constantin Gușoi)
 ***** Ruby on Rails
 - Key bindings:
   - New ~SPC m r f S~ to find serializer (thanks to Boris Buliga)
@@ -314,6 +326,10 @@ sane way, here is the complete list of changed key bindings
 - Key bindings:
   - Vagrant key bindings prefix is now ~SPC a V~.
   - Actually use ~SPC a t v t~ for =vagrant-tramp-term=
+***** Version Control
+- Key bindings:
+  - Changed ~SPC g h o~ to ~SPC g o~ for =browse-at-remote= (thanks to Codruț
+    Constantin Gușoi)
 ***** YAML
 - Added LSP support (thanks to Seong Yong-ju)
 ***** ycmd
@@ -731,6 +747,7 @@ Other:
   - Added =symbol-overlay= to the =spacemacs-navigation= layer
     (thanks to kenkangxgwe)
 - Key bindings:
+  - Fixed ~M-x~ prefix visualization for ~dotspacemacs-emacs-command-key~
   - New ~SPC a Q~ prefix for dispatching quickurl
     (thanks to Spenser "equwal" Truex:)
     - ~SPC a Q l~ List quickurls
@@ -1323,7 +1340,6 @@ Other:
   - Fixed ~SPC h f~ =helm-spacemacs-help-faq= (thanks to duianto)
   - Fixed =cl= package deprecated =letf= (thanks to duianto)
   - Fixed origami bindings in normal mode (thanks to Tomasz Kowal)
-  - Fixed mode-line evil state foreground color (thanks to duianto)
 *** Layer changes and fixes
 **** Agda
 - Fixes
@@ -2117,6 +2133,7 @@ Other:
   - Added guard to check if =winum= is loaded (thanks to Dan Girshovich)
   - Updated =helm-xref= to set the correct =xref-show-xrefs-function= for
     Emacs 27 (thanks to Junxuan)
+  - Hide =helm-ff-cache-mode= mode-line indicator (thanks to duianto)
 - Key bindings:
   - Added Key bindings for directory search:
     - ~SPC s d for =spacemacs/helm-dir-smart-do-search=
@@ -3281,6 +3298,9 @@ Other:
 - Added key bindings (thanks to John Stevenson):
   - ~SPC S s~ Correct word at point
   - Transient State: ~SPC S . s~ Correct word at point
+- Added key binding:
+  - ~SPC S r~ flyspell-region
+  - Transient State: ~SPC S . r~ flyspell-region
 **** Syntax-checking
 - Key bindings:
   - ~SPC e e~ is now for triggering a syntax check, the old action
