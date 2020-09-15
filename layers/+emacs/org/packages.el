@@ -17,7 +17,6 @@
         evil-org
         evil-surround
         gnuplot
-        (helm-org :toggle (configuration-layer/layer-used-p 'helm))
         (helm-org-rifle :toggle (configuration-layer/layer-used-p 'helm))
         htmlize
         ;; ob, org and org-agenda are installed by `org-plus-contrib'
@@ -85,11 +84,6 @@
     :defer t
     :init (spacemacs/set-leader-keys "aor" 'helm-org-rifle)))
 
-(defun org/init-helm-org ()
-  (use-package helm-org
-    :commands (helm-org-in-buffer-headings)
-    :defer t))
-
 (defun org/init-htmlize ()
   (use-package htmlize
     :defer t))
@@ -122,7 +116,7 @@
                                                     ".org-timestamps/")
             org-directory "~/org" ;; needs to be defined for `org-default-notes-file'
             org-default-notes-file (expand-file-name "notes.org" org-directory)
-            org-log-done t
+            org-log-done 'time
             org-startup-with-inline-images t
             org-latex-prefer-user-labels t
             org-image-actual-width nil
