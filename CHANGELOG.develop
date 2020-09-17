@@ -418,6 +418,7 @@ sane way, here is the complete list of changed key bindings
 - dotnet (thanks to Jordan Kaye)
 - import-js (thanks to Thanh Vuong and Seong Yong-ju)
 - kubernetes with tramp support (thanks to Matt Bray and Maximilian Wolff)
+- languagetool (thanks to Robbert van der Helm)
 - lsp (thanks to Fangrui Song, 0bl.blwl, Cormac Cannon, Juuso Valkeejärvi,
   Guan Xipeng, Ivan Yonchovski, Justin Martin, dscole and Sylvain Benner)
 - node (thanks to jupl)
@@ -2682,6 +2683,7 @@ Other:
     - Added shortcuts for handling scheduled entries (thanks to Daniel Nicolai)
   - Added package for =org-sticky-header-mode= (thanks to Langston Barret)
   - Added package =org-jira= (thanks to Kirill A. Korinsky)
+  - Added package =org-rich-yank= (thanks to Keith Pinson)
 - Key bindings:
   - ~SPC m T i~ to toggle inline images
   - Move clock related key bindings to ~SPC a o C~
