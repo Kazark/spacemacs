@@ -118,6 +118,7 @@ the [[file:CHANGELOG.org][CHANGELOG.org]] file.
     (thanks to duianto and Sylvain Benner)
   - Scrolling key bindings are now under ~SPC N~ instead of ~SPC n~ to be able
     to define more key bindings to scroll.
+  - Changed decribe themes from ~SPC h d t~ to ~SPC h d T~.
   - ~SPC q z~ is now ~SPC q f~ to kill a frame.
   - Remove ~SPC T N~ and make ~SPC T n~ cycle and start the theme transient
     state (thanks to Sylvain Benner)
@@ -519,7 +520,7 @@ Other:
 *** Core changes
 - Improvements:
   - Make =describe-text-properties= available in the help -> describe menu via
-    ~SPC h d T~ (thanks to Keith Pinson)
+    ~SPC h d t~ (thanks to Keith Pinson)
   - Bind ~SPC c n~ to ~:cn~ / ~next-error~ and ~SPC c N~ to ~:cN~ / ~previous-error~
     (thanks to Keith Pinson)
   - Display time spent in =user-config= in home buffer (thanks to Sylvain Benner)
@@ -1977,6 +1978,7 @@ Other:
     - ~SPC g l P~ adds region permalink URL to clipboard
   - Moved =magit-find-file= to view a file at a specific branch or commit
     from ~SPC g f f~ to ~SPC g f F~ (thanks to duianto and Hong Xu)
+  - Unbind ~C-f~ from =magit-gitflow-popup= (thanks to rayw000)
 - Fixes:
   - Install magit-svn by default and activate with git-enable-magit-svn-plugin
   - Added feature to toggle =evil-magit= based on editing style
@@ -2627,6 +2629,7 @@ Other:
   - ~grI~ =evil-mc-make-cursor-in-visual-selection-beg=
   - ~grA~ =evil-mc-make-cursor-in-visual-selection-end=
   (thanks to duianto)
+- Disabled =evil-mc-mode= in =magit-mode= (thanks to duianto)
 **** Neotree
 - Made neotree an optional instead of a default layer
 - Move neotree to its own layer in new +filetree folder
@@ -2990,6 +2993,7 @@ Other:
 - Fixed directory selection for self compiled mspyls (thanks Jee Lee)
 - Add python-test-last support for pytest runner
 - Added --last-failed support for pytest (thanks to Jaakko Luttinen)
+- Added =spacemacs/python-shell-send-statement= support (thanks to Lin Sun)
 **** Racket
 - Restore smart closing paren behavior in racket-mode (thanks to Don March)
 - Updated racket logo (thanks to Vityou)
@@ -3509,6 +3513,7 @@ Other:
 - Avoided installing unused diff packages (thanks to Andriy Kmit)
 - Fixed error on =diff-hl-margin-mode= function being nil during startup
   (thanks to Voleking)
+- Fixed =git-gutter+= refresh when a buffer is staged or unstaged in Magit
 **** Vue
 - Added a toggle state minified/full to the transient state (thanks to duianto)
 **** Xclipboard
