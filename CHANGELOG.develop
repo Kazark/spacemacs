@@ -521,9 +521,12 @@ Other:
     terminal mode, but no longer in GUI mode. (emacs18)
 *** Core changes
 - Improvements:
-  - Provide keybindings for using narrow with an indirect buffer, for when you
-    want narrowing multiple times in the same base buffer (thanks to Keith
-    Pinson and duianto)
+  - Provide keybindings for using narrow with an indirect buffer for when you
+    want narrowing multiple times in the same base buffer:
+    - ~SPC n F~ for narrow to function
+    - ~SPC n P~ for narrow to page
+    - ~SPC n R~ for narrow to region
+    (thanks to Keith Pinson and duianto)
   - Make =describe-text-properties= available in the help -> describe menu via
     ~SPC h d t~ (thanks to Keith Pinson)
   - Bind ~SPC c n~ to ~:cn~ / ~next-error~ and ~SPC c N~ to ~:cN~ / ~previous-error~
@@ -600,6 +603,8 @@ Other:
     (thanks to duianto)
   - Add =emacs-version= to the default value for
     =dotspacemacs-emacs-dumper-dump-file= (thanks to Evan Klitzke)
+  - Add =spacemacs-scratch-mode-hook= to run functions
+    after =spacemacs-scratch-mode= is applied to =*scratch*= buffer (thanks to rayw000)
 - Fixes:
   - Avoid non-idempotent use of push in init code (thanks to Miciah Masters)
   - Moved Spacemacs startup progress bar to =core-progress-bar.el=, removed
@@ -3067,6 +3072,8 @@ files (thanks to Daniel Nicolai)
 - Fixed conflict with =golden-ratio= (thanks to Thomas de Beauchêne)
 - Load =helm= before =ranger= (thanks to duianto)
 - Add instruction to use ranger by default (thanks to Daniel Nicolai)
+- Added ='ranger= as an option to the variable: =ranger-enter-with-minus=
+  (thanks to duianto)
 **** Rcirc
 - New variable =rcirc-enable-late-fix= to enable or disable the included
   =rcirc-late-fix= package (disabled by default).
