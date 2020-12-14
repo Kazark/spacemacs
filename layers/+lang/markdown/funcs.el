@@ -10,7 +10,7 @@
 ;;; License: GPLv3
 
 (defun spacemacs/activate-mmm-mode ()
-  (unless (equal (buffer-name (current-buffer)) "COMMIT_EDITMSG")
+  (unless git-commit-mode
   ;; Enable `mmm-mode'.
     (mmm-mode 1)))
 
