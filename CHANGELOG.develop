@@ -133,6 +133,8 @@ the [[file:CHANGELOG.org][CHANGELOG.org]] file.
 - LSP code navigation / completion added via clangd or ccls
   (thanks to Cormac Cannon)
 - Removed cquery.
+***** EPUB
+- Add ~J/K~ for scrolling down/up (thanks to Daniel Nicolai) 
 ***** ESS
 - ESS key bindings were re-organised in the following list
   (thanks to Guido Kraemer, Yi Liu, and Jack Kamm):
@@ -275,8 +277,6 @@ sane way, here is the complete list of changed key bindings
   - ~SPC m s r~ org-refile
   - ~SPC m s s~ org-sparse-tree
   - ~SPC m x o~ org-open-at-point
-- Removed ~C-h~ binding in =org-agenda-mode= (thanks to Ag Ibragimov)
-- Rebind =org-agenda-refile= to ~r~ in transient state (thanks to Muneeb Shaikh)
 - Moved =org-trello= keys from ~SPC m o~ to ~SPC m m t~
   (thanks to Magnus Therning)
 - New keybindings for push and pull (thanks to Magnus Therning):
@@ -286,6 +286,10 @@ sane way, here is the complete list of changed key bindings
   - ~SPC m t u c~ for =spacemacs/org-trello-push-card=
 - New keybinding for =org-table-field-info= ~SPC m t f~
   (thanks to Dominik Schrempf)
+In org-agenda-mode
+  - Add consistent keybinding ~SPC m .~ to enter transient-state (thanks to Daniel Nicolai)
+  - Removed ~C-h~ binding in =org-agenda-mode= (thanks to Ag Ibragimov)
+  - Rebind =org-agenda-refile= to ~r~ in transient state (thanks to Muneeb Shaikh)
 ***** Python
 - fix/implement pyvenv-tracking-mode (thanks to Daniel Nicolai)
 - Key bindings (thanks to Danny Freeman):
@@ -320,6 +324,7 @@ sane way, here is the complete list of changed key bindings
 ***** Spacemacs-navigation
 - Key bindings:
   - Add ~J/K~ to scroll up/down (or next/previous node) in Info-mode
+  - Add ~o~ to link-hint-open-link in woman-mode
 ***** Shaders
 - =shaders= layer has been moved to =gpu= layer.
 ***** Syntax checking
@@ -524,6 +529,9 @@ Other:
     terminal mode, but no longer in GUI mode. (emacs18)
 *** Core changes
 - Improvements:
+  - Support =recents-by-project= in =dotspacemacs-startup-lists=, which allows
+    combining the existing =recents= and =projects= into one coherent view (thanks
+    to Keith Pinson)
   - Make =set-selective-display=, which is a kind of built-in Emacs quick-n-dirty
     whole-file folding mechanism for indentation-based syntaxes, more
     discoverable for Evil users by placing it (with a small DWIM wrapper) in the
@@ -712,6 +720,7 @@ Other:
     (thanks to Ag Ibragimov)
   - Fixed duplicate quick help and release notes in home buffer
     (thanks to mark30247)
+  - Fixed evil undo in =spacemacs-base= (thanks to duianto)
 - Other:
   - New function =configuration-layer/message= to display message in
     =*Messages*= buffer (thanks to Sylvain Benner)
@@ -1238,6 +1247,8 @@ Other:
   - Refactor layers/+chat|email|fun|readers|web-services packages to use
     relative key binding, migrating most key bindings to lower cases and
     expanding room for further aliases (thanks to John Stevenson)
+  - Added a =org-enable-valign= variable to make =valign-mode= opt-out
+    in org-mode-hook (thanks to Claude Ray)
 - Fixed:
   - Fixed ~h~ key binding in compilation and grep buffers
     (thanks to Sylvain Benner)
@@ -2056,6 +2067,7 @@ Other:
     Magit diff or blame buffer (thanks to duianto and Miciah Masters)
   - Allowed multichar major mode leader key for exiting magit commit edits
     (thanks to tuh8888)
+  - Restore magit transient args between sessions (thanks to duianto)
 **** Gnus
 - Key bindings:
   - Added ~g r~ for =gnus-group-get-new-news= (thanks to Matthew Leach)
@@ -2966,6 +2978,8 @@ files (thanks to Daniel Nicolai)
 - Fixed ~'~ =pdf-view-jump-to-register= (thanks to duianto)
 - Key bindings:
   - Added to pdf-view mode and transient state
+    - ~C-o~ history-backward (previous view)
+    - ~C-i~ history-forward (next view)
     - ~[~ history-backward (previous view)
     - ~]~ history-forward (next view)
     - ~?~ toggle transient sate documentation hint (shown by default)

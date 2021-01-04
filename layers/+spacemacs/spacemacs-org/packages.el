@@ -25,7 +25,7 @@
     org-superstar
     (space-doc :location local)
     toc-org
-    valign
+    (valign :toggle org-enable-valign)
     ))
 
 (defun spacemacs-org/post-init-flyspell ()
