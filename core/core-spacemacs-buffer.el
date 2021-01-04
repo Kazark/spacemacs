@@ -744,7 +744,16 @@ GROUPED-LIST: a list of string pathnames made interactive in this function."
   (when (car grouped-list)
     (insert list-display-name)
     (mapc (lambda (group)
-            (insert "\n    " (abbreviate-file-name (car group)))
+            (insert "\n    ")
+            (widget-create 'push-button
+                           :action `(lambda (&rest ignore)
+                                      (find-file-existing ,(car group)))
+                           :mouse-face 'highlight
+                           :follow-link "\C-m"
+                           :button-prefix ""
+                           :button-suffix ""
+                           :format "%[%t%]"
+                           (abbreviate-file-name (car group)))
             (mapc (lambda (el)
                     (insert "\n        ")
                     (widget-create 'push-button
