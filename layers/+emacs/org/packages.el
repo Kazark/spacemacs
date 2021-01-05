@@ -118,15 +118,21 @@
                                                     ".org-timestamps/")
             org-directory "~/org" ;; needs to be defined for `org-default-notes-file'
             org-default-notes-file (expand-file-name "notes.org" org-directory)
+            ;; Hiding emphasis markers makes Org look schnazzier, though it is
+            ;; slightly harder to work with.
+            org-hide-emphasis-markers t
             org-log-done 'time
             org-startup-with-inline-images t
             org-latex-prefer-user-labels t
             org-image-actual-width nil
             org-src-fontify-natively t
+            ;; Avoid weird jittery behavior in SRC blocks
+            org-src-preserve-indentation t
             org-src-tab-acts-natively t
             ;; this is consistent with the value of
             ;; `helm-org-headings-max-depth'.
             org-imenu-depth 8)
+      (add-hook 'org-mode-hook 'turn-on-auto-fill)
 
       (with-eval-after-load 'org-agenda
         (add-to-list 'org-modules 'org-habit))
