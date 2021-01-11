@@ -21,11 +21,8 @@
     (add-hook 'scala-mode-hook #'dap-mode)))
 
 (defun spacemacs//scala-setup-treeview ()
-  "Setup `lsp-treemacs' for Scala.
-
-I am not a fan of `lsp-metals-treeview'. I see it as silly, VSCode-like,
-distracting, flashy, hard-to-use overhead."
-  (setq lsp-metals-treeview-show-when-views-received nil))
+  "Setup lsp-treemacs for Scala."
+  (setq lsp-metals-treeview-show-when-views-received scala-auto-treeview))
 
 (defun spacemacs//scala-backend-metals-p ()
   "Return true if the selected backend is metals"
