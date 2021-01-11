@@ -468,10 +468,13 @@ Will work on both org-mode and any mode that accepts plain html."
         (spacemacs/declare-prefix-for-mode 'org-agenda-mode
           (car prefix) (cdr prefix)))
       (spacemacs/set-leader-keys-for-major-mode 'org-agenda-mode
+        (or dotspacemacs-major-mode-leader-key ",") 'org-agenda-ctrl-c-ctrl-c
         "a" 'org-agenda
+        "c" 'org-agenda-capture
         "Cc" 'org-agenda-clock-cancel
         "Ci" 'org-agenda-clock-in
         "Co" 'org-agenda-clock-out
+        "Cj" 'org-agenda-clock-goto
         "dd" 'org-agenda-deadline
         "ds" 'org-agenda-schedule
         "ie" 'org-agenda-set-effort
@@ -571,6 +574,7 @@ Headline^^            Visit entry^^               Filter^^                    Da
       :bindings
       "j" 'org-agenda-next-line
       "k" 'org-agenda-previous-line
+      "K" nil
       ;; C-h should not be rebound by evilification so we unshadow it manually
       ;; TODO add the rule in auto-evilification to ignore C-h (like we do
       ;; with C-g)
@@ -807,6 +811,7 @@ Headline^^            Visit entry^^               Filter^^                    Da
     (progn
       (spacemacs/declare-prefix "aoj" "org-journal")
       (spacemacs/set-leader-keys
+        "aojf" 'org-journal-open-current-journal-file
         "aojj" 'org-journal-new-entry
         "aojs" 'org-journal-search-forever
         "aojt" 'org-journal-new-scheduled-entry
