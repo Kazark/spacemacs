@@ -20,6 +20,11 @@
   (when (spacemacs//scala-backend-metals-p)
     (add-hook 'scala-mode-hook #'dap-mode)))
 
+(defun spacemacs//scala-display-sbt-at-bottom (buffer args)
+  "Display a short buffer at the bottom of the frame.
+For use with `sbt:display-buffer-action'."
+  (display-buffer-at-bottom buffer (cons '(window-height . 12) args)))
+
 (defun spacemacs//scala-setup-treeview ()
   "Setup lsp-treemacs for Scala."
   (setq lsp-metals-treeview-show-when-views-received scala-auto-treeview))
