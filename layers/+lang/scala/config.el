@@ -20,15 +20,15 @@
 (defvar scala-auto-insert-asterisk-in-comments nil
   "If non-nil automatically insert leading asterisk in multi-line comments.")
 
-(defconst scala-backends '(scala-ensime scala-metals)
+(defconst scala-backends '(scala-metals)
   "Backend server implementation to enable advanced IDE language features")
 
-(defvar scala-backend 'scala-ensime
+(defvar scala-backend 'scala-metals
   "Backend used to trigger IDE language features.
-`scala-ensime' or `scala-metals' are currently supported")
+Only `scala-metals' is currently supported.")
 
 (defvar scala-auto-start-backend nil
-  "If non nil then ensime/metals will be started when a scala file is opened.")
+  "If non nil then Metals will be started when a Scala file is opened.")
 
 (defvar scala-auto-treeview t
   "If non-nil automatically show treeview when views are recieved by metals.")
