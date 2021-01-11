@@ -21,9 +21,11 @@
     (add-hook 'scala-mode-hook #'dap-mode)))
 
 (defun spacemacs//scala-display-sbt-at-bottom (buffer args)
-  "Display a short buffer at the bottom of the frame.
+  "Display a short buffer in a dedicated window at frame bottom.
 For use with `sbt:display-buffer-action'."
-  (display-buffer-at-bottom buffer (cons '(window-height . 12) args)))
+  (set-window-dedicated-p
+   (display-buffer-at-bottom buffer (cons '(window-height . 12) args))
+   t))
 
 (defun spacemacs//scala-setup-treeview ()
   "Setup lsp-treemacs for Scala."
