@@ -11,9 +11,6 @@
 
 (spacemacs|define-jump-handlers scala-mode)
 
-(defvar scala-enable-eldoc nil
-  "If non nil then eldoc-mode is enabled in the scala layer.")
-
 (defvar scala-enable-gtags nil
   "If non nil then gtags is enabled in the scala layer.")
 
@@ -31,9 +28,6 @@ small window at the bottom of the frame.")
 (defvar scala-backend 'scala-metals
   "Backend used to trigger IDE language features.
 Only `scala-metals' is currently supported.")
-
-(defvar scala-auto-start-backend nil
-  "If non nil then Metals will be started when a Scala file is opened.")
 
 (defvar scala-auto-treeview t
   "If non-nil automatically show treeview when views are recieved by metals.")

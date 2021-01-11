@@ -2242,7 +2242,6 @@ Features:
 - Syntax-checking
 - Refactoring
 - Incremental compilation
-- Scala REPL
 - Style linting
 - Optional GGTags search
 
