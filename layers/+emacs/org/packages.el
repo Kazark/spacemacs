@@ -619,7 +619,10 @@ Headline^^            Visit entry^^               Filter^^                    Da
         "Bgf" 'org-brain-goto-friend
         "BR"  'org-brain-refile
         "Bx"  'org-brain-delete-entry)
-      (evil-set-initial-state 'org-brain-visualize-mode 'emacs))))
+      (evil-set-initial-state 'org-brain-visualize-mode 'emacs)
+      (when (memq dotspacemacs-editing-style '(vim hybrid))
+        (with-eval-after-load 'org-brain
+          (define-key org-brain-visualize-mode-map (kbd "SPC") 'spacemacs-cmds))))))
 
 (defun org/init-org-expiry ()
   (use-package org-expiry
@@ -887,13 +890,7 @@ Headline^^            Visit entry^^               Filter^^                    Da
 (defun org/init-org-roam ()
   (use-package org-roam
     :defer t
-    :commands (org-roam-buffer-toggle-display
-               org-roam-dailies-find-yesterday
-               org-roam-dailies-find-today
-               org-roam-dailies-find-tomorrow
-               org-roam-dailies-find-date
-               org-roam-tag-add
-               org-roam-tag-delete)
+    :hook (after-init . org-roam-mode)
     :init
     (progn
       (spacemacs/declare-prefix "aor" "org-roam")

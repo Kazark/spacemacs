@@ -30,6 +30,7 @@
         smartparens
         (evil-swap-keys :toggle dotspacemacs-swap-number-row)
         (spacemacs-whitespace-cleanup :location local)
+        string-edit
         string-inflection
         multi-line
         undo-tree
@@ -109,7 +110,9 @@
     (spacemacs|add-transient-hook dired-mode-hook
       (lambda ()
         (let ((dired-quick-sort-suppress-setup-warning 'message))
-          (dired-quick-sort-setup))))))
+          (dired-quick-sort-setup))))
+    :config
+    (evil-define-key 'normal dired-mode-map "s" 'hydra-dired-quick-sort/body)))
 
 (defun spacemacs-editing/init-editorconfig ()
   (use-package editorconfig
@@ -476,6 +479,17 @@
         "xi_" 'string-inflection-underscore
         "xiu" 'string-inflection-underscore
         "xiU" 'string-inflection-upcase))))
+
+(defun spacemacs-editing/init-string-edit ()
+  (use-package string-edit
+    :defer t
+    :init
+    (spacemacs/set-leader-keys "xe" 'string-edit-at-point)
+    (spacemacs/set-leader-keys-for-minor-mode 'string-edit-mode
+      "," 'string-edit-conclude
+      "c" 'string-edit-conclude
+      "a" 'string-edit-abort
+      "k" 'string-edit-abort)))
 
 (defun spacemacs-editing/init-multi-line ()
   (use-package multi-line
