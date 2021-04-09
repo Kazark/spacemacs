@@ -1,13 +1,25 @@
 ;;; packages.el --- eaf layer packages file for Spacemacs.
 ;;
-;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
 ;;
 ;; Author: Daniel Nicolai <dalanicolai@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
-;;; License: GPLv3
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 (defconst eaf-packages
   '(ctable
@@ -218,17 +230,18 @@
     (progn
       ;; the following line are taken from the evil-integration example:
       ;; https://github.com/manateelazycat/emacs-application-framework/wiki/Evil
-      (setq eaf-evil-leader-keymap spacemacs-cmds) 
+      (setq eaf-evil-leader-keymap spacemacs-cmds)
 
       (define-key key-translation-map (kbd "SPC")
         (lambda (prompt)
           (if (derived-mode-p 'eaf-mode)
               (pcase eaf--buffer-app-name
-                ("browser" (if (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
-                               (kbd "SPC")
-                             (kbd eaf-evil-leader-key)))
-                ("pdf-viewer" (kbd eaf-evil-leader-key))
-                ("image-viewer" (kbd eaf-evil-leader-key))
+                ((or
+                  (and "browser"
+                       (guard (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")))
+                  "image-viewer"
+                  "pdf-viewer")
+                 (kbd eaf-evil-leader-key))
                 (_  (kbd "SPC")))
             (kbd "SPC"))))
 

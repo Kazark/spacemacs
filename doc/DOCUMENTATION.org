@@ -23,6 +23,7 @@
       - [[#declaration][Declaration]]
       - [[#initialization][Initialization]]
       - [[#exclusion][Exclusion]]
+      - [[#overriding-a-layer-package][Overriding a layer package]]
     - [[#without-a-layer][Without a layer]]
   - [[#packages-synchronization][Packages synchronization]]
   - [[#types-of-configuration-layers][Types of configuration layers]]
@@ -434,6 +435,9 @@ Example:
 #+BEGIN_SRC emacs-lisp
   (setq <layer>-excluded-packages '(package1 package2 ...)
 #+END_SRC
+
+**** Overriding a layer package
+See [[https://www.spacemacs.org/doc/FAQ.html#how-to-override-a-layer-package][this answer in the FAQ's]].
 
 *** Without a layer
 Sometimes a layer can be an unnecessary overhead, this is the case if you just
@@ -2250,7 +2254,6 @@ The ~SPC j~ prefix is for jumping, joining and splitting.
 | ~SPC j j~   | jump to one or more characters in the buffer (works as an evil motion)            |
 | ~SPC j k~   | jump to next line and indent it using auto-indent rules                           |
 | ~SPC j l~   | jump to a line with avy (works as an evil motion)                                 |
-| ~SPC j q~   | show the dumb-jump quick look tooltip                                             |
 | ~SPC j u~   | jump to a URL in the current buffer                                               |
 | ~SPC j U~   | select a URL in the current buffer and follow it                                  |
 | ~SPC j v~   | jump to the definition/declaration of an Emacs Lisp variable                      |
@@ -2570,6 +2573,7 @@ navigate between =Emacs= and Spacemacs specific files.
 | ~SPC f e E~   | reload the environment variables by executing the function =dotspacemacs/user-env=                      |
 | ~SPC f e C-e~ | reinitialize the =~/.spacemacs.env= file by importing system and shell environment variables            |
 | ~SPC f e i~   | open the all mighty =init.el=                                                                           |
+| ~SPC f e I~   | open the =early-init.el=                                                                                |
 | ~SPC f e l~   | locate an Emacs library                                                                                 |
 | ~SPC f e R~   | resync the dotfile with spacemacs                                                                       |
 | ~SPC f e U~   | update packages                                                                                         |
