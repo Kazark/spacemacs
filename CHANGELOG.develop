@@ -324,7 +324,8 @@ In org-agenda-mode
     to avoid conflicts with key bindings in the =web-mode= layer
     (thanks to Adam Sokolnicki)
 ***** Search-engine
-- Add Debian & Ubuntu package search engines (thanks to Alfonso Montero).
+  - Add Debian & Ubuntu package search engines (thanks to Alfonso Montero).
+  - Allow to configure a TLD other than =.com= for Amazon searches (thanks to Alfonso Montero).
 ***** Spacemacs-navigation
 - Key bindings:
   - Add ~J/K~ to scroll up/down (or next/previous node) in Info-mode
@@ -635,6 +636,7 @@ Other:
     after =spacemacs-scratch-mode= is applied to =*scratch*= buffer (thanks to rayw000)
   - Add toggles for persistent which-key keymaps, (full)-major/minor mode
     keymaps and top-level keymap, under prefix ~SPC t k~ (thanks to Daniel Nicolai)
+  - Add =describe-ex-command= on ~SPC h d x~ (thanks to Daniel Nicolai)
 - Fixes:
   - Don't use a mode's hook before the mode is even loaded (thanks to Keith Pinson)
   - Avoid non-idempotent use of push in init code (thanks to Miciah Masters)
@@ -1495,7 +1497,7 @@ Other:
     (thanks to Alexander Dalshov)
 - New packages:
   - =cpp-auto-include= Insert and delete C++ header files automatically:
-    - Added variable: =++-enable-organize-includes-on-save=
+    - Added variable: =c-c++-enable-organize-includes-on-save=
     - Added key binding: ~SPC m r i~ organize includes
     (thanks to Seong Yong-ju)
 - Improvements:
@@ -3733,6 +3735,7 @@ files (thanks to Daniel Nicolai)
   (thanks to Alexander Dalshov)
 **** Zig
 - Added syntax highlighting (thanks to Michael Hauser-Raspe)
+- Added support for lsp server (thanks to rbino)
 *** Various improvements
 - Lots of improvement with CI and documentation exporting
   (thanks to Eugene Yaremenko)
