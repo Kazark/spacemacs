@@ -150,6 +150,13 @@
             ;; Always log on repeat; else there is no trace of what happened.
             org-log-repeat 'time
             org-log-done 'time
+            ;; Sometimes you decide not to do an item, so it is imprecise or
+            ;; even downright misleading to mark it DONE; but you don't want to
+            ;; delete it, and lose a record of it ever being there. You could
+            ;; archive it, but it might be preferable to be able to cancel it if
+            ;; you like. Logging is only relevant going to or coming from
+            ;; CANCELED.
+            org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d)" "CANCELED(c@/!)"))
             org-startup-with-inline-images t
             org-latex-prefer-user-labels t
             org-image-actual-width nil
