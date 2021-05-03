@@ -162,6 +162,13 @@
             org-imenu-depth 8)
       (add-hook 'org-mode-hook 'turn-on-auto-fill)
 
+      (when org-todo-dependencies-strategy
+        (setq org-enforce-todo-dependencies t)
+        (add-hook 'org-after-todo-statistics-hook
+                  (case org-todo-dependencies-strategy
+                    (naive-auto #'spacemacs/org-summary-todo-naive-auto)
+                    (semiauto #'spacemacs/org-summary-todo-semiauto))))
+
       (with-eval-after-load 'org-agenda
         (add-to-list 'org-modules 'org-habit))
 
