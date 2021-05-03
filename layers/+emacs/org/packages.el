@@ -145,6 +145,10 @@
             ;; Hiding emphasis markers makes Org look schnazzier, though it is
             ;; slightly harder to work with.
             org-hide-emphasis-markers t
+            ;; Having the logs loose makes a mess.
+            org-log-into-drawer t
+            ;; Always log on repeat; else there is no trace of what happened.
+            org-log-repeat 'time
             org-log-done 'time
             org-startup-with-inline-images t
             org-latex-prefer-user-labels t
