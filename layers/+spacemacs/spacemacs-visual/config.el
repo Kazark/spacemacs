@@ -1,4 +1,4 @@
-;;; config.el --- Elixir Layer configuration File for Spacemacs
+;;; config.el --- Spacemacs UI Visual Layer Configuration File
 ;;
 ;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
 ;;
@@ -20,16 +20,5 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-;; Variables
-
-(defvar elixir-backend (if (configuration-layer/layer-used-p 'lsp) 'lsp 'alchemist)
-  "The backend to use for IDE features.
-Possible values are `alchemist' and `lsp'.
-If `nil' then `alchemist' is the default backend unless `lsp' layer is used.")
-(put 'elixir-backend 'safe-local-variable #'symbolp)
-
-(defvar elixir-ls-path "~/elixir-ls/release"
-  "The path to the folder that contains the elixir-ls release, start scripts (language_server.sh/language_server.bat).")
-
-(spacemacs|define-jump-handlers elixir-mode)
+(defvar spacemacs-popwin--last-buffer nil
+  "Last popwin buffer. This is a private variable.")

@@ -1,8 +1,8 @@
-;;; config.el --- Elixir Layer configuration File for Spacemacs
+;; config.el --- Nav-flash Layer Configuration File for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
 ;;
-;; Author: Sylvain Benner <sylvain.benner@gmail.com>
+;; Author: Thanh Vuong <thanhvg@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
 ;;
 ;; This file is not part of GNU Emacs.
@@ -20,16 +20,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+(defvar nav-flash-exclude-commands
+  '(mouse-set-point mouse-drag-region evil-mouse-drag-region +org/dwim-at-point
+                    org-find-file org-find-file-at-mouse)
+  "A list of commands that should not trigger nav-flash.")
 
-;; Variables
-
-(defvar elixir-backend (if (configuration-layer/layer-used-p 'lsp) 'lsp 'alchemist)
-  "The backend to use for IDE features.
-Possible values are `alchemist' and `lsp'.
-If `nil' then `alchemist' is the default backend unless `lsp' layer is used.")
-(put 'elixir-backend 'safe-local-variable #'symbolp)
-
-(defvar elixir-ls-path "~/elixir-ls/release"
-  "The path to the folder that contains the elixir-ls release, start scripts (language_server.sh/language_server.bat).")
-
-(spacemacs|define-jump-handlers elixir-mode)
+(defvar nav-flash--last-point nil
+  "internal variable for nav-flash.")

@@ -40,7 +40,7 @@
     (org-contacts :location built-in
                   :toggle org-enable-org-contacts-support)
     (org-vcard :toggle org-enable-org-contacts-support)
-    (org-brain :toggle (version<= "25" emacs-version))
+    org-brain
     (org-expiry :location built-in)
     ; temporarily point org-journal to dalanicolai fork until dalanicolai's
     ; PR's https://github.com/bastibe/org-journal/pulls get merged
@@ -70,7 +70,8 @@
     (org-roam :toggle org-enable-roam-support)
     (valign :toggle org-enable-valign)
     (org-appear :toggle org-enable-appear-support)
-    (org-roam-server :require org-roam :toggle org-enable-roam-server)))
+    (org-roam-server :require org-roam :toggle org-enable-roam-server)
+    (ox-asciidoc :toggle org-enable-asciidoc-support)))
 
 (defun org/post-init-company ()
   (spacemacs|add-company-backends :backends company-capf :modes org-mode))
@@ -226,8 +227,8 @@ Will work on both org-mode and any mode that accepts plain html."
                         ("mtd" . "delete")
                         ("mti" . "insert")
                         ("mtt" . "toggle")
-                        ("mx" . "text")
-                        ))
+                        ("mx" . "text")))
+
         (spacemacs/declare-prefix-for-mode 'org-mode (car prefix) (cdr prefix)))
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
         "'" 'org-edit-special
@@ -837,8 +838,8 @@ Headline^^            Visit entry^^               Filter^^                    Da
     (let ((agenda-files (org-agenda-files)))
       (if agenda-files
           (progn (find-file (if org-persp-startup-org-file org-persp-startup-org-file (first agenda-files)))
-                 (if org-persp-startup-with-agenda (org-agenda nil org-persp-startup-with-agenda)
-                   ))
+                 (if org-persp-startup-with-agenda (org-agenda nil org-persp-startup-with-agenda)))
+
         (user-error "Error: No agenda files configured, nothing to display.")))))
 
 (defun org/init-org-contacts ()
@@ -957,7 +958,10 @@ Headline^^            Visit entry^^               Filter^^                    Da
         "ra" 'org-roam-alias-add))
     :config
     (progn
-      (spacemacs|hide-lighter org-roam-mode))))
+      (spacemacs|hide-lighter org-roam-mode)
+      (when org-enable-roam-protocol
+          (add-hook 'org-roam-mode-hook (lambda ()
+                                          (require 'org-roam-protocol)))))))
 
 (defun org/init-org-sticky-header ()
   (use-package org-sticky-header
@@ -1022,3 +1026,7 @@ Headline^^            Visit entry^^               Filter^^                    Da
     (progn
       (spacemacs/set-leader-keys "aors" 'org-roam-server-mode)
       (spacemacs/set-leader-keys-for-major-mode 'org-mode "rs" 'org-roam-server-mode))))
+
+(defun org/init-ox-asciidoc ()
+  (use-package ox-asciidoc
+    :after ox))
