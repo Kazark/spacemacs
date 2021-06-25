@@ -144,9 +144,7 @@
     (evil-define-key 'normal dired-mode-map (kbd "N") 'evil-ex-search-previous))
   (when (eq 'hybrid dotspacemacs-editing-style)
     (evil-define-key 'normal dired-mode-map (kbd "n") 'evil-search-next)
-    (evil-define-key 'normal dired-mode-map (kbd "N") 'evil-search-previous))
-  (add-hook 'spacemacs-post-user-config-hook
-            'spacemacs/dired-remove-evil-mc-gr-which-key-entry))
+    (evil-define-key 'normal dired-mode-map (kbd "N") 'evil-search-previous)))
 
 (defun spacemacs-defaults/init-dired-x ()
   (use-package dired-x
@@ -407,7 +405,9 @@
       (add-to-list 'recentf-exclude
                    (recentf-expand-file-name spacemacs-cache-directory))
       (add-to-list 'recentf-exclude (recentf-expand-file-name package-user-dir))
-      (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'"))))
+      (add-to-list 'recentf-exclude "COMMIT_EDITMSG\\'")
+      (when custom-file
+        (add-to-list 'recentf-exclude custom-file)))))
 
 (defun spacemacs-defaults/init-savehist ()
   (use-package savehist
