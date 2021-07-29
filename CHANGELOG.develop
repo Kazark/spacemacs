@@ -377,6 +377,7 @@ In org-agenda-mode
 - The =ycmd= layer has been deleted and moved to the =c-c++= layer.
 *** New layers
 **** Completion
+- compleseus (thanks to thanhvg)
 - templates (thanks to YasuharuIida and Eivind Fonn)
 **** Emacs
 - helpful (thanks to Johnson Denen, Andriy Kmit)
@@ -3038,6 +3039,7 @@ files (thanks to Daniel Nicolai)
   =org-insert-drawer=, =org-insert-heading=, =org-insert-item= and
   =org-insert-structure-template= commands (thanks to Andriy Kmit')
 - Added =ox-asciidoc= as org export backend (thanks to Christian "West" Westrom)
+- Fix org-roam v2 compatibility (thanks to Alex Kapranoff and Caleb Rogers)
 **** Osx
 - Key bindings:
   - Added key bindings to use ~command-1..9~ for selecting window
@@ -3850,4 +3852,3 @@ files (thanks to Daniel Nicolai)
   Thanks to: Abhishek(Compro) Prasad, Deepak Khidia, Enze Chi, Grant Shangreaux,
   Igor Almeida, Jiahao Jiang, Miciah Dashiel Butler Masters, Songpeng Zu, Ward
   Harris
-  
