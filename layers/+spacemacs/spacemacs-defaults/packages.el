@@ -287,7 +287,6 @@
 
       (spacemacs/declare-prefix "tn" "line-numbers")
 
-      ;; Need a way to toggle without thinking about which mode you are in.
       (spacemacs|add-toggle line-numbers
         :status (and (featurep 'display-line-numbers)
                      display-line-numbers-mode
