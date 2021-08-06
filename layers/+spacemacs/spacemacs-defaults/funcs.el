@@ -133,6 +133,21 @@ If not in such a search box, fall back on `Custom-newline'."
 (defalias 'spacemacs/display-buffer-other-frame 'display-buffer-other-frame)
 (defalias 'spacemacs/find-file-and-replace-buffer 'find-alternate-file)
 
+(defun spacemacs/switch-frame-by-buffers ()
+  "Switch to frame selected by user based on names of displayed buffers."
+  (interactive)
+  (select-frame-set-input-focus
+   (completing-read
+    "Switch to frame: "
+    (mapcar
+     (lambda (frame)
+       (cons (string-join (mapcar (lambda (window)
+                                    (buffer-name (window-buffer window)))
+                                  (window-list frame))
+                          " | ")
+             frame))
+     (frame-list)))))
+
 (defun spacemacs/indent-region-or-buffer ()
   "Indent a region if selected, otherwise the whole buffer."
   (interactive)
