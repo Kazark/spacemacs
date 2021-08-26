@@ -151,45 +151,76 @@ before highlighting a symbol."
 when the Symbol Highlight Transient State is closed.
 If ahs mode was disabled before a symbol was highlighted.")
 
+(defun spacemacs//ahs-was-disabled-in-ahs-ts-exit-window-p ()
+  (let ((prev-win (selected-window)))
+    (select-window spacemacs//ahs-ts-exit-window)
+    (prog1 spacemacs//ahs-was-disabled
+      (select-window prev-win))))
+
+(defvar spacemacs//ahs-ts-exit-window nil
+  "Remember the selected window when the
+Symbol Highlight Transient State is closed.
+
+This is used to disable `auto-highlight-symbol-mode',
+in the window where the Symbol Highlight Transient State was closed,
+when the TS was closed by opening a prompt. For example:
+ SPC SPC (or M-x)       ;; spacemacs/helm-M-x-fuzzy-matching
+ SPC ?                  ;; helm-descbinds
+ M-:                    ;; eval-expression
+ :                      ;; evil-ex
+
+ahs mode is only disabled if it was disabled before a symbol was highlighted.")
+
 (defun spacemacs//ahs-ts-on-exit ()
+  (setq spacemacs//ahs-ts-exit-window (selected-window))
   ;; Restore user search direction state as ahs has exitted in a state
   ;; good for <C-s>, but not for 'n' and 'N'"
   (setq isearch-forward spacemacs--ahs-searching-forward)
-  (spacemacs//disable-symbol-highlight-after-ahs-ts-closed))
+  (spacemacs//disable-symbol-highlight-after-ahs-ts-exit))
 
-(defun spacemacs//disable-symbol-highlight-after-ahs-ts-closed ()
+(defun spacemacs//disable-symbol-highlight-after-ahs-ts-exit ()
   "Disable `auto-highlight-symbol-mode', when the
 Symbol Highlight Transient State buffer isn't found.
+This occurs when the TS wasn't restarted.
+It is restarted when navigating to the next or previous symbol.
 
-This occurs when the Symbol Highlight Transient State wasn't restarted.
-It is restarted when navigating to the next or previous symbol."
+ahs mode is only disabled if it was disabled before a symbol was highlighted."
   (run-with-idle-timer
    0 nil
    (lambda ()
      (unless (string= (spacemacs//transient-state-buffer-title)
                       "Symbol Highlight")
-       (spacemacs//disable-symbol-highlight)))))
+       (cond ((and (spacemacs//prompt-opened-from-ahs-ts-p)
+                   (spacemacs//ahs-was-disabled-in-ahs-ts-exit-window-p))
+              (spacemacs//disable-ahs-mode-in-ahs-ts-exit-window))
+             (spacemacs//ahs-was-disabled
+              (spacemacs//disable-symbol-highlight)))))))
+
+(defun spacemacs//prompt-opened-from-ahs-ts-p ()
+  "Was a prompt opened (for example: M-x),
+from the Symbol Highlight Transient State?"
+  (not (eq spacemacs//ahs-ts-exit-window (selected-window))))
+
+(defun spacemacs//disable-ahs-mode-in-ahs-ts-exit-window ()
+  "Disable `auto-highlight-symbol-mode',
+in the window where the Symbol Highlight Transient State was closed."
+  (let ((prev-win (selected-window)))
+    (select-window spacemacs//ahs-ts-exit-window)
+    (spacemacs//disable-symbol-highlight)
+    (setq spacemacs//ahs-ts-exit-window nil)
+    (select-window prev-win)))
 
 (defun spacemacs//disable-symbol-highlight ()
-  "Disable `auto-highlight-symbol-mode',
-if it was disabled before a symbol was highlighted."
-  (when spacemacs//ahs-was-disabled
-    (auto-highlight-symbol-mode -1)
-    (setq-local spacemacs//ahs-was-disabled nil)))
+  (auto-highlight-symbol-mode -1)
+  (setq-local spacemacs//ahs-was-disabled nil))
 
 (defun spacemacs//transient-state-buffer-title ()
   (let ((transient-state-buffer-name " *LV*"))
-    (when (spacemacs/buffer-exists transient-state-buffer-name)
+    (when (get-buffer transient-state-buffer-name)
       (with-current-buffer transient-state-buffer-name
         (buffer-substring-no-properties
          (point-min)
          (string-match "Transient State" (buffer-string)))))))
-
-(defun spacemacs/buffer-exists (name-of-buffer)
-  (catch 'buffer-found
-    (dolist (win (window-list))
-      (when (string= name-of-buffer (buffer-name (window-buffer win)))
-        (throw 'buffer-found t)))))
 
 (defun spacemacs/symbol-highlight-reset-range ()
   "Reset the range for `auto-highlight-symbol'."
@@ -354,19 +385,35 @@ if it was disabled before a symbol was highlighted."
 ;; junk-file
 
 (defun spacemacs/open-junk-file (&optional arg)
-  "Open junk file using helm or ivy.
+  "Create a junk file with the initial name that's based on the variable
+`open-junk-file-format'
+`~/.emacs.d/.cache/junk/%Y/%m/%d-%H%M%S.'
 
-Interface choice depends on whether the `ivy' layer is used or
-not.
+Or erase the name and open an existing junk file.
 
-When ARG is non-nil search in junk files."
+When ARG is non-nil, search in the junk files.
+
+The interface depends on the current completion layer:
+compleseus
+helm
+ivy"
   (interactive "P")
   (let* ((fname (format-time-string open-junk-file-format (current-time)))
          (rel-fname (file-name-nondirectory fname))
          (junk-dir (file-name-directory fname))
          (default-directory junk-dir))
     (make-directory junk-dir t)
-    (cond ((and arg (configuration-layer/layer-used-p 'ivy))
+    (cond ((and arg (configuration-layer/layer-used-p 'compleseus))
+           (cond ((executable-find "rg") (consult-ripgrep junk-dir))
+                 ((executable-find "grep") (consult-grep junk-dir))
+                 (t (message "Couldn't find either executable: rg or grep"))))
+          ((configuration-layer/layer-used-p 'compleseus)
+           (find-file
+            (completing-read
+             junk-dir
+             (directory-files junk-dir nil directory-files-no-dot-files-regexp)
+             nil nil rel-fname)))
+          ((and arg (configuration-layer/layer-used-p 'ivy))
            (spacemacs/counsel-search dotspacemacs-search-tools nil junk-dir))
           ((configuration-layer/layer-used-p 'ivy)
            (require 'counsel)
