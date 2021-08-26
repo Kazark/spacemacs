@@ -254,6 +254,21 @@ Will work on both org-mode and any mode that accepts plain html."
         (spacemacs/declare-prefix-for-mode 'org-mode (car prefix) (cdr prefix)))
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
         "'" 'org-edit-special
+        ;; Mainline Spacemacs binds this to TT, which sacrifices pragmatics to
+        ;; mnemonics and organization. I have here sacrificed organization and
+        ;; mnemonics to pragmatics. This is one of the most common keybindings I
+        ;; invoke; far more frequent than anything else in the T group. Holding
+        ;; down the shift key this frequently, and for two characters, hurts;
+        ;; and the number of characters is unwanted for something so frequently
+        ;; used. ; was something that was unused, clearly demonstrated a
+        ;; rejection of mnemonic, unlikely to get overloaded by something else
+        ;; in mainline Spacemacs, and most importantly was already under my
+        ;; fingers.
+        ;; If you squint, this is sort of a toggle, and Spacemacs' organization
+        ;; makes sense; but arguably it is not a toggle in the sense that other
+        ;; ones are, but a basic piece of Org machinery that should be much more
+        ;; available than say toggles display of special entities.
+        ";" 'org-todo
         "c" 'org-capture
 
         ;; Clock
@@ -287,7 +302,6 @@ Will work on both org-mode and any mode that accepts plain html."
         "Tn" 'org-num-mode
         "Tl" 'org-toggle-link-display
         "Tt" 'org-show-todo-tree
-        "TT" 'org-todo
         "TV" 'space-doc-mode
         "Tx" 'org-latex-preview
 

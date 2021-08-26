@@ -603,7 +603,6 @@ A [[https://github.com/syl20bnr/spacemacs/blob/develop/doc/DOCUMENTATION.org#lay
 | ~SPC m T n~ | org-num-mode                                  |
 | ~SPC m T l~ | org-toggle-link-display                       |
 | ~SPC m T t~ | org-show-todo-tree                            |
-| ~SPC m T T~ | org-todo                                      |
 | ~SPC m T V~ | toggle =space-doc-mode= a read-only view mode |
 | ~SPC m T x~ | org-preview-latex-fragment                    |
 
@@ -616,6 +615,7 @@ A [[https://github.com/syl20bnr/spacemacs/blob/develop/doc/DOCUMENTATION.org#lay
 | ~SPC m RET~                                  | org-ctrl-c-ret                                |
 | ~SPC m -~                                    | org-ctrl-c-minus                              |
 | ~SPC m '​~                                    | org-edit-special                              |
+| ~SPC m ;~                                    | org-todo                                      |
 | ~SPC m a~                                    | org-agenda                                    |
 | ~SPC m A~                                    | org-attach                                    |
 | ~SPC m c~                                    | org-capture                                   |
