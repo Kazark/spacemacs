@@ -26,6 +26,7 @@
     marginalia
     (compleseus-spacemacs-help :location local)
     consult
+    consult-yasnippet
     embark
     embark-consult
     orderless
@@ -135,6 +136,7 @@
       "bB" #'consult-buffer
       "fb" #'consult-bookmark
       "ff" #'spacemacs/compleseus-find-file
+      "fL" #'consult-locate
       "fr" #'consult-recent-file
       "hda" #'consult-apropos
       "jm" #'consult-mark
@@ -204,15 +206,22 @@
     (setq consult-project-root-function
           (lambda ()
             (when-let (project (project-current))
-              (car (project-roots project)))))
+              (car (project-roots project)))))))
   ;;;; 2. projectile.el (projectile-project-root)
-    ;; (autoload 'projectile-project-root "projectile")
-    ;; (setq consult-project-root-function #'projectile-project-root)
+;; (autoload 'projectile-project-root "projectile")
+;; (setq consult-project-root-function #'projectile-project-root)
   ;;;; 3. vc.el (vc-root-dir)
-    ;; (setq consult-project-root-function #'vc-root-dir)
+;; (setq consult-project-root-function #'vc-root-dir)
   ;;;; 4. locate-dominating-file
-    ;; (setq consult-project-root-function (lambda () (locate-dominating-file "." ".git")))
-    ))
+;; (setq consult-project-root-function (lambda () (locate-dominating-file "." ".git")))
+
+
+(defun compleseus/init-consult-yasnippet ()
+  (use-package consult-yasnippet
+    :defer t
+    :init
+    (spacemacs/set-leader-keys
+      "is" 'consult-yasnippet)))
 
 (defun compleseus/init-embark ()
   (use-package embark
@@ -227,12 +236,13 @@
     (setq prefix-help-command #'embark-prefix-help-command)
 
     :config
-    ;; Hide the mode line of the Embark live/completions buffers
-    ;; (add-to-list 'display-buffer-alist
-    ;;              '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-    ;;                nil
-    ;;                (window-parameters (mode-line-format . none))))
-    ))
+    (define-key embark-file-map "s" 'spacemacs/compleseus-search-from)))
+;; Hide the mode line of the Embark live/completions buffers
+;; (add-to-list 'display-buffer-alist
+;;              '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+;;                nil
+;;                (window-parameters (mode-line-format . none))))
+
 
 (defun compleseus/init-embark-consult ()
   (use-package embark-consult
@@ -245,13 +255,11 @@
     (embark-collect-mode . consult-preview-at-point-mode)))
 
 (defun compleseus/init-orderless ()
-  (use-package orderless)
+  (use-package orderless
   :init
-  (setq completion-styles '(orderless)
-        ;; for ssh completion
-        completion-category-overrides '((file (styles basic partial-completion)))
+  (setq completion-styles '(basic partial-completion orderless)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
+        completion-category-overrides '((file (styles . (partial-completion)))))))
 
 (defun compleseus/init-selectrum ()
   (use-package selectrum
@@ -286,6 +294,10 @@
     ;; Enable recursive minibuffers
     (setq enable-recursive-minibuffers t)
 
+    ;; when vertico is used set this so tab when doing M-: will show suggestions
+    ;; https://github.com/minad/vertico/issues/24
+    (setq completion-in-region-function #'consult-completion-in-region)
+
     ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
     ;; (setq vertico-cycle t)
     (vertico-mode)
@@ -298,7 +310,9 @@
     (define-key vertico-map (kbd "C-k") #'vertico-previous)
     (define-key vertico-map (kbd "C-M-k") #'spacemacs/previous-candidate-preview)
     (define-key vertico-map (kbd "C-S-k") #'vertico-previous-group)
-    (define-key vertico-map (kbd "C-r") 'consult-history)))
+    (define-key vertico-map (kbd "C-r") 'consult-history)
+    (define-key vertico-map (kbd "C-h") 'backward-kill-word)
+    (define-key vertico-map "?" #'minibuffer-completion-help)))
 
 (defun compleseus/init-vertico-repeat ()
   (use-package vertico-repeat
@@ -307,7 +321,6 @@
     (spacemacs/set-leader-keys
       "rl" 'vertico-repeat
       "sl" 'vertico-repeat)))
-
 
 (defun spacemacs/compleseus-wgrep-change-to-wgrep-mode ()
   (interactive)
