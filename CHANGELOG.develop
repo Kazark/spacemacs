@@ -197,6 +197,7 @@ the [[file:CHANGELOG.org][CHANGELOG.org]] file.
   - Use ~lsp-ivy~ when ~ivy~ layer is present.
   - added  ~lsp-use-lsp-ui~ variable to control whether ~lsp-ui~ is installed or not.
   - added ~SPC m g h~ to go to call hierarchy.
+  - added ~SPC m g T~ to go to type hierarchy.
 ***** IPython notebook
 - Key bindings;
   - Change prefix from ~SPC a i~ to ~SPC a y~ (thanks to Swaroop C H)
@@ -214,6 +215,7 @@ the [[file:CHANGELOG.org][CHANGELOG.org]] file.
   - Removed ~SPC m i L~ for =markdown-insert-reference-link-dwim=
     (folded into ~SPC m i l~)
   - Added ~SPC m x k~ for =markdown-insert-kbd= (thanks to Ben Swift)
+  - Added ~SPC m t a~ for =markdown-table-align= in consistency with Org layer (thanks to deb0ch)
 ***** nlinum
 - The =nlinum= layer is deprecated on Emacs 26.1 and newer in favor of native
   line number support (thanks to bmag)
