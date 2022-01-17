@@ -246,6 +246,7 @@
   - [[#tide-layer][Tide Layer]]
   - [[#tmux][Tmux]]
   - [[#transmission][Transmission]]
+  - [[#tree-sitter][Tree-sitter]]
   - [[#vagrant][Vagrant]]
   - [[#web-beautify][Web-beautify]]
   - [[#xclipboard][Xclipboard]]
@@ -3184,6 +3185,21 @@ This layer integrates a BitTorrent client into Spacemacs.
 
 Features:
 - Integration of [[https://transmissionbt.com/][Transmission]] into Emacs.
+
+** Tree-sitter
+[[file:+tools/tree-sitter/README.org][+tools/tree-sitter/README.org]]
+
+This layer integrates [[https://github.com/emacs-tree-sitter/elisp-tree-sitter][=Emacs Tree-sitter=]] and a few packages built around it.
+An Emacs build supporting dynamic modules is required.
+
+Language (i.e. major-mode) support is somewhat limited and varies by feature.
+Refer to the README/documentation of the package providing the feature for
+specifics.
+
+Features:
+- Syntax highlighting
+- Indentation (experimental)
+- Folding (experimental)
 
 ** Vagrant
 [[file:+tools/vagrant/README.org][+tools/vagrant/README.org]]
