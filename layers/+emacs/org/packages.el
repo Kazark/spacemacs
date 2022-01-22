@@ -150,13 +150,23 @@
             ;; Always log on repeat; else there is no trace of what happened.
             org-log-repeat 'time
             org-log-done 'time
+            ;; Biblical view of the week
+            org-agenda-start-on-weekday 0
+            ;; I have way too many things going to look two weeks out this way
+            org-deadline-warning-days 7
             ;; Sometimes you decide not to do an item, so it is imprecise or
             ;; even downright misleading to mark it DONE; but you don't want to
             ;; delete it, and lose a record of it ever being there. You could
             ;; archive it, but it might be preferable to be able to cancel it if
             ;; you like. Logging is only relevant going to or coming from
             ;; CANCELED.
-            org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d)" "CANCELED(c@/!)"))
+            ;; Occasionally you will have a task that you will want to note that
+            ;; you have begun but not finished.
+            org-todo-keywords '((sequence "TODO(t)"
+                                          "DOING(i)"
+                                          "|"
+                                          "DONE(d)"
+                                          "CANCELED(c@/!)"))
             org-startup-with-inline-images t
             org-latex-prefer-user-labels t
             org-image-actual-width nil
