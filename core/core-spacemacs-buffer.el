@@ -1188,7 +1188,14 @@ SEQ, START and END are the same arguments as for `cl-subseq'"
 (defun spacemacs-buffer//insert-recent-files (list-size)
   (unless recentf-mode (recentf-mode))
   (setq spacemacs-buffer//recent-files-list
-        (spacemacs//subseq recentf-list 0 list-size))
+        (cl-delete-if (lambda (x)
+                        (or (when (and (bound-and-true-p org-directory) (file-exists-p org-directory))
+                              (member x (directory-files org-directory t)))
+                            (when (bound-and-true-p org-agenda-files)
+                              (member x (mapcar #'expand-file-name org-agenda-files)))))
+                      recentf-list))
+  (setq spacemacs-buffer//recent-files-list
+        (spacemacs//subseq spacemacs-buffer//recent-files-list 0 list-size))
   (when (spacemacs-buffer//insert-file-list
          "Recent Files:"
          spacemacs-buffer//recent-files-list)
@@ -1337,7 +1344,10 @@ can be adjusted with the variable:
   (interactive)
   (when spacemacs-buffer--idle-numbers-timer
     (cancel-timer spacemacs-buffer--idle-numbers-timer))
-  (let* ((key-pressed-string (string last-input-event)))
+  (let* ((key-pressed-string (string-trim-left (if (characterp last-input-event)
+                                                   (string last-input-event)
+                                                 (format "%s" last-input-event))
+                                               "kp-")))
     (setq spacemacs-buffer--startup-list-number
           (concat spacemacs-buffer--startup-list-number key-pressed-string))
     (let (message-log-max) ; only show in minibuffer
@@ -1444,7 +1454,8 @@ If a prefix argument is given, switch to it in an other, possibly new window."
             (progn (goto-char (point-min))
                    (forward-line (1- save-line))
                    (forward-to-indentation 0))
-          (spacemacs-buffer/goto-link-line)))
+          (spacemacs-buffer/goto-link-line))
+        (setq-local inhibit-read-only t))
       (if current-prefix-arg
           (switch-to-buffer-other-window spacemacs-buffer-name)
         (switch-to-buffer spacemacs-buffer-name))
