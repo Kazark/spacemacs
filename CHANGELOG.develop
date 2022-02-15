@@ -1510,6 +1510,7 @@ Other:
   - Added =yasnippet-snippets= package (thanks to Jack Kamm)
   - Added =ivy-yasnippet= (thanks to Kalle Lindqvist)
   - Added =company-box= (thanks to Tianyao Chou)
+  - Added =company-posframe= (thanks to Thanh Vuong)
 - Improvements:
   - Added =autocomplete-idle-delay= layer variable, which Spacemacs uses to set
     =company-idle-delay= or =ac-delay= (thanks to Benjamin Hipple)
@@ -2017,6 +2018,7 @@ Other:
     - ~SPC m r d l~ for  =emr-delete-let-binding-form=
     - ~SPC m r d d~ for  =emr-delete-unused-definition=
     - ~SPC m e w~   for   =emr-eval-and-replace=
+- Added =elisp-def= integration (thanks to Thanh Vuong)
 **** Emoji
 - Added support for Emoji fonts on macOS and Linux (thanks to CodeFalling)
 - Setup =emojify= cache directory (thanks to Boris Buliga)
@@ -2856,6 +2858,7 @@ files (thanks to Daniel Nicolai)
   function (thanks to Profpatsch)
 - Associate nix-mode with .nix files (thanks to jpathy)
 - Updated layer banner (thanks to kalium)
+- Added experimental LSP support (thanks to LuisChDev)
 **** Nim
 - Added key binding ~SPC m h h~ to show symbol documentation
   (thanks to Valts Liepiņš)
@@ -2890,6 +2893,8 @@ files (thanks to Daniel Nicolai)
 - Fixed ocamlformat not properly initialized by following do (thanks to Nicolas Raymond)
 - Allow new OPAM share commandline syntax (thanks to Cody McKenzie)
 **** Org
+- Add initial =org-transclusion= support behind =org-enable-transclusion-support=
+  flag (thanks to Keith Pinson).
 - When =org-appear= is set to be triggered manually and Spacemacs' editing mode is
   Vim or hybrid, register relevant =org-appear= functions in Evil hooks for Org
   buffers (thanks to Keith Pinson).

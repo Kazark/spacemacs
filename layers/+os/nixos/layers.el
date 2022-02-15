@@ -1,6 +1,6 @@
-;;; funcs.el --- Spacemacs Editing Visual Layer functions File
+;;; layers.el --- NixOS Layer functions File for Spacemacs
 ;;
-;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2022 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -20,8 +20,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-(defun spacemacs/centered-buffer-transient-state ()
-  "Center buffer and enable centering transient state."
-  (interactive)
-  (spacemacs/toggle-centered-buffer-on)
-  (spacemacs/centered-buffer-transient-state/body))
+(when (and (boundp 'nix-backend)
+           (eq nix-backend 'lsp))
+  (configuration-layer/declare-layer-dependencies '(lsp)))

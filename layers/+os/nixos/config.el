@@ -25,3 +25,6 @@
 
 (defvar nixos-format-on-save nil
   "If non-nil, nixfmt before saving.")
+
+(defvar nix-backend nil
+  "The backend used for completion. possible values are `lsp' or `nil'.")
