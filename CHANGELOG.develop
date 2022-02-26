@@ -547,6 +547,7 @@ Other:
   - =.gitignore= now ignores tag files and the bbdb database.
   - =.gitignore= now ignores org-journal-cache-file (thanks to Benjamin Hipple)
   - =.gitignore= now ignores image-dired-dir (thanks to Alfonso Montero)
+  - =.gitignore= now ignores devdocs (thanks to Alfonso Montero)
   - Added =vim-style-visual-feedback= and =hybrid-style-visual-feedback= style
     variables to enable =evil-goggles= pulse in the Vim and Hybrid editing
     styles, respectively; disabled by default (thanks to Sylvain Benner)
@@ -1475,6 +1476,7 @@ Other:
   - Handled buffer move/select/swap to last window nr +1 (thanks to duianto)
   - Set =evil-undo-system= to =undo-tree= (thanks to duianto)
   - Checked that =evil-undo-system= exists before it's called (thanks to khjcph)
+  - Fixed ~SPC w TAB~ golden-ratio resizing.
 *** Layer changes and fixes
 **** Agda
 - Fixes
@@ -3430,6 +3432,8 @@ files (thanks to Daniel Nicolai)
     - ~SPC c s d~ Copy rpms to the phone
     - ~SPC c s i~ Install rpms into target
 **** Scala
+- Shortcut key for compiling tests in SBT without running them (~Test / compile~)
+  (thanks to Keith Pinson)
 - Shortcut keys for common/standard SBT commands (~scalafmtAll~, ~compile~ and ~test~)
   (thanks to Keith Pinson)
 - Remove long-deprecated Ensime support (thanks to Keith Pinson)
