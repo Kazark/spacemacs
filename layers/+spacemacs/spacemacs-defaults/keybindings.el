@@ -665,7 +665,7 @@ respond to this toggle."
   ;; "wcc"  'spacemacs/toggle-centered-buffer
   ;; "wcC"  'spacemacs/toggle-distraction-free
   ;; "wc."  'spacemacs/centered-buffer-transient-state
-  "wo"  'other-frame
+  "wo"  'other-window
   "wr"  'spacemacs/rotate-windows-forward
   "wR"  'spacemacs/rotate-windows-backward
   "ws"  'split-window-below
@@ -675,7 +675,6 @@ respond to this toggle."
   "wu"  'winner-undo
   "wv"  'split-window-right
   "wV"  'split-window-right-and-focus
-  "wW"  'other-window
   "wx"  'kill-buffer-and-window
   "w/"  'split-window-right
   "w="  'balance-windows-area
