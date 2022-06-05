@@ -38,8 +38,6 @@
     (dotenv-mode :step pre)
     (evil-evilified-state :location local :step pre :protected t)
     (pcre2el :step pre)
-    (holy-mode :location local :step pre)
-    (hybrid-mode :location (recipe :fetcher local) :step pre)
     (spacemacs-theme :location built-in)
     dash))
 
@@ -596,48 +594,6 @@ Press \\[which-key-toggle-persistent] to hide."
 ;; (necessary when using spacemacs-base distribution)
 (defun spacemacs-bootstrap/init-pcre2el ()
   (use-package pcre2el :defer t))
-
-(defun spacemacs-bootstrap/init-holy-mode ()
-  (spacemacs|unless-dumping-and-eval-after-loaded-dump holy-mode
-    (use-package holy-mode
-      :commands holy-mode
-      :init
-      (progn
-        (when (eq 'emacs dotspacemacs-editing-style)
-          (holy-mode))
-        (spacemacs|add-toggle holy-mode
-          :status holy-mode
-          :on (progn (when (bound-and-true-p hybrid-mode)
-                       (hybrid-mode -1)
-                       (spacemacs/declare-prefix "tEh" "hybrid (hybrid-mode)"))
-                     (holy-mode)
-                     (spacemacs/declare-prefix "tEe" "vim (evil-mode"))
-          :off (progn (holy-mode -1)
-                      (spacemacs/declare-prefix "tEe" "emacs (holy-mode)"))
-          :off-message "evil-mode enabled."
-          :documentation "Globally toggle holy mode."
-          :evil-leader "tEe")
-        (spacemacs|diminish holy-mode " Ⓔe" " Ee")))))
-
-(defun spacemacs-bootstrap/init-hybrid-mode ()
-  (spacemacs|unless-dumping-and-eval-after-loaded-dump hybrid-mode
-    (use-package hybrid-mode
-      :config
-      (progn
-        (when (eq 'hybrid dotspacemacs-editing-style) (hybrid-mode))
-        (spacemacs|add-toggle hybrid-mode
-          :status hybrid-mode
-          :on (progn (when (bound-and-true-p holy-mode)
-                       (holy-mode -1)
-                       (spacemacs/declare-prefix "tEe" "emacs (holy-mode)"))
-                     (hybrid-mode)
-                     (spacemacs/declare-prefix "tEh" "vim (evil-mode)"))
-          :off (progn (hybrid-mode -1)
-                      (spacemacs/declare-prefix "tEh" "hybrid (hybrid-mode)"))
-          :off-message "evil-mode enabled."
-          :documentation "Globally toggle hybrid mode."
-          :evil-leader "tEh")
-        (spacemacs|diminish hybrid-mode " Ⓔh" " Eh")))))
 
 (defun spacemacs-bootstrap/init-spacemacs-theme ()
   (use-package spacemacs-theme
