@@ -403,12 +403,13 @@
    ("f" spacemacs/find-file-other-frame "Find file other frame...")
    ("d" delete-frame "Delete frame")
    ("D" delete-other-frames "Delete other frames")
+   ("e" set-frame-name "Edit frame name")
    ("b" spacemacs/switch-to-buffer-other-frame "Switch to buffer other frame...")
    ("B" spacemacs/display-buffer-other-frame "Display buffer other frame...")
    ("o" other-frame "Switch to other frame")
    ("O" spacemacs/dired-other-frame "Dired other frame...")
    ("n" make-frame "Make frame")
-   ("s" spacemacs/switch-frame-by-buffers "Switch frame by displayed buffer names") )))
+   ("s" select-frame-by-name "Select frame by name"))))
 ;; help -----------------------------------------------------------------------
 (defalias 'emacs-tutorial 'help-with-tutorial)
 (spacemacs/set-leader-keys
