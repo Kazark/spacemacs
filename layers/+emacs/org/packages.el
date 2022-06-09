@@ -1,6 +1,6 @@
 ;;; packages.el --- Org Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2022 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -37,8 +37,7 @@
     (org-agenda :location built-in)
     (org-wild-notifier
                 :toggle org-enable-notifications)
-    (org-contacts :location built-in
-                  :toggle org-enable-org-contacts-support)
+    (org-contacts :toggle org-enable-org-contacts-support)
     org-contrib
     (org-vcard :toggle org-enable-org-contacts-support)
     (org-brain :toggle org-enable-org-brain-support)
@@ -69,6 +68,7 @@
     (org-sticky-header :toggle org-enable-sticky-header)
     (verb :toggle org-enable-verb-support)
     (org-roam :toggle org-enable-roam-support)
+    (org-roam-ui :toggle org-enable-roam-ui)
     (valign :toggle org-enable-valign)
     (org-appear :toggle org-enable-appear-support)
     (org-transclusion :toggle org-enable-transclusion-support)
@@ -1017,15 +1017,16 @@ Headline^^            Visit entry^^               Filter^^                    Da
     :config
     (progn
       (spacemacs|hide-lighter org-roam-mode)
-      (when org-enable-roam-protocol
-          (add-hook 'org-roam-mode-hook (lambda ()
-                                          (require 'org-roam-protocol))))
 
       (evilified-state-evilify-map org-roam-mode-map
         :mode org-roam-mode
         :bindings
         "o" 'link-hint-open-link
-        "r" 'org-roam-buffer-refresh))))
+        "r" 'org-roam-buffer-refresh)))
+
+  (use-package org-roam-protocol
+    :if org-enable-roam-protocol
+    :after org-protocol))
 
 (defun org/init-org-sticky-header ()
   (use-package org-sticky-header
@@ -1065,6 +1066,7 @@ Headline^^            Visit entry^^               Filter^^                    Da
 
 (defun org/init-valign ()
   (use-package valign
+    :after org
     :init
     (progn
       (add-hook 'org-mode-hook 'valign-mode)
@@ -1114,3 +1116,18 @@ Headline^^            Visit entry^^               Filter^^                    Da
   (if (not (boundp 'helm-imenu-extra-modes))
     (setq helm-imenu-extra-modes '(org-mode)))
   (add-to-list 'helm-imenu-extra-modes 'org-mode))
+
+(defun org/init-org-roam-ui ()
+  (use-package org-roam-ui
+    :after org-roam
+    :init
+    (progn
+      (spacemacs/set-leader-keys
+        "aoru" 'org-roam-ui-mode)
+      (spacemacs/set-leader-keys-for-major-mode 'org-mode
+        "ru" 'org-roam-ui-mode))
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t)))

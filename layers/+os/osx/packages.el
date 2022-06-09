@@ -1,6 +1,6 @@
 ;;; packages.el --- OSX Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2022 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -65,7 +65,9 @@
       (spacemacs/set-leader-keys "al" 'launchctl))
     :config
     (progn
-      (evilified-state-evilify launchctl-mode launchctl-mode-map
+      (evilified-state-evilify-map launchctl-mode-map
+        :mode launchctl-mode
+        :bindings
         (kbd "q") 'quit-window
         (kbd "s") 'tabulated-list-sort
         (kbd "g") 'launchctl-refresh
@@ -117,11 +119,11 @@
     (osx-clipboard-paste-function osx-clipboard-cut-function)
     :init
     (progn
-      (setq interprogram-cut-function '(lambda (text &rest ignore)
+      (setq interprogram-cut-function (lambda (text &rest ignore)
                                         (if (display-graphic-p)
                                             (gui-select-text text)
                                           (osx-clipboard-cut-function text)))
-            interprogram-paste-function '(lambda ()
+            interprogram-paste-function (lambda ()
                                           (if (display-graphic-p)
                                               (gui-selection-value)
                                             (osx-clipboard-paste-function)))))))

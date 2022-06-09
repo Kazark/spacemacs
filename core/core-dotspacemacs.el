@@ -1,6 +1,6 @@
-;;; core-dotspacemacs.el --- Spacemacs Core File
+;;; core-dotspacemacs.el --- Spacemacs Core File -*- lexical-binding: t -*-
 ;;
-;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2022 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -208,6 +208,13 @@ banner, `random' chooses a random text banner in `core/banners'
 directory. A string value must be a path to a .PNG file.
 If the value is nil then no banner is displayed."
   '(choice (const official) (const random) (const nil) string integer)
+  'spacemacs-dotspacemacs-init)
+
+(spacemacs|defc dotspacemacs-startup-banner-scale 'auto
+  "Specify the scale value for the startup banner. Default value is `auto',
+it displays the spacemacs logo with the scale value. An (0, 1] float value
+will be applied to scale the banner."
+  '(choice (const auto) (const nil) float)
   'spacemacs-dotspacemacs-init)
 
 (spacemacs|defc dotspacemacs-startup-buffer-show-version t

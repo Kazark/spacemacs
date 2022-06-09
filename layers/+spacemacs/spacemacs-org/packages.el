@@ -1,6 +1,6 @@
 ;;; packages.el --- spacemacs-org layer packages file for Spacemacs.
 ;;
-;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2022 Sylvain Benner & Contributors
 ;;
 ;; Author: Boris Buliga <d12frosted@d12frosted.local>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -34,7 +34,7 @@
     ;; `org' package.
     (default-org-config :location built-in)
     org-superstar
-    (space-doc :location local)
+    (space-doc :location (recipe :fetcher local))
     toc-org
     ))
 

@@ -1,6 +1,6 @@
 ;;; packages.el --- Mandatory Bootstrap Layer packages File
 ;;
-;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2022 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -36,7 +36,7 @@
     ;; pre packages, initialized after the bootstrap packages
     ;; these packages can use use-package
     (dotenv-mode :step pre)
-    (evil-evilified-state :location local :step pre :protected t)
+    (evil-evilified-state :location (recipe :fetcher local) :step pre :protected t)
     (pcre2el :step pre)
     (spacemacs-theme :location built-in)
     dash))
