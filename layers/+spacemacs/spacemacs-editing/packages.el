@@ -510,6 +510,7 @@
   (use-package string-edit
     :init
     (spacemacs/set-leader-keys "xe" 'string-edit-at-point)
+    :config
     (spacemacs/set-leader-keys-for-minor-mode 'string-edit-mode
       "," 'string-edit-conclude
       "c" 'string-edit-conclude
@@ -535,6 +536,8 @@
     (progn
       (setq undo-tree-visualizer-timestamps t
             undo-tree-visualizer-diff t
+            ;; See `vim-style-enable-undo-region'.
+            undo-tree-enable-undo-in-region t
             ;; 10X bump of the undo limits to avoid issues with premature
             ;; Emacs GC which truncages the undo history very aggresively
             undo-limit 800000

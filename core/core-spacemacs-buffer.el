@@ -275,6 +275,7 @@ Returns height in units of line height with a minimum of 1."
             (setq dotspacemacs-startup-buffer-show-icons nil)
 	          (setq lines (with-temp-buffer
                           (spacemacs-buffer//do-insert-startupify-lists)
+                          (recentf-mode -1)
                           (line-number-at-pos)))
               ;; (count-lines (point-min) (point-max)))
             (setq dotspacemacs-startup-buffer-show-icons icons)
@@ -837,16 +838,16 @@ in for example the `view-lossage' (C-h l) buffer:
 instead of:
  r                      ;; anonymous-command
  p                      ;; anonymous-command"
-  (let* ((func-name (spacemacs-buffer//startup-list-jump-func-name search-label))
-         (func-name-symbol (intern func-name)))
-    (eval `(defun ,func-name-symbol ()
-             (interactive)
-             (unless (search-forward ,search-label (point-max) t)
-               (search-backward ,search-label (point-min) t))
-             ,@(unless no-next-line
-                 '((forward-line 1)))
-             (back-to-indentation)))
-    `(define-key spacemacs-buffer-mode-map ,shortcut-char ',func-name-symbol)))
+  (let ((func-name-symbol
+         (intern (spacemacs-buffer//startup-list-jump-func-name search-label))))
+    `(progn (defun ,func-name-symbol ()
+              (interactive)
+              (unless (search-forward ,search-label (point-max) t)
+                (search-backward ,search-label (point-min) t))
+              ,@(unless no-next-line
+                  '((forward-line 1)))
+              (back-to-indentation))
+            (define-key spacemacs-buffer-mode-map ,shortcut-char ',func-name-symbol))))
 
 (defun spacemacs-buffer//center-line (&optional real-width)
   "When point is at the end of a line, center it.
@@ -1385,7 +1386,8 @@ SEQ, START and END are the same arguments as for `cl-subseq'"
           (spacemacs-buffer//insert-errors)
           (spacemacs-buffer//insert-warnings))
          ((eq el 'recents) (spacemacs-buffer//insert-recent-files list-size))
-         ((eq el 'recents-by-project)
+         ((and (eq el 'recents-by-project)
+	       (fboundp 'projectile-mode))
           (spacemacs-buffer//insert-recent-files-by-project list-size))
          ((eq el 'todos) (spacemacs-buffer//insert-todos list-size))
          ((eq el 'agenda) (spacemacs-buffer//insert-agenda list-size))

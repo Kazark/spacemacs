@@ -60,7 +60,7 @@
 (defun git/post-init-evil-surround ()
   (spacemacs|use-package-add-hook magit
     :post-config
-    (add-hook 'magit-status-mode-hook #'turn-off-evil-surround-mode)))
+    (add-hook 'magit-mode-hook #'turn-off-evil-surround-mode)))
 
 (defun git/pre-init-evil-collection ()
   (when (spacemacs//support-evilified-buffer-p)
@@ -243,12 +243,6 @@
         (which-key-add-keymap-based-replacements magit-status-mode-map
           "gf"  "jump-to-unpulled"
           "gp"  "jump-to-unpushed"))
-      ;; https://magit.vc/manual/magit/MacOS-Performance.html
-      ;; But modified according Tommi Komulainen's advice: "...going through
-      ;; shell raises an eyebrow, and in the odd edge case of not having git
-      ;; setting the executable to empty string(?) feels slightly wrong."
-      (when-let ((git (executable-find "git")))
-        (setq magit-git-executable git))
       ;; full screen magit-status
       (when git-magit-status-fullscreen
         (setq magit-display-buffer-function
@@ -355,7 +349,8 @@
     :init
     (progn
       (setq forge-database-file (concat spacemacs-cache-directory
-                                        "forge-database.sqlite"))
+                                        "forge-database.sqlite")
+            forge-add-default-bindings nil)
       (spacemacs/set-leader-keys-for-major-mode 'forge-topic-mode
         "a" 'forge-edit-topic-assignees
         "c" 'forge-create-post
