@@ -234,7 +234,7 @@
         (setq org-export-async-init-file (concat dir "org-async-init.el")))
 
       ;; Insert key for org-mode and markdown a la C-h k
-      ;; from SE endless http://emacs.stackexchange.com/questions/2206/i-want-to-have-the-kbd-tags-for-my-blog-written-in-org-mode/2208#2208
+      ;; from SE https://emacs.stackexchange.com/a/2208
       (defun spacemacs/insert-keybinding-org (key)
         "Ask for a key then insert its description.
 Will work on both org-mode and any mode that accepts plain html."
@@ -976,7 +976,9 @@ Headline^^            Visit entry^^               Filter^^                    Da
 (defun org/init-org-roam ()
   (use-package org-roam
     :defer t
-    :hook (after-init . org-roam-setup)
+    ;; Do not enable automatic db update until after user had a chance to setup
+    ;; org-roam. See https://github.com/syl20bnr/spacemacs/issues/15724
+    ;; :hook (after-init . org-roam-setup)
     :init
     (progn
       (spacemacs/declare-prefix
