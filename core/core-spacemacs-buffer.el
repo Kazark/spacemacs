@@ -26,23 +26,13 @@
   (defvar dotspacemacs-distribution)
   (defvar dotspacemacs-filepath)
   (defvar dotspacemacs-show-startup-list-numbers)
-  (defvar dotspacemacs-startup-banner)
-  (defvar dotspacemacs-startup-banner-scale)
   (defvar dotspacemacs-startup-buffer-show-icons)
-  (defvar spacemacs-badge-official-png)
-  (defvar spacemacs-banner-directory)
-  (defvar spacemacs-banner-official-png)
   (defvar spacemacs-cache-directory)
   (defvar spacemacs-docs-directory)
-  (defvar spacemacs-gplv3-official-png)
   (defvar spacemacs-info-directory)
-  (defvar spacemacs-release-notes-directory)
   (defvar spacemacs-start-directory)
   (defvar spacemacs-version))
 
-
-(defconst spacemacs-buffer-version-info "0.999"
-  "Current version used to display addition release information.")
 
 (defconst spacemacs-buffer-name "*spacemacs*"
   "The name of the spacemacs buffer.")
@@ -86,9 +76,6 @@ Allows to keep track of widgets to delete when removing them.")
 (defvar spacemacs-buffer--buttons-position nil
   "Horizontal position of the home buffer buttons.
 Internal use, do not set this variable.")
-
-(defvar spacemacs-buffer--random-banner nil
-  "The random banner chosen.")
 
 (defvar spacemacs-buffer-note-preview-lines 5
   "If it's a positive integer, show the notes first number of lines.
@@ -158,46 +145,6 @@ It's cleared when the idle timer runs.")
   (setq-local buffer-read-only t
               truncate-lines t))
 
-(defun spacemacs-buffer//insert-ascii-banner-centered (file)
-  "Insert the ascii banner contain in file and center it in the window.
-FILE: the path to the file containing the banner."
-  (insert
-   (with-temp-buffer
-     (insert-file-contents file)
-     (let ((banner-width 0))
-       (while (not (eobp))
-         (let ((line-length (- (line-end-position) (line-beginning-position))))
-           (when (< banner-width line-length)
-             (setq banner-width line-length)))
-         (forward-line 1))
-       (goto-char 0)
-       (let ((margin (max 0 (floor (/ (- spacemacs-buffer--window-width
-                                         banner-width) 2)))))
-         (while (not (eobp))
-           (insert (make-string margin ?\s))
-           (forward-line 1)))
-       (insert "\n"))
-     (buffer-string))))
-
-(defun spacemacs-buffer/insert-banner-and-buttons ()
-  "Choose a banner according to `dotspacemacs-startup-banner'and insert it.
-in spacemacs buffer along with quick buttons underneath.
-Easter egg:
-Doge special text banner can be reachable via `999', `doge' or `random*'.
-Doge special text banner for dark themes can be reachable via `997',
-`doge-inverted' or `random*'.
-Cate special text banner can de reachable via `998', `cat' or `random*'.
-`random' ignore special banners whereas `random*' does not."
-  (let ((banner (spacemacs-buffer//choose-banner))
-        (buffer-read-only nil))
-    (when banner
-      (spacemacs-buffer/message (format "Banner: %s" banner))
-      (if (image-type-available-p (intern (file-name-extension banner)))
-          (spacemacs-buffer//insert-image-banner banner)
-        (spacemacs-buffer//insert-ascii-banner-centered banner)))
-    (spacemacs-buffer//insert-buttons)
-    (spacemacs//redisplay)))
-
 (defun spacemacs-buffer/display-startup-note ()
   "Decide of the startup note and display it if relevant."
   (when (file-exists-p spacemacs-buffer--cache-file)
@@ -217,105 +164,6 @@ Cate special text banner can de reachable via `998', `cat' or `random*'.
     (spacemacs-buffer/toggle-note 'release-note)))
   (spacemacs//redisplay))
 
-(defun spacemacs-buffer//choose-banner ()
-  "Return the full path of a banner based on the dotfile value."
-  (when dotspacemacs-startup-banner
-    (cond ((eq 'official dotspacemacs-startup-banner)
-           (if (and (display-graphic-p) (image-type-available-p 'png))
-               spacemacs-banner-official-png
-             (spacemacs-buffer//get-banner-path 1)))
-          ((eq 'random dotspacemacs-startup-banner)
-           (spacemacs-buffer//choose-random-text-banner))
-          ((eq 'random* dotspacemacs-startup-banner)
-           (spacemacs-buffer//choose-random-text-banner t))
-          ((eq 'doge dotspacemacs-startup-banner)
-           (spacemacs-buffer//get-banner-path 999))
-          ((eq 'doge-inverted dotspacemacs-startup-banner)
-           (spacemacs-buffer//get-banner-path 997))
-          ((eq 'cat dotspacemacs-startup-banner)
-           (spacemacs-buffer//get-banner-path 998))
-          ((integerp dotspacemacs-startup-banner)
-           (spacemacs-buffer//get-banner-path dotspacemacs-startup-banner))
-          ((and dotspacemacs-startup-banner
-                (image-type-available-p (intern (file-name-extension
-                                                 dotspacemacs-startup-banner)))
-                (display-graphic-p))
-           (if (file-exists-p dotspacemacs-startup-banner)
-               dotspacemacs-startup-banner
-             (spacemacs-buffer/warning (format "could not find banner %s"
-                                               dotspacemacs-startup-banner))
-             (spacemacs-buffer//get-banner-path 1)))
-          (t (spacemacs-buffer//get-banner-path 1)))))
-
-(defun spacemacs-buffer//choose-random-text-banner (&optional all)
-  "Return the full path of a banner chosen randomly.
-If ALL is non-nil then truly all banners can be selected."
-  (unless spacemacs-buffer--random-banner
-    (let* ((files (directory-files spacemacs-banner-directory t ".*\.txt"))
-           (count (length files))
-           ;; -2 to remove the two last ones (easter eggs)
-           (choice (random (- count (if all 0 2)))))
-      (setq spacemacs-buffer--random-banner (nth choice files))))
-  spacemacs-buffer--random-banner)
-
-(defun spacemacs-buffer//get-banner-path (index)
-  "Return the full path to banner with index INDEX."
-  (concat spacemacs-banner-directory (format "%03d-banner.txt" index)))
-
-(defun spacemacs-buffer//banner-fit-height-size ()
-  "Calculate height of startup banner to fit buffer contents.
-Returns height in units of line height with a minimum of 1."
-  ;; first determine number of lines occupied by startup list
-  (let* ((startup-list-line-height
-          ;; the all-the-icons package is not available here yet, but we don't
-          ;; require icons for just counting the lines in the
-          ;; `dotspacemacs-startup-lists'
-          (let ((icons dotspacemacs-startup-buffer-show-icons)
-                lines)
-            (setq dotspacemacs-startup-buffer-show-icons nil)
-	          (setq lines (with-temp-buffer
-                          (spacemacs-buffer//do-insert-startupify-lists)
-                          (recentf-mode -1)
-                          (line-number-at-pos)))
-              ;; (count-lines (point-min) (point-max)))
-            (setq dotspacemacs-startup-buffer-show-icons icons)
-            lines))
-         ;; We determine the maximum available banner height by subtracting the
-         ;; number of lines in the home buffer contents (excl. logo and
-         ;; startup-list), i.e. `26', and the number of lines in the startup
-         ;; list from the total available text lines
-         (image-height (- (window-text-height) 26 startup-list-line-height)))
-    ;; return image-height with minimum of 3 line heights
-    (max image-height 3)))
-
-(defun spacemacs-buffer//insert-image-banner (banner)
-  "Display an image banner.
-BANNER: the path to an ascii banner file."
-  (when (file-exists-p banner)
-    (let* ((title spacemacs-buffer-logo-title)
-           (spec (create-image banner))
-           ;; we must use the scaled size for determining the correct
-           ;; left-margin size
-           (unscaled-size (image-size spec)) ;; size in 'canonical character units'
-           (height (cdr unscaled-size)) ;; return size in units of line heights
-           (scale (pcase dotspacemacs-startup-banner-scale
-                    ('auto (let ((factor (/ (float (spacemacs-buffer//banner-fit-height-size))
-                                            height)))
-                             ;; return factor with maximum of 1
-                             (min factor 1)))
-                    (factor factor)))
-           (size (cons (* scale (car unscaled-size)) (* scale (cdr unscaled-size))))
-           (width (car size))
-           (left-margin (max 0 (floor (- spacemacs-buffer--window-width width) 2))))
-      ;; we scale the image by simply setting the scale property in the image-spec
-      (plist-put (cdr spec) :scale scale)
-      (insert (make-string left-margin ?\s))
-      (insert-image spec)
-      (insert "\n\n")
-      (insert (make-string (max 0 (floor (/ (- spacemacs-buffer--window-width
-                                               (+ (length title) 1)) 2))) ?\s))
-      (insert (format "%s\n\n" title)))))
-
 (defun spacemacs-buffer//insert-version ()
   "Insert the current version of Spacemacs and Emacs.
 Right justified, based on the Spacemacs buffers window width."
@@ -332,54 +180,6 @@ Right justified, based on the Spacemacs buffers window width."
                                 (1- spacemacs-buffer--window-width)))
                       version))
       (insert "\n\n"))))
-
-(defun spacemacs-buffer//insert-footer ()
-  "Insert the footer of the home buffer."
-  (save-excursion
-    (let* ((badge-path spacemacs-badge-official-png)
-           (badge (when (and (display-graphic-p)
-                             (image-type-available-p
-                              (intern (file-name-extension badge-path))))
-                    (create-image badge-path)))
-           (badge-size (when badge (car (image-size badge))))
-           (build-by (concat "Made with "
-                             (if (and dotspacemacs-startup-buffer-show-icons
-                                      (display-graphic-p)
-                                      (or (fboundp 'all-the-icons-faicon)
-                                          (require 'all-the-icons nil 'noerror)))
-                                 (all-the-icons-faicon "heart" :height 0.8 :v-adjust -0.05)
-                               "heart")
-                             " by the community"))
-           (proudly-free "Proudly free software")
-           (gplv3-path spacemacs-gplv3-official-png)
-           (gplv3 (when (and (display-graphic-p)
-                             (image-type-available-p
-                              (intern (file-name-extension gplv3-path))))
-                    (create-image gplv3-path)))
-           (gplv3-size (when gplv3 (car (image-size gplv3))))
-           (buffer-read-only nil))
-      (goto-char (point-max))
-      (spacemacs-buffer/insert-page-break)
-      (insert "\n")
-      (when badge
-        (insert-image badge)
-        (spacemacs-buffer//center-line badge-size)
-        (insert "\n\n"))
-      (insert build-by)
-      (spacemacs-buffer//center-line (length build-by))
-      (insert "\n\n")
-      (widget-create 'url-link
-                           :tag proudly-free
-                           :help-echo "What is free software?"
-                           :mouse-face 'highlight
-                           :follow-link "\C-m"
-                           "https://www.gnu.org/philosophy/free-sw.en.html")
-      (spacemacs-buffer//center-line (+ 2 (length proudly-free)))
-      (when gplv3
-        (insert "\n\n")
-        (insert-image gplv3)
-        (spacemacs-buffer//center-line gplv3-size)
-        (insert "\n")))))
 
 (defmacro spacemacs-buffer||notes-adapt-caption-to-width (caption
                                                           caption-length
@@ -652,22 +452,6 @@ ADDITIONAL-WIDGETS: a function for inserting a widget under the frame."
                  :follow-link "\C-m"))
                (spacemacs-buffer//center-line)
                (widget-insert "\n")))
-           (add-to-list
-            'spacemacs-buffer--note-widgets
-            (widget-create 'push-button
-                           :tag (propertize "Click here for full change log"
-                                            'face 'font-lock-warning-face)
-                           :help-echo "Open the full change log."
-                           :action
-                           (lambda (&rest ignore)
-                             (funcall 'spacemacs/view-org-file
-                                      (concat spacemacs-start-directory
-                                              "CHANGELOG.org")
-                                      (format "Release %s.x"
-                                              spacemacs-buffer-version-info)
-                                      'subtree))
-                           :mouse-face 'highlight
-                           :follow-link "\C-m"))
            (widget-insert " ")
            (add-to-list
             'spacemacs-buffer--note-widgets
@@ -683,15 +467,7 @@ ADDITIONAL-WIDGETS: a function for inserting a widget under the frame."
                            :follow-link "\C-m"))
            ;; center the buttons: Click here for full change log and Close note
            (spacemacs-buffer//center-line)
-           (widget-insert "\n"))))
-    (spacemacs-buffer//notes-insert-note (concat spacemacs-release-notes-directory
-                                                 spacemacs-buffer-version-info
-                                                 ".txt")
-                                         (format "Important Notes (Release %s.x)"
-                                                 spacemacs-buffer-version-info)
-                                         "Update your dotfile (SPC f e D) and\
- packages after every update"
-                                         widget-func))
+           (widget-insert "\n")))))
   (setq spacemacs-buffer--release-note-version nil)
   (spacemacs/dump-vars-to-file '(spacemacs-buffer--release-note-version)
                                spacemacs-buffer--cache-file))
@@ -865,7 +641,7 @@ REAL-WIDTH: the real width of the line.  If the line contains an image, the size
     (end-of-line)))
 
 (defun spacemacs-buffer//insert-buttons ()
-  "Create and insert the interactive buttons under Spacemacs banner."
+  "Create and insert the interactive buttons."
   (goto-char (point-max))
   (spacemacs-buffer||add-shortcut "m" "[?]" t)
   (widget-create 'url-link
@@ -912,7 +688,7 @@ REAL-WIDTH: the real width of the line.  If the line contains an image, the size
     (setq spacemacs-buffer--buttons-position (- (line-end-position)
                                               (line-beginning-position)
                                               len)))
-  (insert "\n")
+  (insert " ")
   (widget-create 'push-button
                  :help-echo "Update all ELPA packages to the latest versions."
                  :action (lambda (&rest ignore)
@@ -931,7 +707,7 @@ REAL-WIDTH: the real width of the line.  If the line contains an image, the size
                  (propertize "Rollback Package Update"
                              'face 'font-lock-keyword-face))
   (spacemacs-buffer//center-line)
-  (insert "\n")
+  (insert " ")
   (widget-create 'push-button
                  :tag (propertize "Release Notes"
                                   'face 'font-lock-preprocessor-face)
@@ -1498,7 +1274,6 @@ can be adjusted with the variable:
   (with-current-buffer (get-buffer spacemacs-buffer-name)
     (when dotspacemacs-startup-lists
       (spacemacs-buffer/insert-startup-lists))
-    (spacemacs-buffer//insert-footer)
     (if configuration-layer-error-count
         (progn
           (spacemacs-buffer-mode)
@@ -1543,12 +1318,13 @@ If a prefix argument is given, switch to it in an other, possibly new window."
               (spacemacs-buffer//insert-version)
             (let ((inhibit-read-only t))
               (insert "\n")))
-          (spacemacs-buffer/insert-banner-and-buttons)
+          (let ((buffer-read-only nil))
+            (spacemacs-buffer//insert-buttons)
+            (spacemacs//redisplay))
           (when (bound-and-true-p spacemacs-initialized)
             (spacemacs-buffer//notes-redisplay-current-note)
             (when dotspacemacs-startup-lists
               (spacemacs-buffer/insert-startup-lists))
-            (spacemacs-buffer//insert-footer)
             (configuration-layer/display-summary emacs-start-time)
             (spacemacs-buffer/set-mode-line spacemacs--default-mode-line)
             (force-mode-line-update)

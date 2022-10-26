@@ -47,32 +47,10 @@
   (concat spacemacs-start-directory "core/")
   "Spacemacs core directory.")
 
-;; ~/.emacs.d/core/banners
-(defconst spacemacs-banner-directory
-  (concat spacemacs-core-directory "banners/")
-  "Spacemacs banners directory.")
-
-(defconst spacemacs-banner-official-png
-  (concat spacemacs-banner-directory "img/spacemacs.png")
-  "Spacemacs official banner image.")
-
-(defconst spacemacs-badge-official-png
-  (concat spacemacs-banner-directory "img/spacemacs-badge.png")
-  "Spacemacs official badge image.")
-
-(defconst spacemacs-gplv3-official-png
-  (concat spacemacs-banner-directory "img/gplv3.png")
-  "GPLv3 official badge image.")
-
 ;; ~/.emacs.d/core/info
 (defconst spacemacs-info-directory
   (concat spacemacs-core-directory "info/")
   "Spacemacs info files directory.")
-
-;; ~/.emacs.d/core/info/release-notes
-(defconst spacemacs-release-notes-directory
-  (concat spacemacs-info-directory "release-notes/")
-  "Spacemacs release notes directory.")
 
 ;; ~/.emacs.d/doc
 (defconst spacemacs-docs-directory
