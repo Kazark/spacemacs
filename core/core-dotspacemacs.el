@@ -210,12 +210,6 @@ in `dotspacemacs-themes'.")
       (and (eq dotspacemacs-editing-style 'hybrid)
            hybrid-style-enable-hjkl-bindings)))
 
-(spacemacs|defc dotspacemacs-startup-buffer-show-version t
-  "If true, show Spacemacs and Emacs version at the top right of the
-Spacemacs buffer."
-  'boolean
-  'spacemacs-dotspacemacs-init)
-
 (spacemacs|defc dotspacemacs-startup-buffer-show-icons t
   "If true, show file icons for entries and headings on spacmeacs buffer.
 This has no effect in terminal or if \"all-the-icons\" is not installed."

@@ -250,7 +250,6 @@ Note: the hooked function is not executed when in dumped mode."
      (spacemacs-buffer//startup-hook)
      (configuration-layer/display-summary emacs-start-time)
      (spacemacs/check-for-new-version nil spacemacs-version-check-interval)
-     (spacemacs-buffer/goto-link-line)
      (setq spacemacs-initialized t)
      (setq gc-cons-threshold (car dotspacemacs-gc-cons)
            gc-cons-percentage (cadr dotspacemacs-gc-cons))

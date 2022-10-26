@@ -65,7 +65,6 @@
     (spacemacs/init)
     (configuration-layer/stable-elpa-init)
     (configuration-layer/load)
-    (spacemacs-buffer/display-startup-note)
     (spacemacs/setup-startup-hook)
     (spacemacs/dump-eval-delayed-functions)
     (when (and dotspacemacs-enable-server (not (spacemacs-is-dumping-p)))

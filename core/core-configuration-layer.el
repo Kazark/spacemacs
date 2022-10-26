@@ -2527,11 +2527,10 @@ depends on it."
           (float-time (time-subtract (current-time) emacs-start-time))))
   (let ((stats (configuration-layer/configured-packages-stats
                 configuration-layer--used-packages)))
-    (spacemacs-buffer/insert-page-break)
     (with-current-buffer (get-buffer-create spacemacs-buffer-name)
       (let ((buffer-read-only nil))
         (spacemacs-buffer/append
-         (format "\n%s packages loaded in %.3fs (e:%s r:%s l:%s b:%s)"
+         (format "%s packages loaded in %.3fs (e:%s r:%s l:%s b:%s)"
                  (cadr (assq 'total stats))
                  configuration-layer--spacemacs-startup-time
                  (cadr (assq 'elpa stats))
@@ -2541,8 +2540,7 @@ depends on it."
         (spacemacs-buffer//center-line)
         (spacemacs-buffer/append (format "\n(%.3fs spent in your user-config)"
                                          dotspacemacs--user-config-elapsed-time))
-        (spacemacs-buffer//center-line)
-        (insert "\n")))))
+        (spacemacs-buffer//center-line)))))
 
 (defun configuration-layer//get-indexed-elpa-package-names ()
   "Return a list of all ELPA packages in indexed packages and dependencies."

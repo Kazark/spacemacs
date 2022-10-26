@@ -47,11 +47,6 @@
   (concat spacemacs-start-directory "core/")
   "Spacemacs core directory.")
 
-;; ~/.emacs.d/core/info
-(defconst spacemacs-info-directory
-  (concat spacemacs-core-directory "info/")
-  "Spacemacs info files directory.")
-
 ;; ~/.emacs.d/doc
 (defconst spacemacs-docs-directory
   (concat spacemacs-start-directory "doc/")
