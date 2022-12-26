@@ -28,6 +28,8 @@
   :prefix 'spacemacs-)
 
 (require 'subr-x nil 'noerror)
+(require 'core-versions)
+(require 'core-load-paths)
 (require 'core-emacs-backports)
 (require 'core-env)
 (require 'page-break-lines)
@@ -52,6 +54,7 @@
 (require 'core-use-package-ext)
 (require 'core-spacebind)
 (require 'core-compilation)
+(require 'core-dumper)
 
 (defvar spacemacs-post-user-config-hook nil
   "Hook run after dotspacemacs/user-config")
@@ -79,6 +82,8 @@ the final step of executing code in `emacs-startup-hook'.")
   ;; explicitly set the preferred coding systems to avoid annoying prompt
   ;; from emacs (especially on Microsoft Windows)
   (prefer-coding-system 'utf-8)
+  ;; Extend use package if already installed
+  (spacemacs/use-package-extend)
   ;; TODO move these variables when evil is removed from the bootstrapped
   ;; packages.
   (setq-default evil-want-C-u-scroll t
@@ -91,7 +96,9 @@ the final step of executing code in `emacs-startup-hook'.")
   (when dotspacemacs-undecorated-at-startup
     ;; this should be called before toggle-frame-maximized
     (set-frame-parameter nil 'undecorated t)
-    (add-to-list 'default-frame-alist '(undecorated . t)))
+    (set-frame-parameter nil 'internal-border-width 0)
+    (add-to-list 'default-frame-alist '(undecorated . t))
+    (add-to-list 'default-frame-alist '(internal-border-width . 0)))
   (when dotspacemacs-maximized-at-startup
     (unless (frame-parameter nil 'fullscreen)
       (toggle-frame-maximized))
