@@ -1,8 +1,8 @@
 ;;; package-build.el --- Tools for assembling a package archive  -*- lexical-binding:t; coding:utf-8 -*-
 
-;; Copyright (C) 2011-2022 Donald Ephraim Curtis
-;; Copyright (C) 2012-2022 Steve Purcell
-;; Copyright (C) 2016-2022 Jonas Bernoulli
+;; Copyright (C) 2011-2023 Donald Ephraim Curtis
+;; Copyright (C) 2012-2023 Steve Purcell
+;; Copyright (C) 2016-2023 Jonas Bernoulli
 ;; Copyright (C) 2009 Phil Hagelberg
 
 ;; Author: Donald Ephraim Curtis <dcurtis@milkbox.net>
@@ -13,7 +13,7 @@
 ;; Keywords: maint tools
 
 ;; Package-Version: 4.0.0.50-git
-;; Package-Requires: ((emacs "25.1"))
+;; Package-Requires: ((emacs "26.1"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -164,6 +164,10 @@ similar, which will provide the GNU timeout program as
 \"gtar\"."
   :group 'package-build
   :type '(file :must-match t))
+
+(defvar package-build--tar-type nil
+  "Type of `package-build-tar-executable'.
+Can be `gnu' or `bsd'; nil means the type is not decided yet.")
 
 (defcustom package-build-write-melpa-badge-images nil
   "When non-nil, write MELPA badge images alongside packages.
@@ -436,6 +440,18 @@ with a timeout so that no command can block the build process."
       (princ ";; Local Variables:\n;; no-byte-compile: t\n;; End:\n"
              (current-buffer)))))
 
+(defun package-build--tar-type ()
+  "Return `bsd' or `gnu' depending on type of Tar executable.
+Tests and sets variable `package-build--tar-type' if not already set."
+  (or package-build--tar-type
+      (and package-build-tar-executable
+           (let ((v (shell-command-to-string
+                     (format "%s --version" package-build-tar-executable))))
+             (setq package-build--tar-type
+                   (cond ((string-match-p "bsdtar" v) 'bsd)
+                         ((string-match-p "GNU tar" v) 'gnu)
+                         (t 'gnu)))))))
+
 (defun package-build--create-tar (rcp directory)
   "Create a tar file containing the package version specified by RCP.
 DIRECTORY is a temporary directory that contains the directory
@@ -446,7 +462,8 @@ that is put in the tarball."
          (tar (expand-file-name (concat name "-" version ".tar")
                                 package-build-archive-dir))
          (dir (concat name "-" version)))
-    (when (eq system-type 'windows-nt)
+    (when (and (eq system-type 'windows-nt)
+               (eq (package-build--tar-type) 'gnu))
       (setq tar (replace-regexp-in-string "^\\([a-z]\\):" "/\\1" tar)))
     (let ((default-directory directory))
       (process-file
@@ -669,6 +686,7 @@ is also tried.  If neither file exists, then return nil."
   (with-temp-file
       (expand-file-name (concat (package-desc-full-name desc) ".entry")
                         package-build-archive-dir)
+    (set-buffer-file-coding-system 'utf-8)
     (pp (cons (package-desc-name    desc)
               (vector (package-desc-version desc)
                       (package-desc-reqs    desc)
@@ -830,6 +848,7 @@ FILES is a list of (SOURCE . DEST) relative filepath pairs."
                 ((and `(,dir . ,globs)
                       (guard (stringp dir))
                       (guard (cl-every #'stringp globs)))
+                 dir ; Silence byte-compiler of Emacs < 28.1.
                  (mapcan #'toargs globs))))
             (let ((spec (or (oref rcp files) package-build-default-files-spec)))
               (if (eq (car spec) :defaults)

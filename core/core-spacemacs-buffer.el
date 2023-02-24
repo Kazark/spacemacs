@@ -566,21 +566,25 @@ LIST-SIZE is specified in `dotspacemacs-startup-lists' for recent entries."
                            org-agenda-files
                          ;; but if it's a string, it must be file where the list
                          ;; of agenda files are stored in that file and we have
-                         ;;to load `org-agenda' to process the list.
-                         (when (y-or-n-p "`org-agenda-files' is a string and \
-not a list. Load `org' and continue?")
+                         ;; to load `org-agenda' to process the list. If org is
+                         ;; already loaded, then we assume that the user has
+                         ;; already called org-agenda-files.
+                         (when (not (featurep 'org))
+                           (warn "`org-agenda-files' is a string and \
+not a list. This requires us to load `org' to process the org agenda files in \
+startup list.")
                            (require 'org)
                            (org-agenda-files))))))
            (mapcar #'expand-file-name files)))
         ;; we also need to skip sub-directories of `org-directory'
-        (ignore-directory (or (when (bound-and-true-p org-directory)
-                                (expand-file-name org-directory))
-                              ""))
+        (ignore-directory (when (bound-and-true-p org-directory)
+                            (expand-file-name org-directory)))
         (recent-files-list))
     (cl-loop for rfile in recentf-list
              while (> list-size 0)
              do (let ((full-path (expand-file-name rfile)))
-                  (unless (or (string-prefix-p ignore-directory full-path)
+                  (unless (or (and ignore-directory
+                                   (string-prefix-p ignore-directory full-path))
                               (member full-path agenda-files))
                     (cl-pushnew rfile recent-files-list)
                     (setq list-size (1- list-size))))
@@ -819,9 +823,10 @@ can be adjusted with the variable:
       (spacemacs-buffer-mode))
     (force-mode-line-update)))
 
-(defun spacemacs-buffer/goto-buffer (&optional refresh)
-  "Create the special buffer for `spacemacs-buffer-mode' and switch to it.
-REFRESH if the buffer should be redrawn.
+(defun spacemacs-buffer/goto-buffer (&optional refresh do-not-switch)
+  "Create the special buffer for `spacemacs-buffer-mode'.
+REFRESH if the buffer should be redrawn. This will automatically
+switch to the buffer unless DO-NOT-SWITCH is non nil.
 
 If a prefix argument is given, switch to it in an other, possibly new window."
   (interactive)
@@ -854,8 +859,9 @@ If a prefix argument is given, switch to it in an other, possibly new window."
                   (forward-line (1- save-line))
                   (forward-to-indentation 0))
          (spacemacs-buffer/goto-link-line)))
-      (if current-prefix-arg
-          (switch-to-buffer-other-window spacemacs-buffer-name)
+      (unless do-not-switch
+        (if current-prefix-arg
+            (switch-to-buffer-other-window spacemacs-buffer-name))
         (switch-to-buffer spacemacs-buffer-name))
       (spacemacs//redisplay))))
 
