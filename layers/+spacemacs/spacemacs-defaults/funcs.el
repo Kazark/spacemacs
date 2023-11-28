@@ -21,8 +21,6 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-(require 'cl-lib)
-
 (defun spacemacs//run-local-vars-mode-hook ()
   "Run a hook for the major-mode after the local variables have been processed."
   (run-hooks (intern (format "%S-local-vars-hook" major-mode))))
@@ -141,9 +139,8 @@ If not in such a search box, fall back on `Custom-newline'."
         (progn
           (indent-region (region-beginning) (region-end))
           (message "Indented selected region."))
-      (progn
-        (evil-indent (point-min) (point-max))
-        (message "Indented buffer.")))
+      (evil-indent (point-min) (point-max))
+      (message "Indented buffer."))
     (whitespace-cleanup)))
 
 ;; http://emacsblog.org/2007/01/17/indent-whole-buffer/
@@ -155,12 +152,11 @@ If not in such a search box, fall back on `Custom-newline'."
         (progn
           (untabify (region-beginning) (region-end))
           (indent-region (region-beginning) (region-end)))
-      (progn
-        (set-buffer-file-coding-system default-file-name-coding-system)
-        ;; (set-buffer-file-coding-system 'utf-8-unix)
-        (untabify (point-min) (point-max))
-        (indent-region (point-min) (point-max))
-        (whitespace-cleanup)))))
+      (set-buffer-file-coding-system default-file-name-coding-system)
+      ;; (set-buffer-file-coding-system 'utf-8-unix)
+      (untabify (point-min) (point-max))
+      (indent-region (point-min) (point-max))
+      (whitespace-cleanup))))
 
 (defun spacemacs//trailing-whitespace ()
   (setq show-trailing-whitespace dotspacemacs-show-trailing-whitespace))
@@ -739,20 +735,14 @@ Returns:
   "Retrieve the file path of the current buffer,
 including line and column number.
 
+This function respects the the `column-number-indicator-zero-based' variable.
+
 Returns:
   - A string containing the file path in case of success.
   - `nil' in case the current buffer does not have a directory."
   (when-let (file-path (spacemacs--file-path-with-line))
-    (concat
-     file-path
-     ":"
-     (number-to-string (if (and
-                            ;; Emacs 26 introduced this variable. Remove this
-                            ;; check once 26 becomes the minimum version.
-                            (boundp column-number-indicator-zero-based)
-                            (not column-number-indicator-zero-based))
-                           (1+ (current-column))
-                         (current-column))))))
+    (format "%s:%s" file-path
+            (+ (current-column) (if column-number-indicator-zero-based 0 1)))))
 
 (defun spacemacs/copy-directory-path ()
   "Copy and show the directory path of the current buffer.
@@ -1099,7 +1089,7 @@ the `kill-matching-buffers` for grateful killing. The optional 2nd argument
 indicates whether to kill internal buffers too.
 
 Returns the count of killed buffers."
-  (let* ((buffers (remove-if-not
+  (let* ((buffers (cl-remove-if-not
                    (lambda (buffer)
                      (let ((name (buffer-name buffer)))
                        (and name (not (string-equal name ""))

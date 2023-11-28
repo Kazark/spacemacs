@@ -28,7 +28,6 @@
     (flycheck-kotlin :requires flycheck)
     ggtags
     counsel-gtags
-    helm-gtags
     kotlin-mode))
 
 (defun kotlin/post-init-company ()
@@ -46,15 +45,11 @@
   (use-package kotlin-mode
     :defer t
     :init
-    (progn
-      (setq lsp-clients-kotlin-server-executable kotlin-lsp-jar-path)
-      (add-hook 'kotlin-mode-hook #'spacemacs//kotlin-setup-backend))))
+    (setq lsp-clients-kotlin-server-executable kotlin-lsp-jar-path)
+    (add-hook 'kotlin-mode-hook #'spacemacs//kotlin-setup-backend)))
 
 (defun kotlin/post-init-ggtags ()
   (add-hook 'kotlin-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
-
-(defun kotlin/post-init-helm-gtags ()
-  (spacemacs/helm-gtags-define-keys-for-mode 'kotlin-mode))
 
 (defun kotlin/post-init-counsel-gtags ()
   (spacemacs/counsel-gtags-define-keys-for-mode 'kotlin-mode))

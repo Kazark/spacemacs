@@ -32,7 +32,6 @@
         (flycheck-dmd-dub :requires flycheck)
         ggtags
         counsel-gtags
-        helm-gtags
         ))
 
 (defun d/post-init-company ()
@@ -44,13 +43,12 @@
   (use-package company-dcd
     :defer t
     :init
-    (progn
-      (spacemacs|add-company-backends :backends company-dcd :modes d-mode)
-      (spacemacs/set-leader-keys-for-major-mode 'd-mode
-        "gg" 'company-dcd-goto-definition
-        "gb" 'company-dcd-goto-def-pop-marker
-        "hh" 'company-dcd-show-ddoc-with-buffer
-        "gr" 'company-dcd-ivy-search-symbol))))
+    (spacemacs|add-company-backends :backends company-dcd :modes d-mode)
+    (spacemacs/set-leader-keys-for-major-mode 'd-mode
+      "gg" 'company-dcd-goto-definition
+      "gb" 'company-dcd-goto-def-pop-marker
+      "hh" 'company-dcd-show-ddoc-with-buffer
+      "gr" 'company-dcd-ivy-search-symbol)))
 
 (defun d/init-d-mode ()
   (use-package d-mode :defer t))
@@ -61,15 +59,11 @@
 (defun d/init-flycheck-dmd-dub ()
   (use-package flycheck-dmd-dub :defer t
     :init
-    (progn
-      (add-hook 'd-mode-hook 'flycheck-dmd-dub-set-include-path)
-      (add-hook 'd-mode-hook 'flycheck-dmd-dub-set-variables))))
+    (add-hook 'd-mode-hook 'flycheck-dmd-dub-set-include-path)
+    (add-hook 'd-mode-hook 'flycheck-dmd-dub-set-variables)))
 
 (defun d/post-init-ggtags ()
   (add-hook 'd-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
 
 (defun d/post-init-counsel-gtags ()
   (spacemacs/counsel-gtags-define-keys-for-mode 'd-mode))
-
-(defun d/post-init-helm-gtags ()
-  (spacemacs/helm-gtags-define-keys-for-mode 'd-mode))

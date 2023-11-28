@@ -489,7 +489,12 @@ LIST: list of `org-agenda' entries in the todo list."
                                 (format "- %s -"
                                         (cdr (assoc "time" el)))
                               "-")
-                            (cdr (assoc "text" el)))))
+                            ;; Replace links in org style in todo entries
+                            ;; "[[Link][Name]]" => "[Name]"
+                            (replace-regexp-in-string
+                             "\\[\\[[^][]+\\]\\[\\([^][]+\\)\\]\\]"
+                             "[\\1]"
+                             (cdr (assoc "text" el))))))
               (insert button-prefix)
               (widget-create 'push-button
                              :action `(lambda (&rest ignore)
@@ -558,7 +563,7 @@ LIST-SIZE is specified in `dotspacemacs-startup-lists' for recent entries."
   (let (;; we need to remove `org-agenda-files' entries from recent files
         (agenda-files
          (when-let ((default-directory
-                      (or (bound-and-true-p org-directory) "~/org"))
+                     (or (bound-and-true-p org-directory) "~/org"))
                     (files
                      (when (bound-and-true-p org-agenda-files)
                        (if (listp org-agenda-files)
@@ -674,7 +679,8 @@ startup list.")
   (let ((dotspacemacs-startup-buffer-show-icons dotspacemacs-startup-buffer-show-icons)
         (is-org-loaded (bound-and-true-p spacemacs-initialized)))
     (if (display-graphic-p)
-        (unless (configuration-layer/package-used-p 'all-the-icons)
+        (when (and spacemacs-initialized
+                   (not (configuration-layer/package-used-p 'all-the-icons)))
           (message "Package `all-the-icons' isn't installed")
           (setq dotspacemacs-startup-buffer-show-icons nil))
       (setq dotspacemacs-startup-buffer-show-icons nil))
@@ -754,7 +760,7 @@ version of `widget-button-press' since `widget-button-click' doesn't work."
     (let ((pos (widget-event-point event)))
       (goto-char pos)
       (when-let ((button (get-char-property pos 'button)))
-        (widget-apply-action pos)))))
+        (widget-apply-action button)))))
 
 (defun spacemacs-buffer/jump-to-number-startup-list-line ()
   "Jump to the startup list line with the typed number.
@@ -855,10 +861,10 @@ If a prefix argument is given, switch to it in an other, possibly new window."
             (force-mode-line-update)
             (spacemacs-buffer-mode)))
         (if save-line
-           (progn (goto-char (point-min))
-                  (forward-line (1- save-line))
-                  (forward-to-indentation 0))
-         (spacemacs-buffer/goto-link-line)))
+            (progn (goto-char (point-min))
+                   (forward-line (1- save-line))
+                   (forward-to-indentation 0))
+          (spacemacs-buffer/goto-link-line)))
       (unless do-not-switch
         (if current-prefix-arg
             (switch-to-buffer-other-window spacemacs-buffer-name))

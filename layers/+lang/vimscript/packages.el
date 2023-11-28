@@ -28,7 +28,6 @@
     vimrc-mode
     ggtags
     counsel-gtags
-    helm-gtags
     dactyl-mode))
 
 (defun vimscript/post-init-company ()
@@ -44,13 +43,12 @@
     :mode "_vimrc\\'"
     :defer t
     :init
-    (progn
-      (defun spacemacs//vimrc-mode-hook ()
-        "Hooked function for `vimrc-mode-hook'."
-        (highlight-numbers-mode -1)
-        (rainbow-delimiters-mode-disable)
-        (spacemacs//vimscript-setup-backend))
-      (add-hook 'vimrc-mode-hook 'spacemacs//vimrc-mode-hook))))
+    (defun spacemacs//vimrc-mode-hook ()
+      "Hooked function for `vimrc-mode-hook'."
+      (highlight-numbers-mode -1)
+      (rainbow-delimiters-mode-disable)
+      (spacemacs//vimscript-setup-backend))
+    (add-hook 'vimrc-mode-hook 'spacemacs//vimrc-mode-hook)))
 
 (defun vimscript/init-dactyl-mode ()
   (use-package dactyl-mode
@@ -67,6 +65,3 @@
 
 (defun vimscript/post-init-counsel-gtags ()
   (spacemacs/counsel-gtags-define-keys-for-mode 'vimrc-mode))
-
-(defun vimscript/post-init-helm-gtags ()
-  (spacemacs/helm-gtags-define-keys-for-mode 'vimrc-mode))

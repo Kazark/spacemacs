@@ -211,7 +211,7 @@ in `dotspacemacs-themes'.")
            hybrid-style-enable-hjkl-bindings)))
 
 (spacemacs|defc dotspacemacs-startup-buffer-show-icons t
-  "If true, show file icons for entries and headings on spacmeacs buffer.
+  "If true, show file icons for entries and headings on spacemacs buffer.
 This has no effect in terminal or if \"all-the-icons\" is not installed."
   'boolean
   'spacemacs-dotspacemacs-init)
