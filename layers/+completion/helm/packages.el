@@ -1,6 +1,6 @@
 ;;; packages.el --- Helm Layer packages File
 ;;
-;; Copyright (c) 2012-2022 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -26,7 +26,10 @@
     auto-highlight-symbol
     bookmark
     helm
-    helm-ag
+    (helm-ag :location (recipe
+                        :fetcher github
+                        :repo "zozowell/helm-ag"
+                        :branch "further-support-rg"))
     helm-comint
     helm-descbinds
     (helm-ls-git :toggle (configuration-layer/layer-used-p 'git))

@@ -1,6 +1,6 @@
 ;;; packages.el --- Spacemacs Evil Layer packages File
 ;;
-;; Copyright (c) 2012-2022 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -54,8 +54,7 @@
     (global-anzu-mode t)
     :config
     (spacemacs|hide-lighter anzu-mode)
-    (setq anzu-search-threshold 1000
-          anzu-cons-mode-line-p nil)
+    (setq anzu-search-threshold 1000)
     ;; powerline integration
     (when (configuration-layer/package-used-p 'spaceline)
       (defun spacemacs/anzu-update-mode-line (here total)
@@ -64,13 +63,14 @@
           (let ((status
                  (cl-case anzu--state
                    (search (format "(%s/%d%s)"
-                                      (anzu--format-here-position here total)
-                                      total (if anzu--overflow-p "+" "")))
+                                   (anzu--format-here-position here total)
+                                   total (if anzu--overflow-p "+" "")))
                    (replace-query (format "(%d replace)" total))
                    (replace (format "(%d/%d)" here total)))))
-            status)))
-      (setq anzu-mode-line-update-function
-            'spacemacs/anzu-update-mode-line))))
+            status))))
+    (when (eq (spacemacs/get-mode-line-theme-name) 'spaceline)
+      (setq anzu-mode-line-update-function 'spacemacs/anzu-update-mode-line
+            anzu-cons-mode-line-p nil))))
 
 (defun spacemacs-evil/post-init-eldoc ()
   (eldoc-add-command #'evil-cp-insert)
