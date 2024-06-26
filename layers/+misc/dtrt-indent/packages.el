@@ -1,6 +1,6 @@
 ;;; packages.el --- dtrt-indent layer packages file for Spacemacs.
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Kevin Doherty <kjd@csail.mit.edu>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -27,7 +27,6 @@
   (use-package dtrt-indent
     :hook (prog-mode .
               (lambda ()
-                (modify-syntax-entry ?_ "w")
                 (dtrt-indent-mode)
                 (dtrt-indent-adapt)))
     :config

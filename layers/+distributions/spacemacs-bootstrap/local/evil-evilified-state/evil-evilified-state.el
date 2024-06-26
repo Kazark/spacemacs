@@ -1,6 +1,6 @@
 ;;; evil-evilified-state.el --- A minimalistic evil state
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; Keywords: convenience editing evil spacemacs
@@ -38,7 +38,7 @@
 ;; The first unreserved key will be used.
 ;; There is an exception for g, which will be directly
 ;; bound to C-G, since G and C-g (latest being an important escape key in Emacs)
-;; are already being used.
+;; are already being used. Also, move SPC -> ', / -> \, and : -> |
 
 ;;; Code:
 

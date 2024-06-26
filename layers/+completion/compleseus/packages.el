@@ -1,6 +1,6 @@
 ;;; packages.el --- compleseus layer packages file for Spacemacs.
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Thanh Vuong <thanhvg@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -31,6 +31,9 @@
     consult-yasnippet
     embark
     embark-consult
+    (helm-make :location (recipe :fetcher github
+                                 :repo "myrgy/helm-make"
+                                 :branch "add_emacs_completion"))
     orderless
     persp-mode
     (selectrum :toggle (eq compleseus-engine 'selectrum))
@@ -49,13 +52,24 @@
            spacemacs--symbol-highlight-transient-state-doc
            "  Search: [_s_] consult-line  [_f_] files  [_/_] project"))
     (spacemacs/transient-state-register-add-bindings 'symbol-highlight
-      '(("s" spacemacs/consult-line :exit t)
-        ("f" spacemacs/compleseus-search-auto :exit t)
-        ("/" spacemacs/compleseus-search-projectile-auto :exit t)))))
+      '(("s" spacemacs/consult-line-symbol :exit t)
+        ("f" spacemacs/compleseus-search-auto-symbol :exit t)
+        ("/" spacemacs/compleseus-search-projectile-symbol :exit t)))))
 
 (defun compleseus/post-init-imenu ()
   (spacemacs/set-leader-keys "ji" 'spacemacs/consult-jump-in-buffer)
   (spacemacs/set-leader-keys "sj" 'spacemacs/consult-jump-in-buffer))
+
+(defun compleseus/init-helm-make ()
+  (use-package helm-make
+    :defer t
+    :init
+    ;; TODO: Ideally, this should use vertico instead, but helm-make can't do
+    ;; that yet: blocked on https://github.com/abo-abo/helm-make/pull/62
+    (setq helm-make-completion-method 'emacs)
+    (spacemacs/set-leader-keys
+      "cc" 'helm-make-projectile
+      "cm" 'helm-make)))
 
 (defun compleseus/init-marginalia ()
   (use-package marginalia
@@ -141,27 +155,29 @@
       dotspacemacs-emacs-command-key 'execute-extended-command
       "#" #'consult-register
       "*" #'spacemacs/compleseus-search-default
-      "/" #'spacemacs/compleseus-search-projectile-auto
+      "/" #'spacemacs/compleseus-search-projectile
       "bb" #'spacemacs/compleseus-switch-to-buffer
       "bB" #'consult-buffer
       "fb" #'consult-bookmark
       "ff" #'spacemacs/compleseus-find-file
       "fL" #'consult-locate
       "fr" #'consult-recent-file
-      "hda" #'apropos-command
-      "hdm" #'describe-mode
+      "hm" #'consult-man
       "jm" #'consult-mark
       "jM" #'consult-global-mark
-      "sb" #'consult-line-multi
-      "sB" #'spacemacs/consult-line-multi
-      "ss" #'consult-line
-      "sS" #'spacemacs/consult-line
+      "sb" #'spacemacs/consult-line-multi
+      "sB" #'spacemacs/consult-line-multi-symbol
+      "ss" #'spacemacs/consult-line
+      "sS" #'spacemacs/consult-line-symbol
       "sk" #'consult-keep-lines
       "rc" #'consult-complex-command
       "su" #'consult-focus-lines
       "sf" #'spacemacs/compleseus-search-auto
+      "sF" #'spacemacs/compleseus-search-auto-symbol
       "sd" #'spacemacs/compleseus-search-dir
+      "sD" #'spacemacs/compleseus-search-dir-symbol
       "sp" #'spacemacs/compleseus-search-projectile
+      "sP" #'spacemacs/compleseus-search-projectile-symbol
       "ry" #'consult-yank-from-kill-ring
       "Ts" #'consult-theme)
 
@@ -194,6 +210,7 @@
     ;; customize preview activation and delay while selecting candiates
     (consult-customize
      consult-theme
+     spacemacs/theme-loader
      :preview-key '("M-." "C-SPC"
                     :debounce 0.2 any)
 
@@ -278,6 +295,8 @@
     (which-key-add-keymap-based-replacements minibuffer-local-map "C-z" "Embark actions...")
     :config
     (define-key embark-file-map "s" 'spacemacs/compleseus-search-from)
+    (define-key embark-buffer-map "s" #'spacemacs/embark-consult-line-multi)
+    (add-to-list 'embark-multitarget-actions #'spacemacs/embark-consult-line-multi)
     ;; which key integration setup
     ;; https://github.com/oantolin/embark/wiki/Additional-Configuration#use-which-key-like-a-key-menu-prompt
     (setq embark-indicators
@@ -432,7 +451,6 @@
     "w" 'spacemacs/compleseus-grep-change-to-wgrep-mode))
 
 (defun compleseus/init-wgrep ()
-  (add-hook 'spacemacs-editing-style-hook #'spacemacs//set-initial-grep-state)
   (evil-define-key 'normal wgrep-mode-map ",," #'spacemacs/wgrep-finish-edit)
   (evil-define-key 'normal wgrep-mode-map ",c" #'spacemacs/wgrep-finish-edit)
   (evil-define-key 'normal wgrep-mode-map ",a" #'spacemacs/wgrep-abort-changes)

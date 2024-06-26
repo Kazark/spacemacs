@@ -1,6 +1,6 @@
 ;;; packages.el --- Java Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Lukasz Klich <klich.lukasz@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -161,7 +161,7 @@
       "ro" 'lsp-java-organize-imports
       "rcp" 'lsp-java-create-parameter
       "rcf" 'lsp-java-create-field
-      "rci" 'lsp-java-conver-to-static-import
+      "rci" 'lsp-java-convert-to-static-import
       "rec" 'lsp-java-extract-to-constant
       "rel" 'lsp-java-extract-to-local-variable
       "rem" 'lsp-java-extract-method

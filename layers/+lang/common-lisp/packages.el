@@ -1,6 +1,6 @@
 ;;; packages.el --- Common Lisp Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -42,14 +42,14 @@
 (defun common-lisp/init-common-lisp-snippets ())
 
 (defun common-lisp/post-init-evil ()
-  (defadvice slime-last-expression (around evil activate)
+  (define-advice slime-last-expression (:around (f &rest args) evil)
     "In normal-state or motion-state, last sexp ends at point."
     (if (and (not evil-move-beyond-eol)
              (or (evil-normal-state-p) (evil-motion-state-p)))
         (save-excursion
           (unless (or (eobp) (eolp)) (forward-char))
-          ad-do-it)
-      ad-do-it)))
+          (apply f args))
+      (apply f args))))
 
 (defun common-lisp/pre-init-evil-cleverparens ()
   (spacemacs|use-package-add-hook evil-cleverparens

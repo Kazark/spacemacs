@@ -1,6 +1,6 @@
 ;;; packages.el --- Chinese Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -124,14 +124,14 @@
     :defer t))
 
 (defun chinese/post-init-org ()
-  (defadvice org-html-paragraph (before org-html-paragraph-advice
-                                        (paragraph contents info) activate)
+  (define-advice org-html-paragraph
+      (:around (f paragraph contents info) org-html-paragraph-advice)
     "Join consecutive Chinese lines into a single long line without
 unwanted space when exporting org-mode to html."
-    (let* ((origin-contents (ad-get-arg 1))
+    (let* ((origin-contents contents)
            (fix-regexp "[[:multibyte:]]")
            (fixed-contents
             (replace-regexp-in-string
              (concat
               "\\(" fix-regexp "\\) *\n *\\(" fix-regexp "\\)") "\\1\\2" origin-contents)))
-      (ad-set-arg 1 fixed-contents))))
+      (funcall f paragraph fixed-contents info))))

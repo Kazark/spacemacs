@@ -1,6 +1,6 @@
 ;;; packages.el --- sml Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Keith Simmons <keith@the-simmons.net>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -53,6 +53,23 @@
       (sml-send-function t)
       (evil-insert-state))
 
+    (defun spacemacs/sml-format-buffer ()
+      "Format the current buffer with 'smlfmt'"
+      (interactive)
+      (if (executable-find "smlfmt")
+          (let ((exit-code (shell-command-on-region
+             (point-min)
+             (point-max)
+             "smlfmt --check --read-only"
+             (current-buffer)
+             t
+             "*Messages*"
+             t)))
+            (if (zerop exit-code)
+                (message "Formatting Done.")
+              (message "Formatting Failed!")))
+          (error "smlfmt not found. Please refer to the README to install it.")))
+
     (spacemacs/set-leader-keys-for-major-mode 'sml-mode
       ;; REPL
       "'"  'run-sml
@@ -63,7 +80,8 @@
       "si" 'run-sml
       "sr" 'sml-prog-proc-send-region
       "sR" 'spacemacs/sml-prog-proc-send-region-and-focus
-      "ss" 'run-sml)
+      "ss" 'run-sml
+      "s=" 'spacemacs/sml-format-buffer)
     (define-key sml-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
     (define-key sml-mode-map (kbd "M-SPC") 'sml-electric-space)
     (define-key sml-mode-map (kbd "|") 'sml-electric-pipe)))

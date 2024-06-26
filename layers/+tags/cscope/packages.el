@@ -1,6 +1,6 @@
 ;;; packages.el --- cscope Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -69,5 +69,5 @@
         "gr" 'helm-cscope-find-this-symbol
         "gx" 'helm-cscope-find-this-text-string))
     :config
-    (defadvice helm-cscope-find-this-symbol (before cscope/goto activate)
+    (define-advice helm-cscope-find-this-symbol (:before (&rest _) cscope/goto)
       (evil--jumps-push))))

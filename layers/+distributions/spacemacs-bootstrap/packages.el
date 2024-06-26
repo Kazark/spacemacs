@@ -1,6 +1,6 @@
 ;;; packages.el --- Mandatory Bootstrap Layer packages File
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -39,6 +39,8 @@
     (evil-evilified-state :location (recipe :fetcher local) :step pre :protected t)
     (pcre2el :step pre)
     (spacemacs-theme :location built-in)
+    (which-key-posframe :step pre :toggle (and (consp dotspacemacs-which-key-position)
+                                               (eq (car dotspacemacs-which-key-position) 'posframe)))
     dash))
 
 ;; bootstrap packages
@@ -78,9 +80,8 @@
   (require 'evil)
   (evil-mode 1)
 
-  (when (and (fboundp 'evil-set-undo-system)
-             (configuration-layer/package-used-p 'undo-tree))
-    (evil-set-undo-system 'undo-tree))
+  (when (configuration-layer/package-used-p 'undo-tree)
+    (customize-set-variable 'evil-undo-system 'undo-tree))
 
   ;; Use evil as a default jump handler
   (add-to-list 'spacemacs-default-jump-handlers 'evil-goto-definition)
@@ -306,13 +307,13 @@
       (cond ((configuration-layer/layer-used-p 'helm) 'spacemacs/helm-find-files)
             ((configuration-layer/layer-used-p 'ivy) 'spacemacs/counsel-find-file))))
 
-  ;; support smart 1parens-strict-mode
+  ;; support smartparens-strict-mode
   (when (configuration-layer/package-used-p 'smartparens)
-    (defadvice evil-delete-backward-char-and-join
-        (around spacemacs/evil-delete-backward-char-and-join activate)
+    (define-advice evil-delete-backward-char-and-join
+        (:around (f &rest args) spacemacs/evil-delete-backward-char-and-join)
       (if (bound-and-true-p smartparens-strict-mode)
           (call-interactively 'sp-backward-delete-char)
-        ad-do-it)))
+        (apply f args))))
 
   ;; Define history commands for comint
   (when (eq dotspacemacs-editing-style 'vim)
@@ -574,10 +575,11 @@ Press \\[which-key-toggle-persistent] to hide."
 
   ;; disable special key handling for spacemacs, since it can be
   ;; disorienting if you don't understand it
-  (pcase dotspacemacs-which-key-position
-    ('right (which-key-setup-side-window-right))
-    ('bottom (which-key-setup-side-window-bottom))
-    ('right-then-bottom (which-key-setup-side-window-right-bottom)))
+  (when (symbolp dotspacemacs-which-key-position)
+    (pcase dotspacemacs-which-key-position
+      ('right (which-key-setup-side-window-right))
+      ('bottom (which-key-setup-side-window-bottom))
+      ('right-then-bottom (which-key-setup-side-window-right-bottom))))
 
   (which-key-mode)
   (spacemacs|diminish which-key-mode " Ⓚ" " K"))
@@ -601,3 +603,16 @@ Press \\[which-key-toggle-persistent] to hide."
 (defun spacemacs-bootstrap/init-dash ()
   (use-package dash
     :defer t))
+
+(defun spacemacs-bootstrap/init-which-key-posframe ()
+  (use-package which-key-posframe
+    :config
+    (setq which-key-posframe-parameters
+          '((left-fringe . 10)
+            (right-fringe . 10)
+            (internal-border-width . 10)  ;; expected to add padding but seems to have no effect
+            ))
+    (setq which-key-posframe-poshandler
+          (intern (format "posframe-poshandler-frame-%s"
+                          (cdr dotspacemacs-which-key-position))))
+    (which-key-posframe-mode)))

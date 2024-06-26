@@ -1,6 +1,6 @@
 ;;; packages.el --- Language Server Protocol Layer packages file for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Fangrui Song <i@maskray.me>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -41,6 +41,7 @@
           lsp-eslint-library-choices-file (concat lsp-server-install-dir ".lsp-eslint-choices")
           lsp-yaml-schema-store-local-db (concat lsp-server-install-dir "lsp-yaml-schemas.json")
           lsp-vetur-global-snippets-dir (concat spacemacs-start-directory "snippets/vetur")
+          lsp-ui-sideline-diagnostic-max-lines 20
           lsp-imenu-index-function #'lsp-imenu-create-categorized-index)
     ;; If you find something else should be ignored, you could also set them here
     :config

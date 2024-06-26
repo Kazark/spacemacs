@@ -1,6 +1,6 @@
 ;;; packages.el --- PHP Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -33,7 +33,6 @@
     (php-auto-yasnippets :location (recipe :fetcher github :repo "emacs-php/php-auto-yasnippets"))
     (php-extras :location (recipe :fetcher github :repo "arnested/php-extras") :toggle (not (eq php-backend 'lsp)))
     php-mode
-    (phpcbf :location (recipe :fetcher github :repo "nishimaki10/emacs-phpcbf"))
     phpunit
     (phpactor :toggle (not (eq php-backend 'lsp)))
     (company-phpactor :requires company :toggle (not (eq php-backend 'lsp)))
@@ -118,10 +117,6 @@
       "Ps"  #'phpactor-status
       "Pu"  #'phpactor-install-or-update)
     (setq-default phpactor-references-list-col1-width 72)))
-
-(defun php/init-phpcbf ()
-  (use-package phpcbf
-    :defer t))
 
 (defun php/init-phpunit ()
   (use-package phpunit

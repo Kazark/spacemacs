@@ -1,6 +1,6 @@
 ;;; funcs.el --- compleseus Layer functions File for Spacemacs -*- lexical-binding: t; -*-
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Thanh Vuong <thanhvg@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -36,49 +36,79 @@
     (define-key selectrum-minibuffer-map (kbd "C-k") 'selectrum-previous-candidate))))
 
 
+(defun compleseus//persp-contain-buffer-p (buf)
+  "Return non-nil if BUF is part of the current perspective.
+
+If persp-mode is not currently used, this function always returns
+non-nil."
+  (if (fboundp 'persp-contain-buffer-p)
+      (persp-contain-buffer-p buf)
+    t))
+
+
 (defun spacemacs/compleseus-switch-to-buffer ()
   "`consult-buffer' with buffers provided by persp."
   (interactive)
   (consult-buffer
-   '(consult--source-hidden-buffer
+   `(consult--source-hidden-buffer
      consult--source-persp-buffers
-     consult--source-modified-buffers
+     consult--source-modified-persp-buffers
      consult--source-recent-file
      consult--source-bookmark
-     consult--source-project-buffer
-     consult--source-project-recent-file)))
+     consult--source-project-buffer-hidden
+     consult--source-project-recent-file-hidden)))
 
+(defun spacemacs/initial-search-input (&optional force-input)
+  "Get initial input from region for consult search functions. If region is not
+active and `force-input' is not nil, `thing-at-point' will be returned."
+  (if (region-active-p)
+      (buffer-substring-no-properties
+       (region-beginning) (region-end))
+    (if force-input (thing-at-point 'symbol t) ""))
+  )
 
-(defun spacemacs/compleseus-search (use-initial-input initial-directory)
-  (let* ((initial-input (if use-initial-input
-                            (rxt-quote-pcre
-                             (if (region-active-p)
-                                 (buffer-substring-no-properties
-                                  (region-beginning) (region-end))
-                               (or (thing-at-point 'symbol t) "")))
-                          ""))
+(defun spacemacs/compleseus-search (force-initial-input initial-directory)
+  (let* ((initial-input (rxt-quote-pcre
+                         (spacemacs/initial-search-input force-initial-input)))
          (default-directory
-           (or initial-directory (read-directory-name "Start from directory: "))))
+          (or initial-directory (read-directory-name "Start from directory: "))))
     (consult-ripgrep default-directory initial-input)))
 
 (defun spacemacs/consult-line ()
   (interactive)
   (consult-line
-   (if (region-active-p)
-       (buffer-substring-no-properties
-        (region-beginning) (region-end))
-     (thing-at-point 'symbol t))))
+   (spacemacs/initial-search-input)))
 
-(defun spacemacs/consult-line-multi ()
+(defun spacemacs/consult-line-symbol ()
   (interactive)
+  (consult-line
+   (spacemacs/initial-search-input t)))
+
+(defun spacemacs/consult-line-multi (&optional query)
+  (interactive "P")
   (consult-line-multi
-   nil
-   (if (region-active-p)
-       (buffer-substring-no-properties
-        (region-beginning) (region-end))
-     (thing-at-point 'symbol t))))
+   query
+   (spacemacs/initial-search-input)))
+
+(defun spacemacs/consult-line-multi-symbol (&optional query)
+  (interactive "P")
+  (consult-line-multi
+   query
+   (spacemacs/initial-search-input t)))
+
+(defun spacemacs/embark-consult-line-multi (buffer-names)
+  "Embark action to search in any subset of buffers using `consult-line-multi'.
+If there is an active region, it is used as the initial input."
+  (consult-line-multi
+   (list :predicate (lambda (buf) (member (buffer-name buf) buffer-names)))
+   (spacemacs/initial-search-input)))
 
 (defun spacemacs/compleseus-search-auto ()
+  "Choose folder to search."
+  (interactive)
+  (spacemacs/compleseus-search nil nil))
+
+(defun spacemacs/compleseus-search-auto-symbol ()
   "Choose folder to search."
   (interactive)
   (spacemacs/compleseus-search t nil))
@@ -86,9 +116,19 @@
 (defun spacemacs/compleseus-search-dir ()
   "Search current folder."
   (interactive)
+  (spacemacs/compleseus-search nil default-directory))
+
+(defun spacemacs/compleseus-search-dir-symbol ()
+  "Search current folder."
+  (interactive)
   (spacemacs/compleseus-search t default-directory))
 
 (defun spacemacs/compleseus-search-projectile ()
+  "Search in current project."
+  (interactive)
+  (spacemacs/compleseus-search nil (projectile-project-root)))
+
+(defun spacemacs/compleseus-search-projectile-symbol ()
   "Search in current project."
   (interactive)
   (spacemacs/compleseus-search t (projectile-project-root)))
@@ -96,12 +136,7 @@
 (defun spacemacs/compleseus-search-default ()
   "Search."
   (interactive)
-  (spacemacs/compleseus-search-projectile))
-
-(defun spacemacs/compleseus-search-projectile-auto ()
-  "Search in current project."
-  (interactive)
-  (spacemacs/compleseus-search nil (projectile-project-root)))
+  (spacemacs/compleseus-search-projectile-symbol))
 
 (defun spacemacs/compleseus-search-from (input)
   "Embark action to start ripgrep search from candidate's directory."
@@ -262,12 +297,6 @@ Note: this function relies on embark internals and might break upon embark updat
   (let ((embark-after-export-hook
          '(spacemacs/compleseus-grep-change-to-wgrep-mode)))
     (embark-export)))
-
-(defun spacemacs//set-initial-grep-state ()
-  "Set the initial evil state for the grep buffers."
-  (if (eq dotspacemacs-editing-style 'emacs)
-      (evil-set-initial-state 'grep-mode 'emacs)
-    (evil-set-initial-state 'grep-mode 'motion)))
 
 (defun spacemacs/wgrep-finish-edit ()
   "Set back the default evil state when finishing editing."

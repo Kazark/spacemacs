@@ -1,6 +1,6 @@
 ;;; packages.el --- typescript Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Chris Bowdon <c.bowdon@bath.edu>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -28,6 +28,7 @@
         eldoc
         emmet-mode
         flycheck
+        npm-mode
         smartparens
         typescript-mode
         import-js
@@ -89,6 +90,30 @@
   (spacemacs/add-to-hooks #'typescript/set-linter
                           '(typescript-mode-local-vars-hook typescript-tsx-mode-local-vars-hook)
                           t))
+
+(defun typescript/post-init-npm-mode ()
+  (add-hook 'typescript-mode-hook #'npm-mode)
+  (spacemacs/declare-prefix-for-mode 'typescript-mode "mn" "npm")
+  (spacemacs/set-leader-keys-for-major-mode 'typescript-mode
+    "ni" 'npm-mode-npm-install
+    "nr" 'npm-mode-npm-run
+    "ns" 'npm-mode-npm-install-save
+    "nd" 'npm-mode-npm-install-save-dev
+    "nn" 'npm-mode-npm-init
+    "nu" 'npm-mode-npm-uninstall
+    "nl" 'npm-mode-npm-list
+    "np" 'npm-mode-visit-project-file)
+  (add-hook 'typescript-tsx-mode-hook #'npm-mode)
+  (spacemacs/declare-prefix-for-mode 'typescript-tsx-mode "mn" "npm")
+  (spacemacs/set-leader-keys-for-major-mode 'typescript-tsx-mode
+    "ni" 'npm-mode-npm-install
+    "nr" 'npm-mode-npm-run
+    "ns" 'npm-mode-npm-install-save
+    "nd" 'npm-mode-npm-install-save-dev
+    "nn" 'npm-mode-npm-init
+    "nu" 'npm-mode-npm-uninstall
+    "nl" 'npm-mode-npm-list
+    "np" 'npm-mode-visit-project-file))
 
 (defun typescript/post-init-smartparens ()
   (spacemacs/add-to-hooks #'spacemacs//activate-smartparens '(typescript-mode-hook

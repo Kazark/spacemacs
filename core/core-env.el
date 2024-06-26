@@ -1,6 +1,6 @@
 ;;; core-env.el --- Spacemacs Core File -*- lexical-binding: t -*-
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -25,7 +25,7 @@
 (require 'load-env-vars)
 
 (defvar spacemacs-env-vars-file
-  (concat (or dotspacemacs-directory user-home-directory) ".spacemacs.env")
+  (concat (or dotspacemacs-directory "~/") ".spacemacs.env")
   "Absolute path to the env file where environment variables are set.")
 
 (defvar spacemacs-ignored-environment-variables

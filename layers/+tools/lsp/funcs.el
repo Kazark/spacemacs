@@ -1,6 +1,6 @@
 ;;; funcs.el --- Language Server Protocol Layer functions file for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Fangrui Song <i@maskray.me>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -154,6 +154,9 @@
     (spacemacs/set-leader-keys-for-minor-mode 'lsp-mode
       (concat prefix-char "s") #'lsp-ivy-workspace-symbol
       (concat prefix-char "S") #'lsp-ivy-global-workspace-symbol))
+   ((configuration-layer/package-usedp 'consult-lsp)
+    (spacemacs/set-leader-keys-for-minor-mode 'lsp-mode
+      (concat prefix-char "s") #'consult-lsp-symbols))
    (t (spacemacs/set-leader-keys-for-minor-mode 'lsp-mode
         (concat prefix-char "s") #'lsp-ui-find-workspace-symbol))))
 

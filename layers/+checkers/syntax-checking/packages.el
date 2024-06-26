@@ -1,6 +1,6 @@
 ;;; packages.el --- Syntax Checking Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -41,6 +41,7 @@
                    (global-flycheck-mode 1)))
       lazy-load-flycheck)
     (setq flycheck-standard-error-navigation syntax-checking-use-standard-error-navigation
+          flycheck-display-errors-delay (or syntax-checking-tooltips-delay 0.9)
           flycheck-global-modes nil)
     ;; key bindings
     (spacemacs/set-leader-keys

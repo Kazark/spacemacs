@@ -1,6 +1,6 @@
 ;;; funcs.el --- Python Layer functions File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -91,7 +91,6 @@
       (progn
         (require (pcase python-lsp-server
                    ('pylsp 'lsp-pylsp)
-                   ('mspyls 'lsp-python-ms)
                    ('pyright 'lsp-pyright)
                    (x (user-error "Unknown value for `python-lsp-server': %s" x))))
         (lsp-deferred))
@@ -153,7 +152,8 @@ as the pyenv version then also return nil. This works around https://github.com/
 (defun spacemacs//python-setup-shell (&optional root-dir)
   "Setup the python shell if no customer prefered value or the value be cleaned.
 ROOT-DIR should be the directory path for the environment, `nil' for clean up."
-  (when (or (null python-shell-interpreter)
+  (when (or (null (boundp 'python-shell-interpreter))
+            (null python-shell-interpreter)
             (equal python-shell-interpreter spacemacs--python-shell-interpreter-origin))
     (if-let* ((default-directory root-dir))
         (if-let* ((ipython (cl-find-if 'spacemacs/pyenv-executable-find
@@ -423,6 +423,33 @@ Bind formatter to '==' for LSP and '='for all other backends."
 
 
 ;; REPL
+(defun spacemacs/python-shell-send-block (&optional arg)
+  "Send the block under cursor to shell. If optional argument ARG is non-nil
+(interactively, the prefix argument), send the block body with its header."
+  (interactive "P")
+  (if (fboundp 'python-shell-send-block)
+      (let ((python-mode-hook nil))
+        (call-interactively #'python-shell-send-block))
+    (let ((python-mode-hook nil)
+          (beg (save-excursion
+                 (when (python-nav-beginning-of-block)
+                   (if arg
+                       (beginning-of-line)
+                     (python-nav-end-of-statement)
+                     (beginning-of-line 2)))
+                 (point-marker)))
+          (end (save-excursion (python-nav-end-of-block)))
+          (python-indent-guess-indent-offset-verbose nil))
+      (if (and beg end)
+          (python-shell-send-region beg end nil msg t)
+        (user-error "Can't get code block from current position.")))))
+
+(defun spacemacs/python-shell-send-block-switch (&optional arg)
+  "Send block to shell and switch to it in insert mode."
+  (interactive "P")
+  (call-interactively #'spacemacs/python-shell-send-block)
+  (python-shell-switch-to-shell)
+  (evil-insert-state))
 
 (defun spacemacs/python-shell-send-buffer-switch ()
   "Send buffer content to shell and switch to it in insert mode."
@@ -475,16 +502,10 @@ Bind formatter to '==' for LSP and '='for all other backends."
     (python-shell-send-region start end)))
 
 (defun spacemacs/python-shell-send-statement ()
-  "Send the current statement to shell, same as `python-shell-send-statement' in Emacs27."
+  "Send the statement under cursor to shell."
   (interactive)
-  (if (fboundp 'python-shell-send-statement)
-      (call-interactively #'python-shell-send-statement)
-    (if (region-active-p)
-        (call-interactively #'python-shell-send-region)
-      (let ((python-mode-hook nil))
-        (python-shell-send-region
-         (save-excursion (python-nav-beginning-of-statement))
-         (save-excursion (python-nav-end-of-statement)))))))
+  (let ((python-mode-hook nil))
+    (call-interactively #'python-shell-send-statement)))
 
 (defun spacemacs/python-shell-send-statement-switch ()
   "Send statement to shell and switch to it in insert mode."
@@ -509,21 +530,25 @@ If region is not active then send line."
 (defun spacemacs/python-start-or-switch-repl ()
   "Start and/or switch to the REPL."
   (interactive)
-  (let ((shell-process
-         (or (python-shell-get-process)
-             ;; `run-python' has different return values and different
-             ;; errors in different emacs versions. In 24.4, it throws an
-             ;; error when the process didn't start, but in 25.1 it
-             ;; doesn't throw an error, so we demote errors here and
-             ;; check the process later
-             (with-demoted-errors "Error: %S"
-               ;; in Emacs 24.5 and 24.4, `run-python' doesn't return the
-               ;; shell process
-               (call-interactively #'run-python)
-               (python-shell-get-process)))))
-    (unless shell-process
-      (error "Failed to start python shell properly"))
-    (pop-to-buffer (process-buffer shell-process))
+  (if-let ((shell-process (or (python-shell-get-process)
+                              (call-interactively #'run-python))))
+      (progn
+        (pop-to-buffer (process-buffer shell-process))
+        (evil-insert-state))
+    (error "Failed to start python shell properly")))
+
+(defun spacemacs/python-shell-restart ()
+  "Restart python shell."
+  (interactive)
+  (let ((python-mode-hook nil))
+    (python-shell-restart)))
+
+(defun spacemacs/python-shell-restart-switch ()
+  "Restart python shell and switch to it in insert mode."
+  (interactive)
+  (let ((python-mode-hook nil))
+    (python-shell-restart)
+    (python-shell-switch-to-shell)
     (evil-insert-state)))
 
 (defun spacemacs/python-execute-file (arg)

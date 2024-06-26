@@ -1,6 +1,6 @@
 ;;; packages.el --- Finance Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -88,4 +88,5 @@
       :mode ledger-reconcile-mode)
     (evilified-state-evilify-map ledger-report-mode-map
       :eval-after-load ledger-report
-      :mode ledger-report-mode)))
+      :mode ledger-report-mode)
+    (evil-add-command-properties 'ledger-add-transaction :jump t)))

@@ -1,6 +1,6 @@
 ;;; packages.el --- Python Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -60,8 +60,6 @@
     ;; packages for anaconda backend
     anaconda-mode
     (company-anaconda :requires company)
-    ;; packages for Microsoft LSP backend
-    (lsp-python-ms :requires lsp-mode)
     ;; packages for Microsoft's pyright language server
     (lsp-pyright :requires lsp-mode)))
 
@@ -89,7 +87,7 @@
         (kbd "C-k") 'previous-error-no-select
         (kbd "RET") 'spacemacs/anaconda-view-forward-and-push))
     (spacemacs|hide-lighter anaconda-mode)
-    (defadvice anaconda-mode-goto (before python/anaconda-mode-goto activate)
+    (define-advice anaconda-mode-goto (:before (&rest _) python/anaconda-mode-goto)
       (evil--jumps-push))
     (add-to-list 'spacemacs-jump-handlers-python-mode
                  '(anaconda-mode-find-definitions :async t))))
@@ -180,7 +178,11 @@
   (use-package importmagic
     :defer t
     :init
-    (add-hook 'python-mode-hook 'importmagic-mode)
+    (add-hook 'python-mode-hook
+              #'(lambda ()
+                  ;; skip temp buffer which bufer-name begin with space
+                  (unless (eq ?\s (string-to-char (buffer-name)))
+                    (importmagic-mode))))
     (spacemacs|diminish importmagic-mode " ⓘ" " [i]")
     (spacemacs/set-leader-keys-for-major-mode 'python-mode
       "rf" 'importmagic-fix-symbol-at-point)))
@@ -402,6 +404,10 @@
       "sF" 'spacemacs/python-shell-send-defun-switch
       "sf" 'spacemacs/python-shell-send-defun
       "si" 'spacemacs/python-start-or-switch-repl
+      "sK" 'spacemacs/python-shell-send-block-switch
+      "sk" 'spacemacs/python-shell-send-block
+      "sn" 'spacemacs/python-shell-restart
+      "sN" 'spacemacs/python-shell-restart-switch
       "sR" 'spacemacs/python-shell-send-region-switch
       "sr" 'spacemacs/python-shell-send-region
       "sl" 'spacemacs/python-shell-send-line
@@ -451,25 +457,25 @@
   (spacemacs/add-to-hook 'python-mode-hook
                          '(semantic-mode
                            spacemacs//python-imenu-create-index-use-semantic-maybe))
-  (defadvice semantic-python-get-system-include-path
-      (around semantic-python-skip-error-advice activate)
+  (define-advice semantic-python-get-system-include-path
+      (:around (f &rest args) semantic-python-skip-error-advice)
     "Don't cause error when Semantic cannot retrieve include
 paths for Python then prevent the buffer to be switched. This
 issue might be fixed in Emacs 25. Until then, we need it here to
 fix this issue."
     (condition-case-unless-debug nil
-        ad-do-it
+        (apply f args)
       (error nil))))
 
 (defun python/pre-init-smartparens ()
   (spacemacs|use-package-add-hook smartparens
     :post-config
-    (defadvice python-indent-dedent-line-backspace
-        (around python/sp-backward-delete-char activate)
+    (define-advice python-indent-dedent-line-backspace
+        (:around (f &rest args) python/sp-backward-delete-char)
       (let ((pythonp (or (not smartparens-strict-mode)
                          (char-equal (char-before) ?\s))))
         (if pythonp
-            ad-do-it
+            (apply f args)
           (call-interactively 'sp-backward-delete-char))))))
 (defun python/post-init-smartparens ()
   (add-hook 'inferior-python-mode-hook #'spacemacs//activate-smartparens))
@@ -492,28 +498,6 @@ fix this issue."
                (eq 'yapf python-formatter))
       (add-hook 'python-mode-hook 'yapf-mode))
     :config (spacemacs|hide-lighter yapf-mode)))
-
-(defun python/init-lsp-python-ms ()
-  (use-package lsp-python-ms
-    :if (eq python-lsp-server 'mspyls)
-    :ensure nil
-    :defer t
-    :config
-    (when python-lsp-git-root
-      ;; Use dev version of language server checked out from github
-      (setq lsp-python-ms-dir
-            (expand-file-name (concat python-lsp-git-root
-                                      "/output/bin/Release/")))
-      (message "lsp-python-ms: Using version at `%s'" lsp-python-ms-dir)
-      ;; Use a precompiled exe
-      (setq lsp-python-ms-executable (concat lsp-python-ms-dir
-                                             (pcase system-type
-                                               ('gnu/linux "linux-x64/publish/")
-                                               ('darwin "osx-x64/publish/")
-                                               ('windows-nt "win-x64/publish/"))
-                                             "Microsoft.Python.LanguageServer"
-                                             (and (eq system-type 'windows-nt)
-                                                  ".exe"))))))
 
 (defun python/init-lsp-pyright ()
   (use-package lsp-pyright

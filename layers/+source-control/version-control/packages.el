@@ -1,6 +1,6 @@
 ;;; packages.el --- Source Control Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -278,6 +278,10 @@
       ("p" smerge-prev)
       ("j" evil-next-line)
       ("k" evil-previous-line)
+      ("<down>" evil-next-line)
+      ("<up>" evil-previous-line)
+      ("<next>" scroll-up-command)
+      ("<prior>" scroll-down-command)
       ;; merge action
       ("a" smerge-keep-all)
       ("b" smerge-keep-base)

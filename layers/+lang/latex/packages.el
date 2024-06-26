@@ -1,6 +1,6 @@
 ;;; packages.el --- Latex Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -146,13 +146,18 @@
       "fr"  'LaTeX-fill-region       ;; C-c C-q C-r
       "fs"  'LaTeX-fill-section      ;; C-c C-q C-s
       "pb"  'preview-buffer
+      "pB"  'preview-clearout-buffer
       "pc"  'preview-clearout
       "pd"  'preview-document
+      "pD"  'preview-clearout-document
       "pe"  'preview-environment
       "pf"  'preview-cache-preamble
       "pp"  'preview-at-point
+      "pP"  'preview-clearout-at-point
       "pr"  'preview-region
+      "pR"  'preview-clearout
       "ps"  'preview-section
+      "pS"  'preview-clearout-section
       "xB"  'latex/font-medium
       "xr"  'latex/font-clear
       "xfa" 'latex/font-calligraphic

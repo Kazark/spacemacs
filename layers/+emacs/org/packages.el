@@ -1,6 +1,6 @@
 ;;; packages.el --- Org Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -58,9 +58,7 @@
     (org-projectile :requires projectile)
     (ox-epub :toggle org-enable-epub-support)
     (ox-twbs :toggle org-enable-bootstrap-support)
-    ;; use a for of ox-gfm to fix index generation
-    (ox-gfm :location (recipe :fetcher github :repo "syl20bnr/ox-gfm")
-            :toggle org-enable-github-support)
+    (ox-gfm :toggle org-enable-github-support)
     (org-re-reveal :toggle org-enable-reveal-js-support)
     persp-mode
     (ox-hugo :toggle org-enable-hugo-support)
@@ -450,7 +448,10 @@ Will work on both org-mode and any mode that accepts plain html."
       "aof" "feeds"
       "aoC" (org-clocks-prefix))
     ;; org-agenda
-    (when (configuration-layer/layer-used-p 'ivy)
+    (unless (when-let ((pkg (configuration-layer/get-package 'helm-org-rifle)))
+              ;; TODO: `configuration-layer/package-used-p' doesn't check
+              ;; :toggle status.  When it is fixed, we can use it again.
+              (cfgl-package-used-p pkg))
       (spacemacs/set-leader-keys "ao/" 'org-occur-in-agenda-files))
     (spacemacs/set-leader-keys
       "ao#" 'org-agenda-list-stuck-projects

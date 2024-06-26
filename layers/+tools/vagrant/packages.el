@@ -1,6 +1,6 @@
 ;;; packages.el --- Vagrant Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Brian Hicks <brian@brianthicks.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -50,7 +50,7 @@
     :defer t
     :init
     (defvar spacemacs--vagrant-tramp-loaded nil)
-    (defadvice vagrant-tramp-term (before spacemacs//load-vagrant activate)
+    (define-advice vagrant-tramp-term (:before (&rest _) spacemacs//load-vagrant)
       "Lazy load vagrant-tramp."
       (unless spacemacs--vagrant-tramp-loaded
         (vagrant-tramp-add-method)

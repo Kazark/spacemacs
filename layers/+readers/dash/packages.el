@@ -1,6 +1,6 @@
 ;;; packages.el --- Dash Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -27,6 +27,7 @@
     (dash-at-point :toggle (spacemacs/system-is-mac))
     (helm-dash :requires helm)
     (counsel-dash :requires ivy)
+    (consult-dash :requires consult)
     (zeal-at-point :toggle (or (spacemacs/system-is-linux)
                                (spacemacs/system-is-mswindows)))))
 
@@ -49,6 +50,22 @@
     (spacemacs/set-leader-keys
       "arzh" 'counsel-dash-at-point
       "arzH" 'counsel-dash)
+    :config (when dash-autoload-common-docsets
+              (dash//activate-package-docsets dash-docs-docset-newpath))))
+
+(defun dash/init-consult-dash ()
+  (use-package consult-dash
+    :defer t
+    :init
+    (defun consult-dash-at-point ()
+      "Search Dash documentation with the symbol at point."
+      (interactive)
+      (let ((initial (thing-at-point 'symbol t)))
+        (consult-dash initial)))
+    (spacemacs/declare-prefix "arz" "zeal/dash docs")
+    (spacemacs/set-leader-keys
+      "arzh" 'consult-dash-at-point
+      "arzH" 'consult-dash)
     :config (when dash-autoload-common-docsets
               (dash//activate-package-docsets dash-docs-docset-newpath))))
 

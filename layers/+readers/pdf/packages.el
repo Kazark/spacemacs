@@ -1,7 +1,7 @@
 ;;; packages.el --- PDF Layer packages File for Spacemacs
 ;;
 ;; Copyright (c) 2012-2021 Sylvain Benner
-;; Copyright (c) 2020-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2020-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: André Peric Tavares <andre.peric.tavares@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -28,12 +28,10 @@
 (defun pdf/init-pdf-tools ()
   (use-package pdf-tools
     :defer t
-    :mode (("\\.pdf\\'" . pdf-view-mode))
     :init
     (spacemacs//pdf-tools-setup-transient-state)
+    (pdf-loader-install)
     :config
-    (pdf-tools-install)
-
     (spacemacs/declare-prefix-for-mode 'pdf-view-mode "ma" "annotations")
     (spacemacs/declare-prefix-for-mode 'pdf-view-mode "mf" "fit")
     (spacemacs/declare-prefix-for-mode 'pdf-view-mode "ms" "slice/search")
@@ -60,7 +58,8 @@
       "ss" 'pdf-occur
       "p" 'pdf-misc-print-document
       "O" 'pdf-outline
-      "n" 'pdf-view-midnight-minor-mode)
+      "n" 'pdf-view-midnight-minor-mode
+      "t" 'pdf-view-themed-minor-mode)
 
     (evil-define-key 'visual pdf-view-mode-map
       "y" 'pdf-view-kill-ring-save
@@ -112,9 +111,7 @@
       "k"                'previous-line
       "gk"               'outline-backward-same-level
       "gj"               'outline-forward-same-level
-      (kbd "<backtab>")  (if (version< emacs-version "28.0")
-                             'outline-show-all
-                           'outline-cycle-buffer)
+      (kbd "<backtab>")  'outline-cycle-buffer
       "gh"               'pdf-outline-up-heading
       "gg"               'beginning-of-buffer
       "G"                'pdf-outline-end-of-buffer
@@ -125,7 +122,6 @@
       [mouse-1]          'pdf-outline-mouse-display-link
       "o"                'pdf-outline-select-pdf-window
       "``"               'pdf-outline-move-to-current-page
-      "''"               'pdf-outline-move-to-current-page
       "Q"                'pdf-outline-quit-and-kill
       "q"                'quit-window
       "F"                'pdf-outline-follow-mode)

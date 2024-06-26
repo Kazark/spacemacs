@@ -1,6 +1,6 @@
 ;;; packages.el --- speed-reading Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -39,7 +39,7 @@
       (internal-show-cursor (selected-window) nil))
     (spacemacs/set-leader-keys "ars" 'speed-reading/start-spray)
 
-    (defadvice spray-quit (after speed-reading//quit-spray activate)
+    (define-advice spray-quit (:after (&rest _) speed-reading//quit-spray)
       "Correctly quit spray."
       (internal-show-cursor (selected-window) t)
       (evil-normal-state))

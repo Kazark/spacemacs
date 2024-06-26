@@ -1,6 +1,6 @@
 ;;; packages.el --- Git Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -163,10 +163,6 @@
     (push "magit: .*" spacemacs-useless-buffers-regexp)
     (push "magit-.*: .*"  spacemacs-useless-buffers-regexp)
     (spacemacs|require-when-dumping 'magit)
-    (setq magit-completing-read-function
-          (if (configuration-layer/layer-used-p 'ivy)
-              'ivy-completing-read
-            'magit-builtin-completing-read))
     (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
     ;; On Windows, we must use Git GUI to enter username and password
     ;; See: https://github.com/magit/magit/wiki/FAQ#windows-cannot-push-via-https
@@ -361,7 +357,7 @@
     :init
     (setq forge-database-file (expand-file-name "forge-database.sqlite"
                                                 spacemacs-cache-directory)
-          forge-add-default-bindings nil)
+          forge-add-default-bindings (eq dotspacemacs-editing-style 'emacs))
     (spacemacs/set-leader-keys-for-major-mode 'forge-topic-mode
       "a" 'forge-edit-topic-assignees
       "c" 'forge-create-post

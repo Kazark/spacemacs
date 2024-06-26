@@ -1,6 +1,6 @@
 ;;; packages.el --- Spacemacs Defaults Layer packages File
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -38,12 +38,9 @@
     (electric-indent-mode :location built-in)
     (ediff :location built-in)
     (eldoc :location built-in)
-    (help-fns+ :location local
-               :toggle (not (fboundp 'describe-keymap))) ; built in emacs28+
     (hi-lock :location built-in)
     (image-mode :location built-in)
     (imenu :location built-in)
-    (occur-mode :location built-in)
     (package-menu :location built-in)
     ;; page-break-lines is shipped with spacemacs core
     (page-break-lines :location built-in)
@@ -150,6 +147,13 @@
     (evil-define-key 'normal dired-mode-map (kbd "N") 'evil-search-previous)))
 
 (defun spacemacs-defaults/init-dired-x ()
+  ;; dired-x used to be autoloaded with command dired-jump, which is the major
+  ;; entrance to dired in spacemacs. Now dired-jump was moved to dired.el so
+  ;; this autoloading is not needed for latest dired. But dired-x still provides
+  ;; additional key bindings such as "* ." to dired. To keep the old behavior,
+  ;; load dired-x after dired.
+  (with-eval-after-load 'dired
+    (require 'dired-x))
   (use-package dired-x
     :commands (dired-jump
                dired-jump-other-window
@@ -226,12 +230,6 @@
     (eldoc-add-command #'evil-append)
     (eldoc-add-command #'evil-append-line)
     (eldoc-add-command #'evil-force-normal-state)))
-
-(defun spacemacs-defaults/init-help-fns+ ()
-  (use-package help-fns+
-    :commands (describe-keymap)
-    :init
-    (advice-add 'help-do-xref :after (lambda (_pos _func _args) (setq-local tab-width 8)))))
 
 (defun spacemacs-defaults/init-hi-lock ()
   (with-eval-after-load 'hi-lock
@@ -328,13 +326,10 @@
       :off-message "Line numbers disabled."
       :evil-leader "tnv")
 
-    (when (spacemacs//linum-backward-compabitility)
-      (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-      (add-hook 'text-mode-hook 'display-line-numbers-mode))
-
     ;; it's ok to add an advice before the function is defined, and we must
     ;; add this advice before calling `global-display-line-numbers-mode'
-    (advice-add #'display-line-numbers--turn-on :around #'spacemacs//linum-on)
+    (define-advice display-line-numbers--turn-on (:before-while (&rest _) spacemacs//enable-line-numbers)
+      (spacemacs/enable-line-numbers-p))
     (when dotspacemacs-line-numbers
       ;; delay the initialization of number lines when opening Spacemacs
       ;; normally. If opened via the command line with a file to visit then
@@ -347,10 +342,6 @@
                           (global-display-line-numbers-mode))
                         lazy-loading-line-numbers)
                     (global-display-line-numbers-mode)))))))
-
-(defun spacemacs-defaults/init-occur-mode ()
-  (evilified-state-evilify-map occur-mode-map
-    :mode occur-mode))
 
 (defun spacemacs-defaults/init-package-menu ()
   (evilified-state-evilify-map package-menu-mode-map

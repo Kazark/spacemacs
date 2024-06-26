@@ -1,6 +1,6 @@
 ;;; packages.el --- Notmuch Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -25,6 +25,7 @@
   '(
     (counsel-notmuch :requires ivy)
     (helm-notmuch :requires helm)
+    (consult-notmuch :requires consult)
     notmuch
     org
     persp-mode
@@ -40,6 +41,11 @@
   (use-package helm-notmuch
     :defer t
     :init (spacemacs/set-leader-keys "aenn" 'helm-notmuch)))
+
+(defun notmuch/init-consult-notmuch ()
+  (use-package consult-notmuch
+    :defer t
+    :init (spacemacs/set-leader-keys "aenn" 'consult-notmuch)))
 
 (defun notmuch/init-ol-notmuch ()
   (use-package ol-notmuch)

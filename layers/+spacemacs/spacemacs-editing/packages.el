@@ -1,6 +1,6 @@
 ;;; packages.el --- Spacemacs Editing Layer packages File
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -174,30 +174,29 @@
     :config
     ;; add search capability to expand-region
     (when (configuration-layer/package-used-p 'helm-ag)
-      (defadvice er/prepare-for-more-expansions-internal
-          (around helm-ag/prepare-for-more-expansions-internal activate)
-        ad-do-it
-        (let ((new-msg (concat (car ad-return-value)
+      (define-advice er/prepare-for-more-expansions-internal (:around (f &rest args) helm-ag/prepare-for-more-expansions-internal)
+        (let* ((return-value (apply f args))
+               (new-msg (concat (car return-value)
                                 ", / to search in project, "
                                 "f to search in files, "
                                 "b to search in opened buffers"))
-              (new-bindings (cdr ad-return-value)))
+               (new-bindings (cdr return-value)))
           (cl-pushnew
-            '("/" (lambda ()
-                    (call-interactively
+           '("/" (lambda ()
+                   (call-interactively
                     'spacemacs/helm-project-smart-do-search-region-or-symbol)))
-            new-bindings)
+           new-bindings)
           (cl-pushnew
-            '("f" (lambda ()
-                    (call-interactively
+           '("f" (lambda ()
+                   (call-interactively
                     'spacemacs/helm-files-smart-do-search-region-or-symbol)))
-            new-bindings)
+           new-bindings)
           (cl-pushnew
-            '("b" (lambda ()
-                    (call-interactively
+           '("b" (lambda ()
+                   (call-interactively
                     'spacemacs/helm-buffers-smart-do-search-region-or-symbol)))
-            new-bindings)
-          (setq ad-return-value (cons new-msg new-bindings))))
+           new-bindings)
+          (cons new-msg new-bindings)))
       (setq expand-region-contract-fast-key "V"
             expand-region-reset-fast-key "r"))))
 
@@ -445,6 +444,7 @@
     (show-smartparens-global-mode +1)
     ;; don't create a pair with single quote in minibuffer
     (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+    (sp-local-pair 'minibuffer-mode "'" nil :actions nil)
     (sp-pair "{" nil :post-handlers
               '(:add (spacemacs/smartparens-pair-newline-and-indent "RET")))
     (sp-pair "[" nil :post-handlers

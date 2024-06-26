@@ -1,6 +1,6 @@
 ;;; packages.el --- Helm Layer packages File
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -132,7 +132,6 @@
     (spacemacs||set-helm-key "sgG"  spacemacs/helm-file-do-grep-region-or-symbol)
     ;; various key bindings
     (spacemacs||set-helm-key "fel" helm-locate-library)
-    (spacemacs||set-helm-key "hdm" describe-mode)
     (spacemacs||set-helm-key "hdx" spacemacs/describe-ex-command)
     (spacemacs||set-helm-key "swg" helm-google-suggest)
     (with-eval-after-load 'helm-files
@@ -192,6 +191,12 @@
     (setq helm-white-buffer-regexp-list
           (append helm-white-buffer-regexp-list
                   spacemacs-useful-buffers-regexp))
+
+    ;; allow to leave helm result groups with evil bindings
+    (setq helm-move-to-line-cycle-in-source nil)
+    ;; allow find file on non-exists file at point
+    (setq helm-ff-allow-non-existing-file-at-point t)
+
     ;; use helm to switch last(/previous) visited buffers with C(-S)-tab
     (define-key helm-map (kbd "<C-tab>") 'helm-follow-action-forward)
     (define-key helm-map (kbd "<C-iso-lefttab>") 'helm-follow-action-backward)
@@ -312,19 +317,32 @@
   (use-package helm-descbinds
     :defer (spacemacs/defer)
     :init
-    (setq helm-descbinds-window-style 'split)
+    (setq helm-descbinds-window-style 'split
+          helm-descbinds-disable-which-key nil)
     (add-hook 'helm-mode-hook 'helm-descbinds-mode)
     (spacemacs/set-leader-keys "?" 'helm-descbinds)))
 
 (defun helm/init-helm-ls-git ()
   (use-package helm-ls-git
     :defer t
-    :init (spacemacs/set-leader-keys "gff" 'helm-ls-git-ls)
-    :config
-    ;; Set `helm-ls-git-status-command' conditonally on `git' layer
-    ;; If `git' is in use, use default `\'magit-status-setup-buffer'
-    ;; Otherwise, use defaault `\'vc-dir'
+    :init
+    (spacemacs/set-leader-keys "gff" 'helm-ls-git)
     (when (configuration-layer/package-usedp 'magit)
+      ;; Do not use helm-ls-git-rebase-todo-mode for git-rebase-todo,
+      ;; instead let it be handled by magit
+      (setq auto-mode-alist
+            (delete '("/git-rebase-todo$" . helm-ls-git-rebase-todo-mode)
+                    auto-mode-alist)))
+    :config
+    (when (configuration-layer/package-usedp 'magit)
+      ;; Undo the forced action of adding helm-ls-git-rebase-todo-mode to
+      ;; auto-mode-alist by helm-ls-git.
+      (setq auto-mode-alist
+            (delete '("/git-rebase-todo$" . helm-ls-git-rebase-todo-mode)
+                    auto-mode-alist))
+      ;; Set `helm-ls-git-status-command' conditonally on `git' layer
+      ;; If `git' is in use, use default `\'magit-status-setup-buffer'
+      ;; Otherwise, use defaault `\'vc-dir'
       (setq helm-ls-git-status-command 'magit-status-setup-buffer))))
 
 (defun helm/init-helm-make ()
@@ -447,8 +465,8 @@
       "ss"    'helm-swoop
       "sS"    'spacemacs/helm-swoop-region-or-symbol
       "s C-s" 'helm-multi-swoop-all)
-    (defadvice helm-swoop (before add-evil-jump activate)
-      (evil-set-jump))))
+
+    (evil-add-command-properties 'helm-swoop :jump t)))
 
 (defun helm/init-helm-themes ()
   (use-package helm-themes

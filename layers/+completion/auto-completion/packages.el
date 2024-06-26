@@ -1,6 +1,6 @@
 ;;; packages.el --- Auto-completion Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -23,7 +23,7 @@
 
 (defconst auto-completion-packages
       '(
-        (auto-yasnippet :toggle (not (eq auto-completion-front-end 'company)))
+        (auto-yasnippet)
         (auto-complete :toggle (not (eq auto-completion-front-end 'company)))
         (ac-ispell :toggle (not (eq auto-completion-front-end 'company)))
         (company :toggle (eq auto-completion-front-end 'company))
@@ -91,6 +91,7 @@
     (spacemacs/set-leader-keys
       "iSc" 'aya-create
       "iSe" 'spacemacs/auto-yasnippet-expand
+      "iSh" 'spacemacs/auto-yasnippet-expand-from-history
       "iSw" 'aya-persist-snippet)))
 
 (defun auto-completion/init-company ()
@@ -101,6 +102,7 @@
           company-minimum-prefix-length auto-completion-minimum-prefix-length
           company-require-match nil
           company-dabbrev-ignore-case nil
+          company-dabbrev-other-buffers t
           company-dabbrev-downcase nil)
 
     (add-hook 'company-completion-started-hook 'company-turn-off-fci)

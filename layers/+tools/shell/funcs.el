@@ -1,6 +1,6 @@
 ;;; funcs.el --- Shell Layer functions File
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -39,7 +39,9 @@ view; to pop-up a full width buffer, use
 `spacemacs/projectile-shell-pop'."
   (interactive)
   (call-interactively
-   (or (and (eq shell-default-shell 'multi-term) #'projectile-multi-term-in-root)
+   (or (pcase shell-default-shell
+         ('multi-term #'projectile-multi-term-in-root)
+         ('eat #'eat-project))
        (intern-soft (format "projectile-run-%s" shell-default-shell))
        #'projectile-run-shell)))
 

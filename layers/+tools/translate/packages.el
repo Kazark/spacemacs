@@ -1,6 +1,6 @@
 ;;; packages.el --- Translate Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Ray Wang <rayw.public@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -33,14 +33,13 @@
 
 (defun translate/init-go-translate ()
   (use-package go-translate
-    :demand t
-    :after posframe
+    :commands (gts-translate)
     :config
     (defclass translate//reference-paragraph-texter (gts-texter) ())
     (cl-defmethod gts-text ((_ translate//reference-paragraph-texter))
       (translate-get-reference-paragraph-text-at-point))
     (defclass translate//reference-paragraph-picker (gts-picker)
-      ((texter :initarg :texter :initform '(translate//reference-paragraph-texter))))
+      ((texter :initarg :texter :initform (translate//reference-paragraph-texter))))
     (cl-defmethod gts-pick ((o translate//reference-paragraph-picker))
       (let ((text (gts-text (oref o texter))))
         (when (= 0 (length (if text (string-trim text) "")))

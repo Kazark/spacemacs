@@ -1,6 +1,6 @@
 ;;; funcs.el --- Auto-completion functions File -*- lexical-binding: t; -*-
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -114,10 +114,8 @@ Available PROPS:
                            (mapcar 'spacemacs//show-snippets-in-company
                                    ,raw-backends-var-name))
                    (setq ,backends-var-name ,raw-backends-var-name))
-                 (set (make-variable-buffer-local 'auto-completion-front-end)
-                      'company)
-                 (set (make-variable-buffer-local 'company-backends)
-                      ,backends-var-name)) result)
+                 (setq-local auto-completion-front-end 'company
+                             company-backends ,backends-var-name)) result)
         (when call-hooks
           (push `(,init-func-name) result))
         (when hooks
@@ -208,6 +206,7 @@ MODE parameter must match the :modes values used in the call to
   (when auto-completion-complete-with-key-sequence
     (let ((first-key (elt auto-completion-complete-with-key-sequence 0)))
       (cond ((eq 'company package)
+             (evil-declare-change-repeat 'spacemacs//auto-completion-key-sequence-end)
              (define-key company-active-map (kbd (char-to-string first-key))
                'spacemacs//auto-completion-key-sequence-start))
             (t (message "Not yet implemented for package %S" package))))))
@@ -371,6 +370,12 @@ MODE parameter must match the :modes values used in the call to
   "Call `yas-expand' and switch to `insert state'"
   (interactive)
   (call-interactively 'aya-expand)
+  (evil-insert-state))
+
+(defun spacemacs/auto-yasnippet-expand-from-history ()
+  "Call `yas-expand-from-history' and switch to `insert state'"
+  (interactive)
+  (call-interactively 'aya-expand-from-history)
   (evil-insert-state))
 
 

@@ -1,6 +1,6 @@
 ;;; packages.el --- Spacemacs Evil Layer packages File
 ;;
-;; Copyright (c) 2012-2023 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -68,7 +68,7 @@
                    (replace-query (format "(%d replace)" total))
                    (replace (format "(%d/%d)" here total)))))
             status))))
-    (when (eq (spacemacs/get-mode-line-theme-name) 'spaceline)
+    (when (eq (spacemacs/get-mode-line-theme-name) 'spacemacs)
       (setq anzu-mode-line-update-function 'spacemacs/anzu-update-mode-line
             anzu-cons-mode-line-p nil))))
 
