@@ -400,7 +400,7 @@
  (("F" "Frames"
    ("f" spacemacs/find-file-other-frame "Find file other frame...")
    ("d" delete-frame "Delete frame")
-   ("D" delete-other-frames "Delete other frames")
+   ("u" undelete-frame "Undelete frame")
    ("e" set-frame-name "Edit frame name")
    ("b" spacemacs/switch-to-buffer-other-frame "Switch to buffer other frame...")
    ("B" spacemacs/display-buffer-other-frame "Display buffer other frame...")
