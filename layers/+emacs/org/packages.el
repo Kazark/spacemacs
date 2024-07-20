@@ -35,15 +35,14 @@
     (ob :location built-in)
     (org :location elpa :min-version "9.6.1")
     (org-agenda :location built-in)
-    (org-wild-notifier
-     :toggle org-enable-notifications)
+    (org-wild-notifier :toggle org-enable-notifications)
     (org-contacts :toggle org-enable-org-contacts-support)
     org-contrib
     (org-vcard :toggle org-enable-org-contacts-support)
     (org-brain :toggle org-enable-org-brain-support)
     (org-expiry :location built-in)
-                                        ; temporarily point org-journal to dalanicolai fork until dalanicolai's
-                                        ; PR's https://github.com/bastibe/org-journal/pulls get merged
+    ;; temporarily point org-journal to dalanicolai fork until dalanicolai's
+    ;; PR's https://github.com/bastibe/org-journal/pulls get merged
     (org-journal
      :location (recipe :fetcher github :repo "dalanicolai/org-journal")
      :toggle org-enable-org-journal-support)
@@ -183,6 +182,13 @@
                 (cl-case org-todo-dependencies-strategy
                   (naive-auto #'spacemacs/org-summary-todo-naive-auto)
                   (semiauto #'spacemacs/org-summary-todo-semiauto))))
+
+    ;; `org-read-date' pops up the Calendar buffer but it is not usually useful
+    ;; to switch to it.
+    (with-eval-after-load 'calendar
+      (cl-pushnew (regexp-quote calendar-buffer)
+                  spacemacs-useless-buffers-regexp
+                  :test #'equal))
 
     (when org-todo-dependencies-strategy
       (setq org-enforce-todo-dependencies t)
