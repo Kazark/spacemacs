@@ -181,8 +181,8 @@
       (setq org-enforce-todo-dependencies t)
       (add-hook 'org-after-todo-statistics-hook
                 (cl-case org-todo-dependencies-strategy
-                      (naive-auto #'spacemacs/org-summary-todo-naive-auto)
-                      (semiauto #'spacemacs/org-summary-todo-semiauto))))
+                  (naive-auto #'spacemacs/org-summary-todo-naive-auto)
+                  (semiauto #'spacemacs/org-summary-todo-semiauto))))
 
     (when org-todo-dependencies-strategy
       (setq org-enforce-todo-dependencies t)
@@ -1094,8 +1094,7 @@ Headline^^            Visit entry^^               Filter^^                    Da
           org-appear-autoemphasis t
           org-appear-autosubmarkers t)
     :config
-    (when (and (eq org-appear-trigger 'manual)
-               (memq dotspacemacs-editing-style '(vim hybrid)))
+    (when (eq org-appear-trigger 'manual)
       (add-hook 'org-mode-hook
                 (lambda ()
                   (add-hook 'evil-insert-state-entry-hook #'org-appear-manual-start nil t)
