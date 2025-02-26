@@ -562,24 +562,24 @@ LIST-SIZE is specified in `dotspacemacs-startup-lists' for recent entries."
   (unless recentf-mode (recentf-mode))
   (let (;; we need to remove `org-agenda-files' entries from recent files
         (agenda-files
-         (when-let ((default-directory
-                     (or (bound-and-true-p org-directory) "~/org"))
-                    (files
-                     (when (bound-and-true-p org-agenda-files)
-                       (if (listp org-agenda-files)
-                           ;; if it's a list, we take that value directly
-                           org-agenda-files
-                         ;; but if it's a string, it must be file where the list
-                         ;; of agenda files are stored in that file and we have
-                         ;; to load `org-agenda' to process the list. If org is
-                         ;; already loaded, then we assume that the user has
-                         ;; already called org-agenda-files.
-                         (when (not (featurep 'org))
-                           (warn "`org-agenda-files' is a string and \
+         (when-let* ((default-directory
+                      (or (bound-and-true-p org-directory) "~/org"))
+                     (files
+                      (when (bound-and-true-p org-agenda-files)
+                        (if (listp org-agenda-files)
+                            ;; if it's a list, we take that value directly
+                            org-agenda-files
+                          ;; but if it's a string, it must be file where the list
+                          ;; of agenda files are stored in that file and we have
+                          ;; to load `org-agenda' to process the list. If org is
+                          ;; already loaded, then we assume that the user has
+                          ;; already called org-agenda-files.
+                          (when (not (featurep 'org))
+                            (warn "`org-agenda-files' is a string and \
 not a list. This requires us to load `org' to process the org agenda files in \
 startup list.")
-                           (require 'org)
-                           (org-agenda-files))))))
+                            (require 'org)
+                            (org-agenda-files))))))
            (mapcar #'expand-file-name files)))
         ;; we also need to skip sub-directories of `org-directory'
         (ignore-directory (when (bound-and-true-p org-directory)
@@ -759,7 +759,7 @@ version of `widget-button-press' since `widget-button-click' doesn't work."
   (when (widget-event-point event)
     (let ((pos (widget-event-point event)))
       (goto-char pos)
-      (when-let ((button (get-char-property pos 'button)))
+      (when-let* ((button (get-char-property pos 'button)))
         (widget-apply-action button)))))
 
 (defun spacemacs-buffer/jump-to-number-startup-list-line ()
@@ -914,9 +914,9 @@ This function is intended to be used in `spacemacs-buffer-mode' only."
       ;; point on a button, press it
       (widget-button-press (point))
     ;; point on an entry, press it
-    (if-let ((button (save-excursion
-                       (beginning-of-line-text)
-                       (re-search-forward "[0-9]* +. " (point-at-eol) 'noerror))))
+    (if-let* ((button (save-excursion
+                        (beginning-of-line-text)
+                        (re-search-forward "[0-9]* +. " (point-at-eol) 'noerror))))
         (widget-button-press button)
       ;; go to next line
       (forward-line)

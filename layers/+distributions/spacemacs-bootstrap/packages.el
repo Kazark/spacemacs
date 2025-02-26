@@ -64,7 +64,23 @@
     :keys (dotspacemacs-emacs-leader-key)
     :evil-keys (dotspacemacs-leader-key)
     :override-minor-modes t
-    :override-mode-name spacemacs-leader-override-mode))
+    :override-mode-name spacemacs-leader-override-mode)
+  ;; Fix https://github.com/justbur/emacs-bind-map/pull/11,
+  ;; can be removed once the above PR is merged.
+  (when (version<= "30" emacs-version)
+    (define-advice bind-map--lookup-major-modes (:override (mode) fix-major-mode-remap)
+      (let ((r-mode
+             (when bind-map-use-remapped-modes
+               (cond ((fboundp 'major-mode-remap)
+                      ;; bound in Emacs 30
+                      (major-mode-remap mode))
+                     ((boundp 'major-mode-remap-alist)
+                      ;; bound in Emacs 29
+                      (alist-get mode major-mode-remap-alist)))))
+            (a-modes (and bind-map-use-aliased-modes
+                          (fboundp 'function-alias-p)
+                          (function-alias-p mode))))
+        (delete-dups (delq nil (append (list mode r-mode) a-modes)))))))
 
 (defun spacemacs-bootstrap/init-evil ()
   ;; ensure that the search module is set at startup
@@ -73,15 +89,14 @@
   (add-hook 'spacemacs-editing-style-hook 'spacemacs/set-evil-search-module)
 
   ;; evil-mode is mandatory for Spacemacs to work properly
-  ;; evil must be require explicitly, the autoload seems to not
+  ;; evil must be required explicitly, the autoload seems to not
   ;; work properly sometimes.
   ;; `evil-collection' wants this value
   (setq evil-want-keybinding nil)
   (require 'evil)
   (evil-mode 1)
 
-  (when (configuration-layer/package-used-p 'undo-tree)
-    (customize-set-variable 'evil-undo-system 'undo-tree))
+  (customize-set-variable 'evil-undo-system dotspacemacs-undo-system)
 
   ;; Use evil as a default jump handler
   (add-to-list 'spacemacs-default-jump-handlers 'evil-goto-definition)
@@ -109,8 +124,8 @@
   ;; Make set-selective-display more discoverable to Evil folks
   (define-key evil-normal-state-map "z$" 'spacemacs/toggle-selective-display)
   ;; toggle maximize buffer
-  (define-key evil-window-map (kbd "o") 'spacemacs/toggle-maximize-buffer)
-  (define-key evil-window-map (kbd "C-o") 'spacemacs/toggle-maximize-buffer)
+  (define-key evil-window-map (kbd "o") 'spacemacs/toggle-maximize-window)
+  (define-key evil-window-map (kbd "C-o") 'spacemacs/toggle-maximize-window)
   ;; make cursor keys work
   (define-key evil-window-map (kbd "<left>") 'evil-window-left)
   (define-key evil-window-map (kbd "<right>") 'evil-window-right)
@@ -145,7 +160,13 @@
     (define-key evil-visual-state-map "K" 'drag-stuff-up))
 
   ;; Fix broken artist-mode under evil-mode
-  (advice-add 'artist-mode :around #'spacemacs/toggle-evil-mouse-drag-for-artist-mode)
+  (with-eval-after-load 'artist
+    (evil-make-intercept-map artist-mode-map))
+
+  ;; evil-refresh-cursor is called as part of the window-configuration-change-hook
+  ;; and seems to induce performance problems
+  (with-eval-after-load 'pdf-view
+    (advice-add 'evil-refresh-cursor :around #'spacemacs/not-in-pdf-view-mode))
 
   (when vim-style-enable-undo-region
     (define-key evil-visual-state-map (kbd "u") 'undo))
@@ -244,9 +265,9 @@
 
   (when dotspacemacs-enable-paste-transient-state
     (define-key evil-normal-state-map
-      "p" 'spacemacs/paste-transient-state/evil-paste-after)
+                "p" 'spacemacs/paste-transient-state/evil-paste-after)
     (define-key evil-normal-state-map
-      "P" 'spacemacs/paste-transient-state/evil-paste-before))
+                "P" 'spacemacs/paste-transient-state/evil-paste-before))
   ;; fold transient state
   (when (eq 'evil dotspacemacs-folding-method)
     (spacemacs|define-transient-state fold
@@ -307,8 +328,8 @@
   ;; `spacemacs/counsel-find-file' more `M-o' actions
   (with-eval-after-load 'dired
     (define-key dired-mode-map "j"
-      (cond ((configuration-layer/layer-used-p 'helm) 'spacemacs/helm-find-files)
-            ((configuration-layer/layer-used-p 'ivy) 'spacemacs/counsel-find-file))))
+                (cond ((configuration-layer/layer-used-p 'helm) 'spacemacs/helm-find-files)
+                      ((configuration-layer/layer-used-p 'ivy) 'spacemacs/counsel-find-file))))
 
   ;; support smartparens-strict-mode
   (when (configuration-layer/package-used-p 'smartparens)
@@ -560,7 +581,7 @@ Press \\[which-key-toggle-persistent] to hide."
 
   ;; hide the "C-c -> eyebrowse-create-window-config" entry
   (push '(("\\(.*\\)C-c C-w C-c" . "eyebrowse-create-window-config") . t)
-         which-key-replacement-alist)
+        which-key-replacement-alist)
 
   ;; C-c C-d-
   ;; Combine the d and C-d key entries
@@ -570,7 +591,7 @@ Press \\[which-key-toggle-persistent] to hide."
 
   ;; hide the "C-d -> elisp-slime-nav-describe-elisp-thing-at-point" entry
   (push '(("\\(.*\\)C-c C-d C-d" . "elisp-slime-nav-describe-elisp-thing-at-point") . t)
-         which-key-replacement-alist)
+        which-key-replacement-alist)
 
   (which-key-add-key-based-replacements
     dotspacemacs-leader-key '("root" . "Spacemacs root")
@@ -592,7 +613,7 @@ Press \\[which-key-toggle-persistent] to hide."
 (defun spacemacs-bootstrap/init-evil-evilified-state ()
   (use-package evil-evilified-state)
   (define-key evil-evilified-state-map (kbd dotspacemacs-leader-key)
-    spacemacs-default-map))
+              spacemacs-default-map))
 
 ;; we own pcre2el here, so that it's always available to ivy and helm
 ;; (necessary when using spacemacs-base distribution)

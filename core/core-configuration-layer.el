@@ -441,10 +441,7 @@ cache folder.")
           (configuration-layer/elpa-directory
            configuration-layer--elpa-root-directory))
     (setq package-archives (configuration-layer//resolve-package-archives
-                            configuration-layer-elpa-archives))
-    ;; optimization, no need to activate all the packages so early
-    (setq package-enable-at-startup nil)
-    (package-initialize 'noactivate)))
+                            configuration-layer-elpa-archives))))
 
 (autoload 'quelpa "quelpa")
 (autoload 'quelpa-checkout "quelpa")
@@ -458,7 +455,12 @@ cache folder.")
           quelpa-build-dir (expand-file-name "build" quelpa-dir)
           quelpa-persistent-cache-file (expand-file-name "cache" quelpa-dir)
           quelpa-update-melpa-p nil
-          quelpa-build-explicit-tar-format-p (eq (quelpa--tar-type) 'gnu))))
+          quelpa-build-explicit-tar-format-p (eq (quelpa--tar-type) 'gnu))
+
+    ;; Try to pre create the build dir to avoid having quelpa builds fail
+    ;; but don't aboard if this is not allowed.
+    (ignore-errors
+      (make-directory quelpa-build-dir t))))
 
 (defun configuration-layer//make-quelpa-recipe (pkg)
   "Read recipe in PKG if :fetcher is local, then turn it to a correct file recepe.
@@ -471,9 +473,9 @@ Otherwise return the recipe unchanged. PKG is of `cfgl-package' type."
       `(,pkg-name
         :fetcher file
         :path ,(configuration-layer/get-location-directory
-                         (oref pkg :name)
-                         (oref pkg :location)
-                         (car (oref pkg :owners)))))
+                (oref pkg :name)
+                (oref pkg :location)
+                (car (oref pkg :owners)))))
      (t (cons pkg-name (cdr (oref pkg :location)))))))
 
 (defun configuration-layer//package-archive-absolute-path-p (archive)
@@ -506,10 +508,7 @@ The returned list has a `package-archives' compliant format."
              (if (configuration-layer//package-archive-absolute-path-p x)
                  apath
                (concat
-                (if (and dotspacemacs-elpa-https
-                         (not spacemacs-insecure))
-                    "https://"
-                  "http://")
+                "https://"
                 apath)))))
    archives))
 
@@ -646,6 +645,11 @@ To prevent package from being installed or uninstalled set the variable
   (configuration-layer//configure-layers configuration-layer--used-layers)
   ;; load layers lazy settings
   (configuration-layer/load-auto-layer-file)
+  ;; try the package-quickstart-file before detecting package installation
+  (when (and (or package-quickstart dotspacemacs-enable-package-quickstart)
+             package-quickstart-file)
+    (setq package-quickstart t)
+    (load (file-name-sans-extension package-quickstart-file) t nil nil t))
   ;; install and/or uninstall packages
   (when spacemacs-sync-packages
     (let ((packages
@@ -864,7 +868,7 @@ a new object."
                      (fboundp init-func))))
     (when min-version
       (oset obj :min-version
-                                 (version-to-list min-version)))
+            (version-to-list min-version)))
     (when step
       (oset obj :step step))
     (when toggle
@@ -872,8 +876,8 @@ a new object."
     (when (and ownerp requires)
       (oset obj :requires requires))
     (oset obj :excluded
-                               (and (configuration-layer/layer-used-p layer-name)
-                                    (or excluded (oref obj :excluded))))
+          (and (configuration-layer/layer-used-p layer-name)
+               (or excluded (oref obj :excluded))))
     (when location
       (if (and (listp location)
                (eq (car location) 'recipe)
@@ -967,6 +971,9 @@ a new object."
   (interactive
    (list (intern
           (completing-read "Package: " configuration-layer--used-packages))))
+  (help-setup-xref (list #'configuration-layer/describe-package
+                         pkg-symbol layer-list pkg-list)
+                   (called-interactively-p 'interactive))
   (let* ((pkg (configuration-layer/get-package pkg-symbol))
          (owners (oref pkg :owners))
          (owner (car owners)))
@@ -992,15 +999,22 @@ a new object."
        ((not (null owner))
         (let* ((layer (configuration-layer/get-layer owner))
                (path (concat (oref layer dir) "packages.el")))
-          (princ "by the layer `")
-          (princ owner)
-          (princ "'.\n")
+          (princ (format "by the layer `%s'" owner))
           (with-current-buffer standard-output
             (save-excursion
               (re-search-backward "`\\([^`']+\\)'" nil t)
               (help-xref-button
                1 'help-function-def
-               (intern (format "%S/init-%S" owner pkg-symbol)) path)))))
+               (intern (format "%S/init-%S" owner pkg-symbol)) path)))
+          (when (member 'dotfile owners)
+            (princ ", also defined in `dotspacemacs-additional-packages'")
+            (with-current-buffer standard-output
+              (save-excursion
+                (re-search-backward "`\\([^`']+\\)'" nil t)
+                (help-xref-button 1 'help-variable
+                                  'dotspacemacs-additional-packages
+                                  dotspacemacs-filepath))))
+          (princ ".\n")))
        (t
         (princ "in an unknown place in the lisp parenthesis universe.\n")))
       ;; exclusion/protection
@@ -1247,9 +1261,13 @@ USEDP if non-nil indicates that made packages are used packages."
                        dotspacemacs--additional-theme-packages))
     (let* ((pkg-name (if (listp pkg) (car pkg) pkg))
            (obj (configuration-layer/get-package pkg-name)))
-      (if obj
-          (setq obj (configuration-layer/make-package pkg 'dotfile obj))
-        (setq obj (configuration-layer/make-package pkg 'dotfile)))
+      (if (null obj)
+          (setq obj (configuration-layer/make-package pkg 'dotfile))
+        (setq obj (configuration-layer/make-package pkg 'dotfile obj))
+        ;; set :toggle to t for user defined package should be enabled default
+        (unless (listp pkg)
+          (oset obj :toggle t)
+          (object-add-to-list obj :owners 'dotfile t)))
       (configuration-layer//add-package obj usedp)))
   (dolist (xpkg dotspacemacs-excluded-packages)
     (let ((obj (configuration-layer/get-package xpkg)))
@@ -1345,10 +1363,10 @@ PREDICATE is an additional expression that eval to a boolean."
   "Copy and replace special values of TEMPLATE to layer string NAME.
 If LAYER_DIR is nil, the private directory is used."
   (cl-flet ((cl-substitute (old new) (let ((case-fold-search nil))
-                                    (save-excursion
-                                      (goto-char (point-min))
-                                      (while (search-forward old nil t)
-                                        (replace-match new t))))))
+                                       (save-excursion
+                                         (goto-char (point-min))
+                                         (while (search-forward old nil t)
+                                           (replace-match new t))))))
     (let ((src (concat configuration-layer-template-directory
                        (format "%s.template" template)))
           (dest (if layer-dir
@@ -1402,11 +1420,11 @@ Returns nil if the directory is not a category."
 (defun configuration-layer//get-layer-parent-category (layer-name)
   "Return a parent category symbol for given LAYER-NAME.
 Returns nil if there is no layer named LAYER-NAME."
-  (when-let ((lp (configuration-layer/get-layer-path layer-name)))
+  (when-let* ((lp (configuration-layer/get-layer-path layer-name)))
     (thread-last lp
-      directory-file-name
-      file-name-directory
-      configuration-layer//get-category-from-path)))
+                 directory-file-name
+                 file-name-directory
+                 configuration-layer//get-category-from-path)))
 
 (defun configuration-layer/discover-layers (&optional refresh-index)
   "Initialize `configuration-layer--indexed-layers' with layer directories.
@@ -1522,7 +1540,8 @@ If `SKIP-LAYER-DEPS' is non nil then skip loading of layer dependenciesl"
   (dolist (x layer-names)
     (unless (member x configuration-layer--layers-dependencies)
       (add-to-list 'configuration-layer--layers-dependencies x)
-      (configuration-layer//load-layer-files x '("layers")))))
+      (unless configuration-layer--declared-layers-usedp
+        (configuration-layer//load-layer-files x '("layers"))))))
 
 (defun configuration-layer//declare-used-layers (layers-specs)
   "Declare used layers from LAYERS-SPECS list."
@@ -1544,8 +1563,10 @@ If `SKIP-LAYER-DEPS' is non nil then skip loading of layer dependenciesl"
             (reverse configuration-layer--used-layers)))
     ;; declare additional layer required by used layers
     ;; this layers will be at the beginning of `configuration-layer--used-layers'
-    (dolist (layer-name configuration-layer--layers-dependencies)
-      (configuration-layer/declare-layer layer-name))
+    (let ((ulayers (mapcar (lambda (x) (if (listp x) (car x) x)) layers-specs)))
+      (dolist (layer-name configuration-layer--layers-dependencies)
+        (unless (member layer-name ulayers)
+          (configuration-layer/declare-layer layer-name))))
     ;; distribution and bootstrap layers are always first
     (let ((distribution (if configuration-layer-force-distribution
                             configuration-layer-force-distribution
@@ -2190,15 +2211,15 @@ to update."
           (if (string= answer "no")
               (progn (spacemacs-buffer/append "Packages update has been cancelled.\n" t)
                      (user-error "Packages update has been cancelled.\n"))
-        ;; backup the package directory and construct an alist
-        ;; variable to be cached for easy update and rollback
+            ;; backup the package directory and construct an alist
+            ;; variable to be cached for easy update and rollback
             (when (string= answer "some")
               (setq update-packages
                     ;; 'apply nconc on list of lists' is equivalent to 'cl-remove-if nil'
                     (apply #'nconc (mapcar (lambda (pkg)
                                              (when (yes-or-no-p (format "Update package '%s'? " pkg))
                                                (list pkg)))
-                                    update-packages))))
+                                           update-packages))))
             (setq upgrade-count (length update-packages)))))
       (spacemacs-buffer/append
        "--> performing backup of package(s) to update...\n" t)
@@ -2239,81 +2260,98 @@ to update."
       (spacemacs-buffer/append "--> All packages are up to date.\n")
       (spacemacs//redisplay))))
 
-(defun configuration-layer//ido-candidate-rollback-slot ()
-  "Return a list of candidates to select a rollback slot."
-  (let ((rolldir configuration-layer-rollback-directory))
-    (when (file-exists-p rolldir)
-      (reverse
-       (delq nil (mapcar
-                  (lambda (x)
-                    (when (and (file-directory-p (concat rolldir x))
-                               (not (or (string= "." x) (string= ".." x))))
-                      (let ((p (length (directory-files (file-name-as-directory
-                                                         (concat rolldir x))))))
-                        ;; -3 for . .. and rollback-info
-                        (format "%s (%s packages)" x (- p 3)))))
-                  (directory-files rolldir)))))))
+(defun configuration-layer//rollback-slots ()
+  "Return a completion table for rollback slots."
+  (let ((dirs 'unset))
+    (lambda (string predicate action)
+      (cond
+       ((eq action 'metadata)
+        (list 'metadata
+              (cons 'annotation-function
+                    (lambda (slot-dir)
+                      (let ((packages (cdr (assoc slot-dir dirs))))
+                        (format " (%d packages)" packages))))
+              (cons 'display-sort-function
+                    (lambda (slot-dirs)
+                      (sort slot-dirs #'string>)))))
+       ((and (consp action) (eq (car action) 'boundaries))
+        `(boundaries 0 . ,(length string)))
+       ((memq action '(nil t lambda))
+        (when (eq dirs 'unset)
+          (let ((rolldir configuration-layer-rollback-directory))
+            (when (file-exists-p rolldir)
+              (setq dirs
+                    (delq nil
+                          (mapcar
+                           (lambda (slot-dir)
+                             (when (and (file-directory-p (concat rolldir slot-dir))
+                                        (not (or (string= "." slot-dir) (string= ".." slot-dir))))
+                               (let ((p (length (cl-set-difference
+                                                 (directory-files (file-name-as-directory
+                                                                   (concat rolldir slot-dir)))
+                                                 '("." ".." "rollback-info")
+                                                 :test #'string=))))
+                                 (cons slot-dir p))))
+                           (directory-files rolldir)))))))
+        (complete-with-action action dirs string predicate))))))
 
-(defun configuration-layer/rollback (slot)
-  "Rollback all the packages in the given SLOT.
-If called interactively and SLOT is nil then an ido buffers appears
-to select one."
+(defun configuration-layer/rollback (slot-dir)
+  "Rollback all the packages in the given SLOT-DIR.
+
+Interactively, select a rollback slot with `completing-read'.
+Rollback slots are stored in
+`configuration-layer-rollback-directory'."
   (interactive
    (list
-    (if (boundp 'slot) slot
-      (let ((candidates (configuration-layer//ido-candidate-rollback-slot)))
-        (when candidates
-          (ido-completing-read "Rollback slots (most recent are first): "
-                               candidates))))))
+    (let ((candidates (configuration-layer//rollback-slots)))
+      (if (all-completions "" candidates)
+          (completing-read "Rollback slots (most recent are first): " candidates nil t)
+        (error "No rollback slot available")))))
   (spacemacs-buffer/insert-page-break)
-  (if (not slot)
-      (configuration-layer/message "No rollback slot available.")
-    (string-match "^\\(.+?\\)\s.*$" slot)
-    (let* ((slot-dir (match-string 1 slot))
-           (rollback-dir (file-name-as-directory
-                          (concat configuration-layer-rollback-directory
-                                  (file-name-as-directory slot-dir))))
-           (info-file (expand-file-name
-                       (concat rollback-dir
-                               configuration-layer-rollback-info))))
+  (let* ((rollback-dir (file-name-as-directory
+                        (concat configuration-layer-rollback-directory
+                                (file-name-as-directory slot-dir))))
+         (info-file (expand-file-name
+                     (concat rollback-dir
+                             configuration-layer-rollback-info))))
+    (spacemacs-buffer/append
+     (format "\nRollbacking ELPA packages from slot %s...\n" slot-dir))
+    (configuration-layer/load-file info-file)
+    (let ((rollback-count (length update-packages-alist))
+          (rollbacked-count 0))
       (spacemacs-buffer/append
-       (format "\nRollbacking ELPA packages from slot %s...\n" slot-dir))
-      (configuration-layer/load-file info-file)
-      (let ((rollback-count (length update-packages-alist))
-            (rollbacked-count 0))
-        (spacemacs-buffer/append
-         (format "Found %s package(s) to rollback...\n" rollback-count))
-        (spacemacs//redisplay)
-        (dolist (apkg update-packages-alist)
-          (let* ((pkg (car apkg))
-                 (pkg-dir-name (cdr apkg))
-                 (installed-ver
-                  (configuration-layer//get-package-version-string pkg))
-                 (elpa-dir (file-name-as-directory package-user-dir))
-                 (src-dir (expand-file-name
-                           (concat rollback-dir (file-name-as-directory
-                                                 pkg-dir-name))))
-                 (dest-dir (expand-file-name
-                            (concat elpa-dir (file-name-as-directory
-                                              pkg-dir-name)))))
-            (unless (memq pkg dotspacemacs-frozen-packages)
-              (setq rollbacked-count (1+ rollbacked-count))
-              (if (string-equal (format "%S-%s" pkg installed-ver) pkg-dir-name)
-                  (spacemacs-buffer/replace-last-line
-                   (format "--> package %s already rolled back! [%s/%s]"
-                           pkg rollbacked-count rollback-count) t)
-                ;; rollback the package
+       (format "Found %s package(s) to rollback...\n" rollback-count))
+      (spacemacs//redisplay)
+      (dolist (apkg update-packages-alist)
+        (let* ((pkg (car apkg))
+               (pkg-dir-name (cdr apkg))
+               (installed-ver
+                (configuration-layer//get-package-version-string pkg))
+               (elpa-dir (file-name-as-directory package-user-dir))
+               (src-dir (expand-file-name
+                         (concat rollback-dir (file-name-as-directory
+                                               pkg-dir-name))))
+               (dest-dir (expand-file-name
+                          (concat elpa-dir (file-name-as-directory
+                                            pkg-dir-name)))))
+          (unless (memq pkg dotspacemacs-frozen-packages)
+            (setq rollbacked-count (1+ rollbacked-count))
+            (if (string-equal (format "%S-%s" pkg installed-ver) pkg-dir-name)
                 (spacemacs-buffer/replace-last-line
-                 (format "--> rolling back package %s... [%s/%s]"
+                 (format "--> package %s already rolled back! [%s/%s]"
                          pkg rollbacked-count rollback-count) t)
-                (configuration-layer//package-delete pkg)
-                (copy-directory src-dir dest-dir
-                                'keeptime 'create 'copy-content)))
-            (spacemacs//redisplay)))
-        (spacemacs-buffer/append
-         (format "\n--> %s packages rolled back.\n" rollbacked-count))
-        (spacemacs-buffer/append
-         "\nEmacs has to be restarted for the changes to take effect.\n")))))
+              ;; rollback the package
+              (spacemacs-buffer/replace-last-line
+               (format "--> rolling back package %s... [%s/%s]"
+                       pkg rollbacked-count rollback-count) t)
+              (configuration-layer//package-delete pkg)
+              (copy-directory src-dir dest-dir
+                              'keeptime 'create 'copy-content)))
+          (spacemacs//redisplay)))
+      (spacemacs-buffer/append
+       (format "\n--> %s packages rolled back.\n" rollbacked-count))
+      (spacemacs-buffer/append
+       "\nEmacs has to be restarted for the changes to take effect.\n"))))
 
 (defun configuration-layer//activate-package (pkg)
   "Activate PKG."
@@ -2426,7 +2464,7 @@ depends on it."
 
 (defun configuration-layer//package-delete (pkg-name)
   "Delete package with name PKG-NAME."
-  (if-let ((pkg (car (alist-get pkg-name package-alist))))
+  (if-let* ((pkg (car (alist-get pkg-name package-alist))))
       ;; add force flag to ignore dependency checks in Emacs25
       (if (configuration-layer//system-package-p pkg)
           (message "Would have removed package %s but this is a system package so it has not been changed." pkg-name)
@@ -2524,7 +2562,7 @@ When called interactively, delete all orphan packages."
 (defvar configuration-layer--spacemacs-startup-time nil
   "Spacemacs full startup duration.")
 
-(defun configuration-layer/display-summary (start-time)
+(defun configuration-layer/display-summary ()
   "Display a summary of loading time."
   (unless configuration-layer--spacemacs-startup-time
     (setq configuration-layer--spacemacs-startup-time

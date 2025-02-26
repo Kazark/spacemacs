@@ -33,7 +33,7 @@
     htmlize
     ;; ob, org, org-agenda and org-contacts are installed by `org-contrib'
     (ob :location built-in)
-    (org :location elpa :min-version "9.6.1")
+    (org :location elpa :min-version "9.7.8")
     (org-agenda :location built-in)
     (org-wild-notifier :toggle org-enable-notifications)
     (org-contacts :toggle org-enable-org-contacts-support)
@@ -41,11 +41,7 @@
     (org-vcard :toggle org-enable-org-contacts-support)
     (org-brain :toggle org-enable-org-brain-support)
     (org-expiry :location built-in)
-    ;; temporarily point org-journal to dalanicolai fork until dalanicolai's
-    ;; PR's https://github.com/bastibe/org-journal/pulls get merged
-    (org-journal
-     :location (recipe :fetcher github :repo "dalanicolai/org-journal")
-     :toggle org-enable-org-journal-support)
+    (org-journal :toggle org-enable-org-journal-support)
     org-download
     (org-jira :toggle org-enable-jira-support)
     org-mime
@@ -54,6 +50,7 @@
     org-present
     org-cliplink
     org-rich-yank
+    (org-project-capture :requires projectile)
     (org-projectile :requires projectile)
     (ox-epub :toggle org-enable-epub-support)
     (ox-twbs :toggle org-enable-bootstrap-support)
@@ -454,7 +451,7 @@ Will work on both org-mode and any mode that accepts plain html."
       "aof" "feeds"
       "aoC" (org-clocks-prefix))
     ;; org-agenda
-    (unless (when-let ((pkg (configuration-layer/get-package 'helm-org-rifle)))
+    (unless (when-let* ((pkg (configuration-layer/get-package 'helm-org-rifle)))
               ;; TODO: `configuration-layer/package-used-p' doesn't check
               ;; :toggle status.  When it is fixed, we can use it again.
               (cfgl-package-used-p pkg))
@@ -506,30 +503,14 @@ Will work on both org-mode and any mode that accepts plain html."
 
     ;; Evilify the calendar tool on C-c .
     (unless (eq 'emacs dotspacemacs-editing-style)
-      (define-key org-read-date-minibuffer-local-map (kbd "M-h")
-                  (lambda () (interactive)
-                    (org-eval-in-calendar '(calendar-backward-day 1))))
-      (define-key org-read-date-minibuffer-local-map (kbd "M-l")
-                  (lambda () (interactive)
-                    (org-eval-in-calendar '(calendar-forward-day 1))))
-      (define-key org-read-date-minibuffer-local-map (kbd "M-k")
-                  (lambda () (interactive)
-                    (org-eval-in-calendar '(calendar-backward-week 1))))
-      (define-key org-read-date-minibuffer-local-map (kbd "M-j")
-                  (lambda () (interactive)
-                    (org-eval-in-calendar '(calendar-forward-week 1))))
-      (define-key org-read-date-minibuffer-local-map (kbd "M-H")
-                  (lambda () (interactive)
-                    (org-eval-in-calendar '(calendar-backward-month 1))))
-      (define-key org-read-date-minibuffer-local-map (kbd "M-L")
-                  (lambda () (interactive)
-                    (org-eval-in-calendar '(calendar-forward-month 1))))
-      (define-key org-read-date-minibuffer-local-map (kbd "M-K")
-                  (lambda () (interactive)
-                    (org-eval-in-calendar '(calendar-backward-year 1))))
-      (define-key org-read-date-minibuffer-local-map (kbd "M-J")
-                  (lambda () (interactive)
-                    (org-eval-in-calendar '(calendar-forward-year 1)))))
+      (define-key org-read-date-minibuffer-local-map (kbd "M-h") #'org-calendar-backward-day)
+      (define-key org-read-date-minibuffer-local-map (kbd "M-l") #'org-calendar-forward-day)
+      (define-key org-read-date-minibuffer-local-map (kbd "M-k") #'org-calendar-backward-week)
+      (define-key org-read-date-minibuffer-local-map (kbd "M-j") #'org-calendar-forward-week)
+      (define-key org-read-date-minibuffer-local-map (kbd "M-H") #'org-calendar-backward-month)
+      (define-key org-read-date-minibuffer-local-map (kbd "M-L") #'org-calendar-forward-month)
+      (define-key org-read-date-minibuffer-local-map (kbd "M-K") #'org-calendar-backward-year)
+      (define-key org-read-date-minibuffer-local-map (kbd "M-J") #'org-calendar-forward-year))
 
     (spacemacs|define-transient-state org-babel
       :title "Org Babel Transient state"
@@ -871,23 +852,30 @@ Headline^^            Visit entry^^               Filter^^                    Da
       ;; ir = "insert rich"
       "ir" 'org-rich-yank)))
 
-(defun org/init-org-projectile ()
-  (use-package org-projectile
-    :commands (org-projectile-location-for-project)
+(defun org/init-org-project-capture ()
+  (use-package org-project-capture
+    :commands (org-project-capture-location-for-project)
     :init
     (spacemacs/set-leader-keys
-      "aop" 'org-projectile/capture
-      "po" 'org-projectile/goto-todos)
-    (with-eval-after-load 'org-capture
-      (require 'org-projectile))
+      "aop" 'spacemacs/org-project-capture-capture
+      "po" 'spacemacs/org-project-capture-goto-todos)
     :config
-    (if (file-name-absolute-p org-projectile-file)
+    (if (and (stringp org-project-capture-projects-file) (file-name-absolute-p org-project-capture-projects-file))
         (progn
-          (setq org-projectile-projects-file org-projectile-file)
-          (push (org-projectile-project-todo-entry :empty-lines 1)
-                org-capture-templates))
-      (org-projectile-per-project)
-      (setq org-projectile-per-project-filepath org-projectile-file))))
+          (setq org-project-capture-projects-file org-project-capture-projects-file)
+          (push (org-project-capture-project-todo-entry :empty-lines 1)
+                org-capture-templates)
+          (org-project-capture-single-file))
+      (progn
+        (setq org-project-capture-per-project-filepath org-project-capture-projects-file)
+        (org-project-capture-per-project)))))
+
+(defun org/init-org-projectile ()
+  (use-package org-projectile
+    :after org-project-capture ; backend for projectile after org-project-capture
+    :config
+    (setq org-project-capture-default-backend
+          (make-instance 'org-project-capture-projectile-backend))))
 
 (defun org/pre-init-ox-epub ()
   (spacemacs|use-package-add-hook org :post-config (require 'ox-epub)))
@@ -907,14 +895,14 @@ Headline^^            Visit entry^^               Filter^^                    Da
 
 (defun org/post-init-persp-mode ()
   (spacemacs|define-custom-layout "@Org"
-                                  :binding "o"
-                                  :body
-                                  (let ((agenda-files (org-agenda-files)))
-                                    (if agenda-files
-                                        (progn (find-file (if org-persp-startup-org-file org-persp-startup-org-file (cl-first agenda-files)))
-                                               (if org-persp-startup-with-agenda (org-agenda nil org-persp-startup-with-agenda)))
+    :binding "o"
+    :body
+    (let ((agenda-files (org-agenda-files)))
+      (if agenda-files
+          (progn (find-file (if org-persp-startup-org-file org-persp-startup-org-file (cl-first agenda-files)))
+                 (if org-persp-startup-with-agenda (org-agenda nil org-persp-startup-with-agenda)))
 
-                                      (user-error "Error: No agenda files configured, nothing to display.")))))
+        (user-error "Error: No agenda files configured, nothing to display.")))))
 
 (defun org/init-org-contacts ()
   (use-package org-contacts
@@ -998,6 +986,11 @@ Headline^^            Visit entry^^               Filter^^                    Da
     ;; org-roam. See https://github.com/syl20bnr/spacemacs/issues/15724
     ;; :hook (after-init . org-roam-setup)
     :init
+
+    ;; Fix org roam issue https://github.com/org-roam/org-roam/pull/2334 until
+    ;; upstream is merged.
+    (advice-add 'org-roam-fontify-like-in-org-mode :around #'spacemacs/with-save-excursion)
+
     (spacemacs/declare-prefix
       "aor"  "org-roam"
       "aord" "org-roam-dailies"

@@ -31,7 +31,6 @@
     (company-math :requires company math-symbol-lists)
     (company-auctex :requires company)
     (company-reftex :requires company)
-    counsel-gtags
     evil-matchit
     evil-tex
     flycheck
@@ -70,7 +69,8 @@
     (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
     (add-hook 'LaTeX-mode-hook #'spacemacs//latex-setup-backend)
     (when latex-refresh-preview
-      (add-hook 'doc-view-mode-hook 'auto-revert-mode))
+      (add-hook 'TeX-after-compilation-finished-functions
+            #'TeX-revert-document-buffer))
     :config
     ;; otherwise `, p` preview commands doesn't work
     (require 'preview)
@@ -233,8 +233,6 @@
       (concat prefix "T")    'reftex-toc-recenter
       (concat prefix "v")    'reftex-view-crossref)))
 
-(defun latex/post-init-counsel-gtags nil)
-
 (defun latex/post-init-ggtags ()
   (add-hook 'latex-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
 
@@ -257,6 +255,7 @@
 (defun latex/init-magic-latex-buffer ()
   (use-package magic-latex-buffer
     :defer t
+    :spacediminish (magic-latex-buffer " ✦" " mL")
     :init
     (add-hook 'TeX-update-style-hook 'magic-latex-buffer)
     (setq magic-latex-enable-block-highlight t

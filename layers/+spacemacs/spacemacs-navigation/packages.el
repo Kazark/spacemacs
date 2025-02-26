@@ -31,6 +31,7 @@
         (view :location built-in)
         golden-ratio
         (grep :location built-in)
+        (info :location built-in)
         (info+ :location (recipe :fetcher github
                                  :repo "emacsmirror/info-plus"))
         open-junk-file
@@ -38,7 +39,8 @@
         restart-emacs
         (smooth-scrolling :location built-in)
         symbol-overlay
-        winum))
+        winum
+        disable-mouse))
 
 (defun spacemacs-navigation/init-ace-link ()
   (use-package ace-link
@@ -315,11 +317,13 @@
     :config
     (define-key grep-mode-map "h" nil)))
 
+(defun spacemacs-navigation/init-info ()
+  (spacemacs/set-leader-keys "hj" 'info-display-manual))
+
 (defun spacemacs-navigation/init-info+ ()
   (use-package info+
     :defer t
     :init
-    (spacemacs/set-leader-keys "hj" 'info-display-manual)
     (setq Info-fontify-angle-bracketed-flag nil)
     (with-eval-after-load "info" (require 'info+))))
 
@@ -451,3 +455,12 @@
     (define-key winum-keymap (kbd "M-8") 'winum-select-window-8)
     (define-key winum-keymap (kbd "M-9") 'winum-select-window-9)
     (winum-mode)))
+
+(defun spacemacs-navigation/init-disable-mouse ()
+  (use-package disable-mouse
+    :defer t
+    :init
+    (spacemacs|add-toggle disable-mouse-input-globally
+      :mode disable-mouse-global-mode :evil-leader "tM")
+    :config
+    (spacemacs|diminish disable-mouse-global-mode " Ⓜ" " M")))
