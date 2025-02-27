@@ -741,15 +741,6 @@ startup list.")
         (spacemacs-buffer//do-insert-startupify-lists)
         (spacemacs-buffer//center-startup-lists)))))
 
-(defun spacemacs-buffer/goto-link-line ()
-  "Set point to the beginning of the link line."
-  (interactive)
-  (with-current-buffer spacemacs-buffer-name
-    (goto-char (point-min))
-    (with-demoted-errors "spacemacs buffer error: %s"
-      (search-forward "[")
-      (left-char 2))))
-
 (defun spacemacs-buffer//mouse-1 (event)
   "Action to open widget button at mouse click.
 
@@ -860,11 +851,10 @@ If a prefix argument is given, switch to it in an other, possibly new window."
             (spacemacs-buffer/set-mode-line spacemacs--default-mode-line)
             (force-mode-line-update)
             (spacemacs-buffer-mode)))
-        (if save-line
-            (progn (goto-char (point-min))
-                   (forward-line (1- save-line))
-                   (forward-to-indentation 0))
-          (spacemacs-buffer/goto-link-line)))
+        (when save-line
+          (progn (goto-char (point-min))
+                 (forward-line (1- save-line))
+                 (forward-to-indentation 0))))
       (unless do-not-switch
         (if current-prefix-arg
             (switch-to-buffer-other-window spacemacs-buffer-name))
