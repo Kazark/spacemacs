@@ -883,7 +883,6 @@ Features:
 - Support for folding of code via [[https://github.com/gregsexton/origami.el][=origami=]] and [[https://github.com/alexmurray/evil-vimish-fold][=evil-vimish-fold=]].
 - Support for password generation via [[https://github.com/vandrlexay/emacs-password-genarator][=password-generator=]].
 - Support for improving parenthesis handling via [[https://github.com/Fuco1/smartparens][=smartparens=]].
-- Automatic whitespace cleanup on save via =spacemacs-whitespace-cleanup=.
 - Support for converting definitions to certain styles via [[https://github.com/akicho8/string-inflection][=string-inflection=]].
 - Support for generating UUIDs via [[https://github.com/kanru/uuidgen-el][=uuidgen=]].
 - Support for conversion between Emacs regexps and PCRE regexps.

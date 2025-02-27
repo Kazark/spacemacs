@@ -41,7 +41,6 @@
     pcre2el
     (smartparens :toggle dotspacemacs-activate-smartparens-mode)
     (evil-swap-keys :toggle dotspacemacs-swap-number-row)
-    (spacemacs-whitespace-cleanup :location (recipe :fetcher local))
     string-edit-at-point
     string-inflection
     multi-line
@@ -54,8 +53,7 @@
     (vimish-fold :toggle (eq 'vimish dotspacemacs-folding-method))
     (evil-vimish-fold :toggle (eq 'vimish dotspacemacs-folding-method))
     (evil-easymotion :toggle (memq dotspacemacs-editing-style '(vim hybrid)))
-    wgrep
-    ws-butler))
+    wgrep))
 
 ;; Initialization of packages
 (defun spacemacs-editing/init-aggressive-indent ()
@@ -449,32 +447,6 @@
       (define-key evil-insert-state-map ")"
                   'spacemacs/smart-closing-parenthesis))))
 
-(defun spacemacs-editing/init-spacemacs-whitespace-cleanup ()
-  (use-package spacemacs-whitespace-cleanup
-    :commands (spacemacs-whitespace-cleanup-mode
-               global-spacemacs-whitespace-cleanup-mode)
-    :init
-    (spacemacs|add-toggle whitespace-cleanup
-      :mode spacemacs-whitespace-cleanup-mode
-      :documentation "Automatic whitespace clean up."
-      :on-message (spacemacs-whitespace-cleanup/on-message)
-      :evil-leader "tW")
-    (spacemacs|add-toggle global-whitespace-cleanup
-      :mode global-spacemacs-whitespace-cleanup-mode
-      :status spacemacs-whitespace-cleanup-mode
-      :on-message (spacemacs-whitespace-cleanup/on-message t)
-      :documentation "Global automatic whitespace clean up."
-      :evil-leader "t C-S-w")
-    (with-eval-after-load 'ws-butler
-      ;; handle reloading configuration
-      (spacemacs/toggle-global-whitespace-cleanup-off)
-      (when dotspacemacs-whitespace-cleanup
-        (spacemacs/toggle-global-whitespace-cleanup-on)))
-    :config
-    (spacemacs|diminish spacemacs-whitespace-cleanup-mode " Ⓦ" " W")
-    (spacemacs|diminish global-spacemacs-whitespace-cleanup-mode
-                        " Ⓦ" " W")))
-
 (defun spacemacs-editing/init-string-inflection ()
   (use-package string-inflection
     :init
@@ -594,12 +566,6 @@ See variable `undo-fu-session-directory'." dir))
       "iU1" 'spacemacs/uuidgen-1
       "iU4" 'spacemacs/uuidgen-4
       "iUU" 'spacemacs/uuidgen-4)))
-
-(defun spacemacs-editing/init-ws-butler ()
-  ;; not deferred on purpose, init-spacemacs-whitespace-cleanup need
-  ;; it to be loaded.
-  (use-package ws-butler
-    :config (spacemacs|hide-lighter ws-butler-mode)))
 
 (defun spacemacs-editing/init-evil-swap-keys ()
   (use-package evil-swap-keys

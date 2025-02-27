@@ -635,21 +635,6 @@ Default is `all' (highlight any scope and emphasize the current one."
   'boolean
   'spacemacs-dotspacemacs-init)
 
-(spacemacs|defc dotspacemacs-whitespace-cleanup nil
-  "Delete whitespace while saving buffer.
-
-Possible values are:
-`all' to aggressively delete empty lines and long sequences of whitespace,
-`trailing' to delete only the whitespace at end of lines,
-`changed' to delete only whitespace for changed lines or
-`nil' to disable cleanup.
-
-The variable `global-spacemacs-whitespace-cleanup-modes' controls
-which major modes have whitespace cleanup enabled or disabled
-by default."
-  '(choice (const nil) (const all) (const trailing) (const changed))
-  'spacemacs-dotspacemacs-init)
-
 (spacemacs|defc dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
   "List of search tool executable names. Spacemacs uses the first installed
 tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'."
