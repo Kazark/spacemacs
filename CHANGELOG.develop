@@ -354,7 +354,7 @@ Removed support for Racer, default backend for LSP is now rust-analizer due to
 both Racer and RLS not being maintained anymore.
 - Key bindings:
   - Edited ~SPC m t a~ from =rustic-cargo-test= to =rustic-cargo-test-run=
-    to avoid the unexpected behavior of always running a single test after using
+    to avoid the unexpected behavior of always running a single test after using 
     rustic-cargo-current-test (thanks to Roberto Previdi)
 ***** Ruby on Rails
 - Key bindings:
@@ -900,7 +900,6 @@ Other:
   - Remove package =evil-ediff=
     (thanks to Xuanqing Xu)
 - Key bindings:
-  - Switch frames by displayed buffer names via ~SPC F s~ (thanks to Keith Pinson)
   - Toggle line numbers (i.e. toggle =display-line-numbers-mode=) via ~SPC t n n~
     without having to think about which variant of line numbers you have turned
     on (thanks to Keith Pinson)

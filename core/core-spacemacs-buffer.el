@@ -856,7 +856,7 @@ If a prefix argument is given, switch to it in an other, possibly new window."
           (when (bound-and-true-p spacemacs-initialized)
             (when dotspacemacs-startup-lists
               (spacemacs-buffer/insert-startup-lists))
-            (configuration-layer/display-summary emacs-start-time)
+            (configuration-layer/display-summary)
             (spacemacs-buffer/set-mode-line spacemacs--default-mode-line)
             (force-mode-line-update)
             (spacemacs-buffer-mode)))
