@@ -274,11 +274,11 @@ by pressing its number key."
                     (when dotspacemacs-startup-buffer-show-icons
                       (cond
                        ((file-remote-p el)
-                        (all-the-icons-octicon "radio-tower" :height 0.8 :v-adjust -0.05))
+                        (nerd-icons-codicon "nf-cod-radio_tower" :height 0.8 :v-adjust -0.05))
                        ((file-directory-p el)
-                        (all-the-icons-icon-for-dir el))
+                        (nerd-icons-icon-for-dir el))
                        (t
-                        (all-the-icons-icon-for-file (file-name-nondirectory el) :height 0.8 :v-adjust -0.05))))
+                        (nerd-icons-icon-for-file (file-name-nondirectory el) :height 0.8 :v-adjust -0.05))))
                     " "))
                   (button-text (abbreviate-file-name el)))
               (insert button-prefix)
@@ -312,8 +312,8 @@ GROUPED-LIST: a list of string pathnames made interactive in this function."
                      " "
                      (when dotspacemacs-startup-buffer-show-icons
                        (if group-remote-p
-                           (all-the-icons-octicon "radio-tower" :height 0.8 :v-adjust -0.05)
-                         (all-the-icons-icon-for-dir (car group))))
+                           (nerd-icons-codicon "nt-cod-radio_tower" :height 0.8 :v-adjust -0.05)
+                         (nerd-icons-icon-for-dir (car group))))
                      " "))
                    (button-text-project (abbreviate-file-name (car group))))
               (insert button-prefix)
@@ -337,8 +337,8 @@ GROUPED-LIST: a list of string pathnames made interactive in this function."
                                (when dotspacemacs-startup-buffer-show-icons
                                  (if (or group-remote-p
                                          (file-remote-p (concat (car group) el)))
-                                     (all-the-icons-octicon "radio-tower" :height 0.8 :v-adjust -0.05)
-                                   (all-the-icons-icon-for-file (file-name-nondirectory el) :height 0.8 :v-adjust -0.05)))
+                                     (nerd-icons-codicon "nt-cod-radio_tower" :height 0.8 :v-adjust -0.05)
+                                   (nerd-icons-icon-for-file (file-name-nondirectory el) :height 0.8 :v-adjust -0.05)))
                                " "))
                              (button-text-filename (string-trim-left (expand-file-name el)
                                                                      (regexp-quote (car group)))))
@@ -372,11 +372,11 @@ LIST: a list of string bookmark names made interactive in this function."
                      (when dotspacemacs-startup-buffer-show-icons
                        (cond
                         ((file-remote-p filename)
-                         (all-the-icons-octicon "radio-tower" :height 0.8 :v-adjust -0.05))
+                         (nerd-icons-codicon "nt-cod-radio_tower" :height 0.8 :v-adjust -0.05))
                         ((file-directory-p filename)
-                         (all-the-icons-icon-for-dir filename))
+                         (nerd-icons-icon-for-dir filename))
                         (t
-                         (all-the-icons-icon-for-file (file-name-nondirectory filename) :height 0.8 :v-adjust -0.05))))
+                         (nerd-icons-icon-for-file (file-name-nondirectory filename) :height 0.8 :v-adjust -0.05))))
                      " "))
                    (button-text
                     (if filename
@@ -476,7 +476,7 @@ LIST: list of `org-agenda' entries in the todo list."
                        (format "%2s " (number-to-string spacemacs-buffer--startup-list-nr)))
                      " "
                      (when dotspacemacs-startup-buffer-show-icons
-                       (all-the-icons-octicon "primitive-dot" :height 1.0 :v-adjust 0.01))
+                       (nerd-icons-octicon "nf-oct-dot" :height 1.0 :v-adjust 0.01))
                      " "))
                    (button-text
                     (format "%s %s %s"
@@ -538,7 +538,7 @@ SEQ, START and END are the same arguments as for `cl-subseq'"
   (when (spacemacs-buffer//insert-string-list
          (spacemacs-buffer||propertize-heading
           (when dotspacemacs-startup-buffer-show-icons
-            (all-the-icons-material "error" :face 'font-lock-keyword-face))
+            (nerd-icons-codicon "nf-cod-error" :face 'font-lock-keyword-face))
           "Errors:" "e")
          spacemacs-buffer--errors)
     (spacemacs-buffer||add-shortcut "e" "Errors:")
@@ -548,7 +548,7 @@ SEQ, START and END are the same arguments as for `cl-subseq'"
   (when (spacemacs-buffer//insert-string-list
          (spacemacs-buffer||propertize-heading
           (when dotspacemacs-startup-buffer-show-icons
-            (all-the-icons-material "warning" :face 'font-lock-keyword-face))
+            (nerd-icons-codicon "nf-cod-warning" :face 'font-lock-keyword-face))
           "Warnings:" "w")
          spacemacs-buffer--warnings)
     (spacemacs-buffer||add-shortcut "w" "Warnings:")
@@ -596,8 +596,8 @@ startup list.")
     (when (spacemacs-buffer//insert-file-list
            (spacemacs-buffer||propertize-heading
             (when dotspacemacs-startup-buffer-show-icons
-              (all-the-icons-octicon
-               "history" :face 'font-lock-keyword-face :v-adjust -0.05))
+              (nerd-icons-octicon
+               "nf-oct-history" :face 'font-lock-keyword-face :v-adjust -0.05))
             "Recent Files:" "r")
            recent-files-list)
       (spacemacs-buffer||add-shortcut "r" "Recent Files:")))
@@ -609,7 +609,7 @@ startup list.")
   (when (spacemacs-buffer//insert-files-by-dir-list
          (spacemacs-buffer||propertize-heading
           (when dotspacemacs-startup-buffer-show-icons
-            (all-the-icons-octicon "rocket" :face 'font-lock-keyword-face :v-adjust -0.05))
+            (nerd-icons-octicon "nf-oct-rocket" :face 'font-lock-keyword-face :v-adjust -0.05))
           "Recent Files by Project:" "R")
          (mapcar (lambda (group)
                    (cons (car group)
@@ -626,7 +626,7 @@ startup list.")
   (when (spacemacs-buffer//insert-todo-list
          (spacemacs-buffer||propertize-heading
           (when dotspacemacs-startup-buffer-show-icons
-            (all-the-icons-octicon "check" :face 'font-lock-keyword-face :v-adjust -0.05))
+            (nerd-icons-octicon "nf-oct-check" :face 'font-lock-keyword-face :v-adjust -0.05))
           "To-Do:" "d")
          (spacemacs//subseq (spacemacs-buffer//todo-list)
                             0 list-size))
@@ -637,7 +637,7 @@ startup list.")
   (when (spacemacs-buffer//insert-todo-list
          (spacemacs-buffer||propertize-heading
           (when dotspacemacs-startup-buffer-show-icons
-            (all-the-icons-octicon "calendar" :face 'font-lock-keyword-face :v-adjust -0.05))
+            (nerd-icons-octicon "nf-oct-calendar" :face 'font-lock-keyword-face :v-adjust -0.05))
           "Agenda:" "c")
          (spacemacs//subseq (spacemacs-buffer//agenda-list)
                             0 list-size))
@@ -651,7 +651,7 @@ startup list.")
   (when (spacemacs-buffer//insert-bookmark-list
          (spacemacs-buffer||propertize-heading
           (when dotspacemacs-startup-buffer-show-icons
-            (all-the-icons-octicon "bookmark" :face 'font-lock-keyword-face :v-adjust -0.05))
+            (nerd-icons-octicon "nf-oct-bookmark" :face 'font-lock-keyword-face :v-adjust -0.05))
           "Bookmarks:" "b")
          (spacemacs//subseq (bookmark-all-names)
                             0 list-size))
@@ -663,7 +663,7 @@ startup list.")
   (when (spacemacs-buffer//insert-file-list
          (spacemacs-buffer||propertize-heading
           (when dotspacemacs-startup-buffer-show-icons
-            (all-the-icons-octicon "rocket" :face 'font-lock-keyword-face :v-adjust -0.05))
+            (nerd-icons-octicon "nf-oct-rocket" :face 'font-lock-keyword-face :v-adjust -0.05))
           "Projects:" "p")
          (spacemacs//subseq (projectile-relevant-known-projects)
                             0 list-size))
@@ -679,12 +679,12 @@ startup list.")
         (is-org-loaded (bound-and-true-p spacemacs-initialized)))
     (if (display-graphic-p)
         (when (and spacemacs-initialized
-                   (not (configuration-layer/package-used-p 'all-the-icons)))
-          (message "Package `all-the-icons' isn't installed")
+                   (not (configuration-layer/package-used-p 'nerd-icons)))
+          (message "Package `nerd-icons' isn't installed")
           (setq dotspacemacs-startup-buffer-show-icons nil))
       (setq dotspacemacs-startup-buffer-show-icons nil))
     (when dotspacemacs-startup-buffer-show-icons
-      (require 'all-the-icons))
+      (require 'nerd-icons))
     (dolist (els (if is-org-loaded (append '(warnings) dotspacemacs-startup-lists) '(warnings)))
       (let ((el (or (car-safe els) els))
             (list-size (or (cdr-safe els)

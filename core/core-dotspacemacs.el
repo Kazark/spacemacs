@@ -214,7 +214,7 @@ in `dotspacemacs-themes'.")
 
 (spacemacs|defc dotspacemacs-startup-buffer-show-icons nil
   "If non-nil, show file icons for entries and headings on spacemacs buffer.
-This has no effect in terminal or if \"all-the-icons\" is not installed."
+This has no effect in terminal or if \"nerd-icons\" is not installed."
   'boolean
   'spacemacs-dotspacemacs-init)
 
