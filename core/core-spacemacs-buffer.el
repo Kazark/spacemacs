@@ -312,7 +312,7 @@ GROUPED-LIST: a list of string pathnames made interactive in this function."
                      " "
                      (when dotspacemacs-startup-buffer-show-icons
                        (if group-remote-p
-                           (nerd-icons-codicon "nt-cod-radio_tower" :height 0.8 :v-adjust -0.05)
+                           (nerd-icons-codicon "nf-cod-radio_tower" :height 0.8 :v-adjust -0.05)
                          (nerd-icons-icon-for-dir (car group))))
                      " "))
                    (button-text-project (abbreviate-file-name (car group))))
@@ -337,7 +337,7 @@ GROUPED-LIST: a list of string pathnames made interactive in this function."
                                (when dotspacemacs-startup-buffer-show-icons
                                  (if (or group-remote-p
                                          (file-remote-p (concat (car group) el)))
-                                     (nerd-icons-codicon "nt-cod-radio_tower" :height 0.8 :v-adjust -0.05)
+                                     (nerd-icons-codicon "nf-cod-radio_tower" :height 0.8 :v-adjust -0.05)
                                    (nerd-icons-icon-for-file (file-name-nondirectory el) :height 0.8 :v-adjust -0.05)))
                                " "))
                              (button-text-filename (string-trim-left (expand-file-name el)
@@ -372,7 +372,7 @@ LIST: a list of string bookmark names made interactive in this function."
                      (when dotspacemacs-startup-buffer-show-icons
                        (cond
                         ((file-remote-p filename)
-                         (nerd-icons-codicon "nt-cod-radio_tower" :height 0.8 :v-adjust -0.05))
+                         (nerd-icons-codicon "nf-cod-radio_tower" :height 0.8 :v-adjust -0.05))
                         ((file-directory-p filename)
                          (nerd-icons-icon-for-dir filename))
                         (t
@@ -677,7 +677,7 @@ startup list.")
   (setq spacemacs-buffer--startup-list-nr 1)
   (let ((dotspacemacs-startup-buffer-show-icons dotspacemacs-startup-buffer-show-icons)
         (is-org-loaded (bound-and-true-p spacemacs-initialized)))
-    (if (display-graphic-p)
+    (if (dotspacemacs|symbol-value dotspacemacs-startup-buffer-show-icons)
         (when (and spacemacs-initialized
                    (not (configuration-layer/package-used-p 'nerd-icons)))
           (message "Package `nerd-icons' isn't installed")
