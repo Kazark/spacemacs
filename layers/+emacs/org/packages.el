@@ -287,6 +287,7 @@ Will work on both org-mode and any mode that accepts plain html."
       ;; ones are, but a basic piece of Org machinery that should be much more
       ;; available than say toggles display of special entities.
       ";" 'org-todo
+      "." #'spacemacs/org-deadline-today+todo
       "c" 'org-capture
 
       ;; Clock
@@ -303,7 +304,18 @@ Will work on both org-mode and any mode that accepts plain html."
       "Cr" 'org-resolve-clocks
 
       "dd" 'org-deadline
-      "ds" 'org-schedule
+      ;;; . = "today"
+      "d." #'spacemacs/org-deadline-today
+      ;;; a = "day" (forward in time)
+      "da" #'spacemacs/org-deadline++day
+      ;;; A = "day" (backward in time)
+      "dA" #'spacemacs/org-deadline--day
+      ;;; w = "week" (forward in time)
+      "dw" #'spacemacs/org-deadline++week
+      ;;; W = "week" (backward in time)
+      "dW" #'spacemacs/org-deadline--week
+      ;;; m = "month"
+      "dm" #'spacemacs/org-deadline++month
       "dt" 'org-time-stamp
       "dT" 'org-time-stamp-inactive
       "ee" 'org-export-dispatch
@@ -337,6 +349,23 @@ Will work on both org-mode and any mode that accepts plain html."
       "C-S-h" 'org-shiftcontrolleft
       "C-S-j" 'org-shiftcontroldown
       "C-S-k" 'org-shiftcontrolup
+
+      "ds" 'org-schedule
+      ;; S = scheduled
+      ;;; . = "today"
+      "S." #'spacemacs/org-schedule-today
+      ;;; a = "day" (forward in time)
+      "Sa" #'spacemacs/org-schedule++day
+      ;;; A = "day" (backward in time)
+      "SA" #'spacemacs/org-schedule--day
+      ;;; w = "week" (forward in time)
+      "Sw" #'spacemacs/org-schedule++week
+      ;;; W = "week" (backward in time)
+      "SW" #'spacemacs/org-schedule--week
+      ;;; m = "month"
+      "Sm" #'spacemacs/org-schedule++month
+      ;;; M = "month"
+      "SM" #'spacemacs/org-schedule--month
 
       ;; Subtree editing
       "sa" 'org-toggle-archive-tag

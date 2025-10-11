@@ -141,3 +141,64 @@ For example: To unfold from a magit diff buffer, evaluate the following:
   "Execute the given function with save excursion."
   (save-excursion
     (apply orig-fun args)))
+
+(defun spacemacs/org-schedule-today (arg)
+  (interactive "P")
+  (org-schedule arg "."))
+
+(defun spacemacs/org-schedule++day (arg)
+  (interactive "P")
+  (org-schedule arg "++1"))
+
+(defun spacemacs/org-schedule--day (arg)
+  (interactive "P")
+  (org-schedule arg "--1"))
+
+(defun spacemacs/org-schedule++week (arg)
+  (interactive "P")
+  (org-schedule arg "++1w"))
+
+(defun spacemacs/org-schedule--week (arg)
+  (interactive "P")
+  (org-schedule arg "--1w"))
+
+(defun spacemacs/org-schedule++month (arg)
+  (interactive "P")
+  (org-schedule arg "++1m"))
+
+(defun spacemacs/org-schedule--month (arg)
+  (interactive "P")
+  (org-schedule arg "--1m"))
+
+(defun spacemacs/org-deadline-today (arg)
+  (interactive "P")
+  (org-deadline arg "."))
+
+(defun spacemacs/org-deadline++day (arg)
+  (interactive "P")
+  (org-deadline arg "++1"))
+
+(defun spacemacs/org-deadline--day (arg)
+  (interactive "P")
+  (org-deadline arg "--1"))
+
+(defun spacemacs/org-deadline++week (arg)
+  (interactive "P")
+  (org-deadline arg "++1w"))
+
+(defun spacemacs/org-deadline--week (arg)
+  (interactive "P")
+  (org-deadline arg "--1w"))
+
+(defun spacemacs/org-deadline++month (arg)
+  (interactive "P")
+  (org-deadline arg "++1m"))
+
+(defun spacemacs/org-deadline--month (arg)
+  (interactive "P")
+  (org-deadline arg "--1m"))
+
+(defun spacemacs/org-deadline-today+todo (arg)
+  (interactive "P")
+  (org-deadline arg ".")
+  (org-todo))
