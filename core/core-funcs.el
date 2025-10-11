@@ -1,6 +1,6 @@
 ;;; core-funcs.el --- Spacemacs Core File -*- lexical-binding: t -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -26,6 +26,13 @@
 (defmacro spacemacs|dotspacemacs-backward-compatibility (variable default)
   "Return `if' sexp for backward compatibility with old dotspacemacs
 values."
+  (declare (obsolete nil "The `spacemacs|dotspacemacs-backward-compatibility' macro will be removed after 2025.
+Please reinstall the package which relies on this macro (such as `hybrid-mode')"))
+  ;; Display a warning in addition to the obsolete declaration.  This macro is
+  ;; used in autoload forms in `hybrid-mode' which are interpreted (not
+  ;; byte-compiled).
+  (warn "The `spacemacs|dotspacemacs-backward-compatibility' macro will be removed after 2025.
+Please reinstall the package which relies on this macro (such as `hybrid-mode')")
   `(if (boundp ',variable) ,variable ',default))
 
 (defun spacemacs/system-is-mac ()
@@ -99,6 +106,8 @@ and its values are removed."
   "simplistic dumping of variables in VARLIST to a file FILENAME"
   (with-temp-file filename
     (spacemacs/dump-vars varlist (current-buffer))
+    (delay-mode-hooks (emacs-lisp-mode))
+    (elisp-enable-lexical-binding)
     (make-directory (file-name-directory filename) t)))
 
 ;; From https://stackoverflow.com/a/2322164
@@ -217,7 +226,7 @@ passed-tests and total-tests."
         (var-val (symbol-value var)))
     (when (boundp 'total-tests) (setq total-tests (1+ total-tests)))
     (insert (format "** TEST: [[file:%s::%s][%s]] %s\n"
-                    dotspacemacs-filepath var-name var-name test-desc))
+                    (dotspacemacs/location) var-name var-name test-desc))
     (if (funcall pred var-val)
         (progn
           (when (boundp 'passed-tests) (setq passed-tests (1+ passed-tests)))
@@ -232,10 +241,10 @@ result, incrementing passed-tests and total-tests."
         (varlist-val (symbol-value varlist)))
     (if element-desc
         (insert (format "** TEST: Each %s in [[file:%s::%s][%s]] %s\n"
-                        element-desc dotspacemacs-filepath varlist-name
+                        element-desc (dotspacemacs/location) varlist-name
                         varlist-name test-desc))
       (insert (format "** TEST: Each element of [[file:%s::%s][%s]] %s\n"
-                      dotspacemacs-filepath varlist-name varlist-name
+                      (dotspacemacs/location) varlist-name varlist-name
                       test-desc)))
     (dolist (var varlist-val)
       (when (boundp 'total-tests) (setq total-tests (1+ total-tests)))

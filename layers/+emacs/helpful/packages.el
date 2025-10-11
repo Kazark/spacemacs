@@ -1,6 +1,6 @@
-;;; packages.el --- helpful layer packages file for Spacemacs.
+;;; packages.el --- helpful layer packages file for Spacemacs.  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Johnson Denen <johnson@johnsons-macbook-pro.local>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -50,8 +50,7 @@
     (advice-add 'helpful--navigate :after (lambda (_) (setq-local tab-width 8)))))
 
 (defun helpful/post-init-link-hint ()
-  (with-eval-after-load 'helpful
-    (evil-define-key 'normal helpful-mode-map (kbd "o") 'link-hint-open-link)))
+  (evil-define-key 'normal helpful-mode-map (kbd "o") 'link-hint-open-link))
 
 (defun helpful/pre-init-popwin ()
   (spacemacs|use-package-add-hook popwin

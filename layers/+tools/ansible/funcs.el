@@ -1,6 +1,6 @@
-;;; funcs.el --- Ansible Layer functions File for Spacemacs
+;;; funcs.el --- Ansible Layer functions File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Brian Hicks <brian@brianthicks.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -29,7 +29,7 @@
 (defun spacemacs/ansible-maybe-enable ()
   "Enable `ansible-mode' if required."
   (when (spacemacs//ansible-should-enable?)
-    (ansible 1)))
+    (ansible-mode 1)))
 
 (defun spacemacs/ansible-auto-decrypt-encrypt-vault ()
   "Auto decrypt/encrypt Vault files."

@@ -21,6 +21,7 @@
   - [[#mu4e][Mu4e]]
   - [[#notmuch][Notmuch]]
 - [[#emacs][Emacs]]
+  - [[#amx][Amx]]
   - [[#better-defaults][Better Defaults]]
   - [[#helpful][Helpful]]
   - [[#ibuffer][IBuffer]]
@@ -28,7 +29,6 @@
   - [[#outshine][Outshine]]
   - [[#quickurl][Quickurl]]
   - [[#semantic][Semantic]]
-  - [[#smex][Smex]]
   - [[#tabs][Tabs]]
   - [[#typography][Typography]]
 - [[#file-trees][File trees]]
@@ -47,6 +47,7 @@
   - [[#keyboard-layout][Keyboard-layout]]
 - [[#miscellaneous][Miscellaneous]]
   - [[#copy-as-format][Copy-as-format]]
+  - [[#denote][Denote]]
   - [[#dtrt-indent][Dtrt-indent]]
   - [[#ietf][Ietf]]
   - [[#multiple-cursors][Multiple-cursors]]
@@ -209,11 +210,13 @@
   - [[#themes-megapack][Themes Megapack]]
   - [[#theming][Theming]]
 - [[#tools][Tools]]
+  - [[#aider-layer][Aider Layer]]
   - [[#ansible][Ansible]]
   - [[#apache][Apache]]
   - [[#bm][Bm]]
   - [[#cfengine][CFEngine]]
   - [[#chrome][Chrome]]
+  - [[#claude-code-layer][Claude Code Layer]]
   - [[#cmake][CMake]]
   - [[#command-log][Command-log]]
   - [[#dap][DAP]]
@@ -270,7 +273,6 @@
   - [[#layer-for-reddit][Layer for reddit]]
   - [[#lobsters][Lobsters]]
   - [[#openai][OpenAI]]
-  - [[#pocket][Pocket]]
   - [[#search-engine][Search Engine]]
   - [[#streamlink][Streamlink]]
   - [[#twitch][Twitch]]
@@ -477,6 +479,14 @@ Features:
 - Email tagging
 
 * Emacs
+** Amx
+[[file:+emacs/amx/README.org][+emacs/amx/README.org]]
+
+This layer provides a more traditional alternative to =helm-M-x= based on =ido=.
+
+Features:
+- Provides an alternative way for =helm-M-x= based on =ido= and [[https://github.com/DarwinAwardWinner/amx][amx]]
+
 ** Better Defaults
 [[file:+emacs/better-defaults/README.org][+emacs/better-defaults/README.org]]
 
@@ -575,14 +585,6 @@ Features:
   [[https://github.com/tuhdo/semantic-refactor/blob/master/srefactor-demos/demos.org][this page]] for demonstration of refactoring features.
 - Support Lisp source code formatting with [[https://github.com/tuhdo/semantic-refactor][semantic-refactor]]. See
   [[https://github.com/tuhdo/semantic-refactor/blob/master/srefactor-demos/demos-elisp.org][this page]] for demonstration of Lisp formatting features.
-
-** Smex
-[[file:+emacs/smex/README.org][+emacs/smex/README.org]]
-
-This layer provides a more traditional alternative to =helm-M-x= based on =ido=.
-
-Features:
-- Provides an alternative way for =helm-M-x= based on =ido= and [[https://github.com/nonsequitur/smex][smex]]
 
 ** Tabs
 [[file:+emacs/tabs/README.org][+emacs/tabs/README.org]]
@@ -758,6 +760,16 @@ This layer adds support for [[https://github.com/sshaw/copy-as-format][copy-as-f
 Features:
 - Function to copy buffer locations as GitHub/Slack/JIRA/HipChat/... formatted code
 
+** Denote
+[[file:+misc/denote/README.org][+misc/denote/README.org]]
+
+Adds the [[https://protesilaos.com/emacs/denote][denote package]] and related tools for note taking.
+
+Features:
+- Simple notes for Emacs with an efficient file-naming scheme
+- List and filter notes in a tabulated view using =denote-menu=
+- Consult notes via =consult-denote= if the =compleseus= layer is active
+
 ** Dtrt-indent
 [[file:+misc/dtrt-indent/README.org][+misc/dtrt-indent/README.org]]
 
@@ -838,18 +850,16 @@ Features:
   - cus-edit
   - dired
   - dired-x
-  - display-line-numbers (only in Emacs 26.x and newer)
+  - display-line-numbers
   - electric-indent-mode
-  - easypg
   - ediff
   - eldoc
   - hi-lock
+  - image-dired
   - image-mode
   - imenu
-  - occur-mode
   - package-menu
   - page-break-lines
-  - proced
   - process-menu
   - quickrun
   - recentf
@@ -862,6 +872,7 @@ Features:
   - visual-line-mode
   - whitespace
   - winner
+  - xref
   - zone
 
 ** Spacemacs-editing
@@ -2203,7 +2214,6 @@ Features:
 - Edit Drupal files
 - Complete and jump to define with [[https://github.com/xcwen/ac-php][company-php]]
 - Run tests with PHPUnit
-- Reformat code with PHP CBF
 - Debug your programs with XDebug (via [[https://github.com/ahungry/geben][geben]] or [[https://github.com/emacs-lsp/dap-mode][dap-mode]])
 - Refactor source files with help of [[https://github.com/emacs-php/phpactor.el][phpactor.el]]
 - Support for the [[https://langserver.org/][Language Server Protocol]] (experimental)
@@ -2226,9 +2236,9 @@ Features:
 - Code Navigation
 - Documentation Lookup using [[https://github.com/proofit404/anaconda-mode][anaconda-mode]] and [[https://github.com/tsgates/pylookup][pylookup]]
 - Test Runners using [[https://github.com/ionrock/pytest-el][pytest]] or [[https://github.com/syl20bnr/nose.el][nose.el]]
-- Virtual Environment using [[https://github.com/jorgenschaefer/pyvenv][pyvenv]] and [[https://github.com/yyuu/pyenv][pyenv]] as well as [[https://github.com/pypa/pipenv][pipenv]] and [[https://github.com/galaunay/poetry.el][poetry]]
+- Virtual Environment using [[https://github.com/jorgenschaefer/pyvenv][pyvenv]] and [[https://github.com/yyuu/pyenv][pyenv]] as well as [[https://github.com/pypa/pipenv][pipenv]], [[https://github.com/galaunay/poetry.el][poetry]], and [[https://github.com/astral-sh/uv][UV]]
 - semantic mode is enabled
-- PEP8 compliant formatting via [[https://github.com/google/yapf][YAPF]] or [[https://github.com/ambv/black][black]]
+- PEP8 compliant formatting via [[https://github.com/google/yapf][YAPF]], [[https://github.com/ambv/black][black]], or [[https://github.com/astral-sh/ruff][ruff]]
 - PEP8 checks with [[https://pypi.python.org/pypi/flake8][flake8]] or [[https://pypi.python.org/pypi/pylint/1.6.4][pylint]]
 - Suppression of unused import with [[https://github.com/myint/autoflake][autoflake]]
 - Use the ~%~ key to jump between blocks with [[https://github.com/redguardtoo/evil-matchit][evil-matchit]]
@@ -2386,7 +2396,8 @@ Features:
 **** Gleam
 [[file:+lang/gleam/README.org][+lang/gleam/README.org]]
 
-This layers adds support for [[https://gleam.run/][Gleam]]. It relies on the official [[https://github.com/gleam-lang/gleam-mode][gleam-mode]] package and [[https://github.com/emacsmirror/tree-sitter-indent][tree-sitter-indent]].
+This layers adds support for [[https://gleam.run/][Gleam]]. It relies on the official [[https://github.com/gleam-lang/gleam-mode][gleam-ts-mode]] package and requires Emacs to be compiled with treesit support (built-in with version 29+).
+To check that the treesit package is installed, you can run =M: (treesit-available-p)=.
 
 Features:
 - [[https://gleam.run/news/v0.21-introducing-the-gleam-language-server/][Gleam language server]] integration
@@ -2737,6 +2748,21 @@ Features:
 - Includes three additional layer variables for tweaking headings.
 
 * Tools
+** Aider Layer
+[[file:+tools/aider/README.org][+tools/aider/README.org]]
+
+This layer adds support for [[https://github.com/Aider-AI/aider][Aider]], an AI pair programming tool that helps you
+edit code in your local git repository. Aider works with various language models
+(GPT-4, Claude, etc.) to make changes to your codebase.
+
+Features:
+- AI-powered code editing and generation
+- Multiple AI modes: code, ask, architect, and help
+- Seamless integration with git repositories
+- File management for AI context
+- Unit test generation and debugging
+- Auto-commit with generated messages
+
 ** Ansible
 [[file:+tools/ansible/README.org][+tools/ansible/README.org]]
 
@@ -2794,6 +2820,21 @@ Features:
 - Edit text boxes with Emacs using [[https://github.com/stsquad/emacs_chrome][edit-server]]
 - Write markdown in Emacs and realtime show in chrome using [[https://github.com/mola-T/flymd][flymd]]
 - gmail message mode uses standard markdown key bindings
+
+** Claude Code Layer
+[[file:+tools/claude-code/README.org][+tools/claude-code/README.org]]
+
+This layer adds support for [[https://github.com/manzaltu/claude-code-ide.el][Claude Code IDE]], an Emacs package that provides
+seamless integration with Claude Code CLI for AI-assisted coding.
+
+Features:
+- AI-powered code editing and generation using Claude
+- Terminal-based interaction with Claude Code CLI
+- Multi-project session management
+- Deep Emacs integration with transient menus
+- Resume and continue conversations
+- Send code regions and symbols for analysis
+- Project-aware context handling
 
 ** CMake
 [[file:+tools/cmake/README.org][+tools/cmake/README.org]]
@@ -3276,6 +3317,10 @@ Features:
 
 =xclipboard= integration layer.
 
+When running Emacs in a terminal, it will attempt to use OSC52 for copying and pasting
+automatically. This feature is intended for terminals that do not support OSC52, or for
+users who want advanced clipboard functionality in the terminal.
+
 Features:
 - adds copy support to the X-clipboard from the terminal.
 - adds paste support to the X-clipboard from the terminal.
@@ -3383,10 +3428,12 @@ Features:
 ** GitHub Copilot
 [[file:+web-services/github-copilot/README.org][+web-services/github-copilot/README.org]]
 
-This layer enables usage of [[https://github.com/features/copilot][GitHub Copilot]] in Spacemacs using [[https://github.com/copilot-emacs/copilot.el][copilot.el]].
+This layer enables usage of [[https://github.com/features/copilot][GitHub Copilot]] in Spacemacs.
 
 Features:
-- Provide access to ai powered code completions powered by [[https://github.com/features/copilot][GitHub Copilot]]
+- Ai powered code completions using [[https://github.com/copilot-emacs/copilot.el][copilot.el]]
+- Ai chat interactions using [[https://github.com/chep/copilot-chat.el][copilot-chat.el]]
+- Automatic generation of git commit messages using [[https://github.com/chep/copilot-chat.el][copilot-chat.el]]
 
 ** Hacker News
 [[file:+web-services/hackernews/README.org][+web-services/hackernews/README.org]]
@@ -3450,19 +3497,6 @@ Features:
 - Improve, edit, and document code
 - Chat sessions with chatgpt
 - Obtain AI generated images
-
-** Pocket
-[[file:+web-services/pocket/README.org][+web-services/pocket/README.org]]
-
-This layer adds [[https://getpocket.com/][Pocket]] support to Spacemacs via the package
-[[https://github.com/alphapapa/pocket-reader.el][pocket-reader]].
-
-Features:
-- Manage reading list: add, remove, delete, tag, view, favorite, etc.
-- Open links in Emacs or external browser
-- Sort views by date, title, domain, tags, favorite, etc.
-- Search items by keywords, tags, favorite status, unread/archived
-  status, etc.
 
 ** Search Engine
 [[file:+web-services/search-engine/README.org][+web-services/search-engine/README.org]]

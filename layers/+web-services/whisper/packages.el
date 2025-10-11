@@ -1,6 +1,6 @@
-;;; packages.el --- whisper layer packages file for Spacemacs.
+;;; packages.el --- whisper layer packages file for Spacemacs.  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Alexander Matyasko <amatyasko@amatyasko-PC>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -29,6 +29,7 @@
   (use-package whisper
     :defer t
     :init
+    (spacemacs/declare-prefix "$" "AI")
     (spacemacs/declare-prefix "$w" "Whisper")
     (spacemacs/set-leader-keys
       "$wr" 'whisper-run ; Start recording and transcribe/translate audio

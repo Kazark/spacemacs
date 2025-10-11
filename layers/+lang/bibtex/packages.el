@@ -1,6 +1,6 @@
-;;; packages.el --- BibTeX Layer packages file for Spacemacs.
+;;; packages.el --- BibTeX Layer packages file for Spacemacs.  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Joshua Ellis <josh@jpellis.me>
 ;; URL: https://github.com/JP-Ellis
@@ -61,23 +61,10 @@
 (defun bibtex/init-org-ref ()
   (use-package org-ref
     :defer t
-    :commands (org-ref-bibtex-next-entry
-               org-ref-bibtex-previous-entry
-               org-ref-insert-link
-               org-ref-open-in-browser
-               org-ref-open-bibtex-notes
-               org-ref-open-bibtex-pdf
-               org-ref-bibtex-hydra/body
-               org-ref-bibtex-hydra/org-ref-bibtex-new-entry/body-and-exit
-               org-ref-sort-bibtex-entry
-               arxiv-add-bibtex-entry
-               arxiv-get-pdf-add-bibtex-entry
-               doi-utils-add-bibtex-entry-from-doi
-               isbn-to-bibtex
-               pubmed-insert-bibtex-from-pmid)
+    :commands (org-ref-bibtex-hydra/body
+               org-ref-bibtex-new-entry/body)
     :init
-    (add-hook 'org-mode-hook (lambda () (require 'org-ref)))
-
+    ;; FIXME `org-ref-completion-library' does not exist anymore.
     (cond ((configuration-layer/layer-used-p 'helm)
            (setq org-ref-completion-library 'org-ref-helm-bibtex))
           ((configuration-layer/layer-used-p 'ivy)
@@ -102,7 +89,7 @@
 
       ;; Misc
       "h" 'org-ref-bibtex-hydra/body
-      "i" 'org-ref-bibtex-hydra/org-ref-bibtex-new-entry/body-and-exit
+      "i" 'org-ref-bibtex-new-entry/body
       "s" 'org-ref-sort-bibtex-entry
 
       ;; Lookup utilities

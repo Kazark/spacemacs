@@ -1,6 +1,6 @@
-;;; packages.el --- eaf layer packages file for Spacemacs.
+;;; packages.el --- eaf layer packages file for Spacemacs.  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Daniel Nicolai <dalanicolai@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -140,7 +140,7 @@
             ("M-m" . "eaf-send-return-key")
             ("<f5>" . "refresh_page")
             ("<f12>" . "open_devtools")
-            ("<C-return>" . "eaf-send-ctrl-return-sequence")))
+            ("C-<return>" . "eaf-send-ctrl-return-sequence")))
 
     (setq eaf-pdf-viewer-keybinding
           '(("j" . "scroll_up")
@@ -187,8 +187,8 @@
             ("M-p" . "toggle_presentation_mode")
             ("o" . "eaf-pdf-outline")))
     ;; switch tab only works with awesome-tab package
-    ;; ("<C-tab>" . "select_left_tab")
-    ;; ("<C-iso-lefttab>" . "select_right_tab")
+    ;; ("C-<tab>" . "select_left_tab")
+    ;; ("C-<iso-lefttab>" . "select_right_tab")
     :config
     (dolist (app eaf-apps)
       (require app nil 'noerror))

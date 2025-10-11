@@ -1,6 +1,6 @@
-;;; packages.el --- HTML Layer packages File for Spacemacs
+;;; packages.el --- HTML Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -104,7 +104,7 @@
                                                 scss-mode-hook
                                                 web-mode-hook))
     :config
-    (define-key emmet-mode-keymap (kbd "<C-return>") 'spacemacs/emmet-expand)
+    (define-key emmet-mode-keymap (kbd "C-<return>") 'spacemacs/emmet-expand)
     (spacemacs|hide-lighter emmet-mode)))
 
 (defun html/post-init-evil-matchit ()
@@ -177,6 +177,10 @@
     :init
     (when scss-enable-lsp
       (add-hook 'scss-mode-hook #'spacemacs//setup-lsp-for-web-mode-buffers t))
+    :config
+    ;; Workaround for old scss-mode from melpa, can be removed when we switch to the build in version in emacs 30 and later
+    (with-eval-after-load 'flymake
+      (require 'flymake-proc nil t))
     :mode ("\\.scss\\'" . scss-mode)))
 
 (defun html/init-slim-mode ()

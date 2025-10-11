@@ -314,6 +314,9 @@ as follows:
 #+BEGIN_SRC emacs-lisp
   (defconst mylayer-packages
     '(
+      ;; A built-in package
+      (some-package :location built-in)
+
       ;; Get the package from MELPA, ELPA, etc.
       some-package
       (some-package :location elpa)
@@ -335,7 +338,7 @@ as follows:
 #+END_SRC
 
 The =:location= attribute specifies where the package may be found. Spacemacs
-currently supports packages on ELPA compliant repositories, local packages,
+currently supports packages on ELPA compliant repositories, built-in packages, local packages,
 remote packages hosted on Git repositories (including specific helpers for
 GitHub, GitLab, and Bitbucket) and MELPA recipes (through the Quelpa package).
 Local packages should reside at =<layer>/local/<package>/=.
@@ -373,18 +376,6 @@ discuss later.
 It contains all the defined functions used in the layer.
 
 This file is loaded after =packages.el= and before =config.el=.
-
-It is good practice to guard the definition of functions to make sure a package
-is actually used. For instance:
-
-#+BEGIN_SRC emacs-lisp
-  (when (configuration-layer/package-used-p 'my-package)
-    (defun spacemacs/my-package-enable () ...)
-    (defun spacemacs/my-package-disable () ...))
-#+END_SRC
-
-By guarding these functions we avoid defining them when the package =my-package=
-is not used.
 
 ** config.el
 This file configures the layer by declaring layer variables' default values and

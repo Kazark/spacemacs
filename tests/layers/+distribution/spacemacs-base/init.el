@@ -1,6 +1,7 @@
+;; -*- lexical-binding: nil; -*-
 (defun dotspacemacs/layers ()
   (setq-default
-   dotspacemacs-distribution 'spacemacs))
+   dotspacemacs-distribution 'spacemacs-base))
 (defun dotspacemacs/init ())
 (defun dotspacemacs/user-init ())
 (defun dotspacemacs/config ())

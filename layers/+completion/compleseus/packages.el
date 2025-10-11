@@ -1,6 +1,6 @@
-;;; packages.el --- compleseus layer packages file for Spacemacs.
+;;; packages.el --- compleseus layer packages file for Spacemacs.  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Thanh Vuong <thanhvg@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -299,6 +299,9 @@
     (define-key embark-file-map "s" 'spacemacs/compleseus-search-from)
     (define-key embark-buffer-map "s" #'spacemacs/embark-consult-line-multi)
     (add-to-list 'embark-multitarget-actions #'spacemacs/embark-consult-line-multi)
+    ;; Allow using `embark-select' and `embark-act-all' instead of CRM to select packages
+    ;; to update in `configuration-layer/update-packages'.
+    (add-to-list 'embark-multitarget-actions 'configuration-layer/select-packages-to-update)
     (defvar spacemacs-embark-layer-map
       (let ((map (make-sparse-keymap)))
         (set-keymap-parent map embark-general-map)
@@ -344,7 +347,19 @@
         (let ((completion-styles '(basic partial-completion orderless)))
           (apply orig-fun args))))
 
-    (setq orderless-component-separator "[ &]")
+    ;; The separator `&' is only useful for in-buffer completion with company,
+    ;; where a space cannot be used. Note that `&' conflicts with annotation
+    ;; matching (see `orderless-affix-dispatch-alist') in the minibuffer.
+    (define-advice company-capf (:around (orig-fun &rest args) spacemacs//set-orderless-component-separator)
+      (if (and (stringp company-prefix)
+               (> (length company-prefix) 0)
+               (eq (aref company-prefix 0) ?&))
+          ;; Strings that start with `&' should not trigger orderless. Most likely the
+          ;; user wants to type something like &optional or &rest, where orderless
+          ;; just incurs unnecessary typing delays.
+          (apply orig-fun args)
+        (let ((orderless-component-separator "&"))
+          (apply orig-fun args))))
 
     ;; should be all in with orderless otherwise the results are inconsistent.
     ;; the available styles are registered in `completion-styles-alist`.
@@ -352,7 +367,9 @@
           completion-category-defaults nil
           ;; we need to have 'basic here first in order to support tramp connections...
           ;; see `completion-styles`.
-          completion-category-overrides '((file (styles basic partial-completion))))))
+          completion-category-overrides '((file (styles basic partial-completion))))
+    :config
+    (add-to-list 'orderless-style-dispatchers #'orderless-kwd-dispatch)))
 
 (defun compleseus/init-selectrum ()
   (use-package selectrum

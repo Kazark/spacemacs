@@ -1,6 +1,6 @@
 ;;; core-themes-support.el --- Spacemacs Core File -*- lexical-binding: t -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -399,7 +399,8 @@ again layer configuration."
             (spacemacs-buffer/warning
              (format-message "Your default theme %s requires full package initialization, negating the benefit of `dotspacemacs-enable-package-quickstart'."
                              theme-name)))
-          (package-initialize 'no-activate)
+          (unless package--initialized
+            (package-initialize 'no-activate))
           (package-activate pkg-name)
           (spacemacs//activate-theme-packages (list default-theme)))
         (condition-case _

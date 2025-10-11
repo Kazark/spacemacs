@@ -1,6 +1,6 @@
-;;; packages.el --- Org Layer packages File for Spacemacs
+;;; packages.el --- Org Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -35,7 +35,7 @@
     (ob :location built-in)
     (org :location elpa :min-version "9.7.8")
     (org-agenda :location built-in)
-    (org-wild-notifier :toggle org-enable-notifications)
+    (org-alert  :toggle org-enable-notifications)
     (org-contacts :toggle org-enable-org-contacts-support)
     org-contrib
     (org-vcard :toggle org-enable-org-contacts-support)
@@ -124,10 +124,9 @@
 
 (defun org/init-org ()
   (use-package org
-    :defer (spacemacs/defer)
+    :defer t
     :commands (orgtbl-mode)
     :init
-    (spacemacs|require-when-dumping 'org)
     (setq org-clock-persist-file (concat spacemacs-cache-directory
                                          "org-clock-save.el")
           org-id-locations-file (concat spacemacs-cache-directory
@@ -585,7 +584,8 @@ Will work on both org-mode and any mode that accepts plain html."
       "ip" 'org-agenda-set-property
       "iP" 'org-agenda-priority
       "it" 'org-agenda-set-tags
-      "sr" 'org-agenda-refile)
+      "sr" 'org-agenda-refile
+      "TT" 'org-agenda-todo)
     (spacemacs|define-transient-state org-agenda
       :title "Org-agenda transient state"
       :on-enter (setq which-key-inhibit t)
@@ -676,6 +676,19 @@ Headline^^            Visit entry^^               Filter^^                    Da
       (use-package org-contacts))
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode
+      :pre-bindings
+      ;; Remove some key bindings that cannot be evilified.  These commands are
+      ;; bound to other keys, below.
+      ;;
+      ;; `org-agenda-filter-remove-all' is not bound (`org-agenda-set-tags' is
+      ;; bound to ":", which is mapped to "|")
+      ;;
+      ;; `org-agenda-filter-by-tag' is not bound, but "\\" is bound to
+      ;; `org-agenda-filter' instead, which is a good enough substitute.
+      (kbd "C-n") nil                   ;`org-agenda-next-line'
+      "G" nil                           ;`org-agenda-toggle-time-grid'
+      "|" nil                           ;`org-agenda-filter-remove-all'
+      "\\" nil                          ;`org-agenda-filter-by-tag'
       :bindings
       "j" 'org-agenda-next-line
       "k" 'org-agenda-previous-line
@@ -694,12 +707,13 @@ Headline^^            Visit entry^^               Filter^^                    Da
       (kbd "M-SPC") 'spacemacs/org-agenda-transient-state/body
       (kbd "s-M-SPC") 'spacemacs/org-agenda-transient-state/body)))
 
-(defun org/init-org-wild-notifier ()
-  (use-package org-wild-notifier
+(defun org/init-org-alert ()
+  (use-package org-alert
     :defer t
     :init
     (when org-start-notification-daemon-on-startup
-      (org-wild-notifier-mode))))
+      (spacemacs/defer-until-after-user-config #'org-alert-enable))
+    :commands (org-alert-check org-alert-enable org-alert-disable)))
 
 (defun org/init-org-brain ()
   (use-package org-brain

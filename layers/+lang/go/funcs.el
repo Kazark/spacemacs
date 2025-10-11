@@ -1,6 +1,6 @@
-;;; funcs.el --- Go Layer functions File for Spacemacs
+;;; funcs.el --- Go Layer functions File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -37,7 +37,9 @@
                 :call-hooks t))
     ('lsp (spacemacs|add-company-backends
             :backends company-capf
-            :modes go-mode))))
+            :modes go-mode
+            :append-hooks nil
+            :call-hooks t))))
 
 (defun spacemacs//go-setup-eldoc ()
   "Conditionally setup go eldoc based on backend"

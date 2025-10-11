@@ -1,6 +1,6 @@
-;;; config.el --- Helm Configuration File for Spacemacs
+;;; config.el --- Helm Configuration File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -21,11 +21,6 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-;; Dumper
-
-(defun helm/pre-dump ()
-  (spacemacs/dump-modes '(helm-mode)))
-
 ;; Make sure we do not try to split the action window
 ;; from the main view, see #16184 for details.
 ;; This can still be overwritten in the dotfile.
@@ -35,16 +30,16 @@
 
 ;; TODO: remove dotspacemacs variables backward compatbility in version
 ;;       0.400 or later
-(defvar helm-no-header (spacemacs|dotspacemacs-backward-compatibility
-                        dotspacemacs-helm-no-header nil)
+(defvar helm-no-header nil
   "if non nil, the helm header is hidden when there is only one source.")
+(define-obsolete-variable-alias
+  'dotspacemacs-helm-no-header 'helm-no-header "20180608")
 
-(defvar helm-position (spacemacs|dotspacemacs-backward-compatibility
-                       dotspacemacs-helm-position bottom)
+(defvar helm-position 'bottom
   "Position in which to show the `helm' mini-buffer.")
+(define-obsolete-variable-alias
+  'dotspacemacs-helm-position 'helm-position "20180608")
 
-(defvar helm-use-posframe nil
-  "Use helm-posframe to display completions in a separate frame")
 
 (defvar spacemacs-helm-rg-max-column-number 512
   "Controls the maximum number of columns to display with ripgrep (otherwise

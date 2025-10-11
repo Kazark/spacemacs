@@ -1,6 +1,6 @@
-;;; packages.el --- sailfish-developer layer packages file for Spacemacs.
+;;; packages.el --- sailfish-developer layer packages file for Spacemacs.  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2020-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2020-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Victor Polevoy <fx@thefx.co>
 ;; URL: https://github.com/syl20bnr/spacemacs

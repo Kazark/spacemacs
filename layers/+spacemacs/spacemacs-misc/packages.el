@@ -1,6 +1,6 @@
-;;; packages.el --- Spacemacs Misc. Layer packages File
+;;; packages.el --- Spacemacs Misc. Layer packages File  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -24,8 +24,7 @@
 (setq spacemacs-misc-packages
       '(
         devdocs
-        dumb-jump
-        request))
+        dumb-jump))
 
 
 (defun spacemacs-misc/init-dumb-jump ()
@@ -42,10 +41,6 @@
     ;; Enable xref-backend of dumb-jump. It's chosen only when no better
     ;; options is available
     (add-hook 'xref-backend-functions #'dumb-jump-xref-activate 90)))
-
-(defun spacemacs-misc/init-request ()
-  (setq request-storage-directory
-        (concat spacemacs-cache-directory "request/")))
 
 (defun spacemacs-misc/init-devdocs ()
   (use-package devdocs

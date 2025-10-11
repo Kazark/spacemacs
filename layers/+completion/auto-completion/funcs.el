@@ -1,6 +1,6 @@
 ;;; funcs.el --- Auto-completion functions File -*- lexical-binding: t; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -192,7 +192,7 @@ MODE parameter must match the :modes values used in the call to
        ((eq 'cycle auto-completion-tab-key-behavior)
         (define-key map (kbd "TAB") 'company-complete-common-or-cycle)
         (define-key map (kbd "<tab>") 'company-complete-common-or-cycle)
-        (define-key map (kbd "<S-tab>")
+        (define-key map (kbd "S-<tab>")
           'spacemacs//company-complete-common-or-cycle-backward)
         (define-key map (kbd "<backtab>")
           'spacemacs//company-complete-common-or-cycle-backward))

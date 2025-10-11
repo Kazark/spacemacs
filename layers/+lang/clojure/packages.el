@@ -1,6 +1,6 @@
-;;; packages.el --- Clojure Layer packages File for Spacemacs
+;;; packages.el --- Clojure Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -321,7 +321,7 @@
         (kbd "C-k") 'cider-repl-previous-input))
 
     (evil-define-key 'insert cider-repl-mode-map
-      (kbd "<C-return>") 'cider-repl-newline-and-indent
+      (kbd "C-<return>") 'cider-repl-newline-and-indent
       (kbd "C-r") 'cider-repl-history)
 
     (when clojure-enable-fancify-symbols

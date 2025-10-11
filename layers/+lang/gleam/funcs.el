@@ -1,6 +1,6 @@
-;;; funcs.el --- Gleam layer functions file for Spacemacs
+;;; funcs.el --- Gleam layer functions file for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Qynn Schwaab <qynn@riseup.net>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -28,18 +28,26 @@
   (when gleam-enable-lsp (lsp-deferred)))
 
 
+;; treesit
+
+(defun spacemacs//gleam-setup-treesit ()
+  "Install treesit grammar"
+  (unless (treesit-language-available-p 'gleam)
+    (gleam-ts-install-grammar)))
+
+
 ;; formatting
 
 (defun spacemacs//gleam-format ()
-"Ran before saving a file when `gleam-format-on-save' is non-nil.
-Either `lsp-format-buffer' when `lsp-mode' is active, `gleam-format' otherwise."
+  "Ran before saving a file when `gleam-format-on-save' is non-nil.
+Either `lsp-format-buffer' when `lsp-mode' is active, `gleam-ts-format' otherwise."
   (if lsp-mode
       (lsp-format-buffer)
-    (gleam-format)))
+    (gleam-ts-format)))
 
 (defun spacemacs//gleam-setup-format-on-save ()
   "Conditionally setup format on save."
-  (funcall (if gleam-format-on-save 'add-hook 'remove-hook) 'gleam-mode-hook
+  (funcall (if gleam-format-on-save 'add-hook 'remove-hook) 'gleam-ts-mode-hook
            (lambda () (add-hook 'before-save-hook 'spacemacs//gleam-format nil t))))
 
 (defun spacemacs//gleam-toggle-format-on-save ()

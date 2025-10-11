@@ -1,6 +1,6 @@
-;;; funcs.el --- Spacemacs Navigation Layer functions File
+;;; funcs.el --- Spacemacs Navigation Layer functions File  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -487,6 +487,19 @@ ivy"
   (interactive)
   (let ((spacemacs-really-kill-emacs t))
     (restart-emacs args)))
+
+(defun spacemacs/restart-emacs-builtin ()
+  "Restart emacs using the built-in `restart-emacs' command rather than external package."
+  (interactive)
+  (let ((spacemacs-really-kill-emacs t))
+    (restart-emacs)))
+
+;; This key binding may be overwritten by
+;; `spacemacs-navigation/init-restart-emacs' if that package is used.  It is
+;; defined here rather than in keybindings.el because it needs to be overwritten
+;; by package initialization, and keybindings.el is loaded too late.
+(spacemacs/set-leader-keys
+  "qr" 'spacemacs/restart-emacs-builtin)
 
 (defun spacemacs/restart-emacs-resume-layouts (&optional args)
   "Restart emacs and resume layouts."

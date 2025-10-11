@@ -1,6 +1,6 @@
-;;; packages.el --- Spacemacs Evil Layer packages File
+;;; packages.el --- Spacemacs Evil Layer packages File  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -25,7 +25,7 @@
       '(
         evil-anzu
         evil-args
-        evil-collection
+        (evil-collection :toggle (not (eq dotspacemacs-editing-style 'emacs)))
         evil-cleverparens
         (evil-escape :location (recipe :fetcher github
                                        :repo "smile13241324/evil-escape"))
@@ -120,10 +120,9 @@
     ;; replace `dired-goto-file' with equivalent helm and ivy functions:
     ;; `spacemacs/helm-find-files' fuzzy matching and other features
     ;; `spacemacs/counsel-find-file' more `M-o' actions
-    (with-eval-after-load 'dired
-      (evil-define-key 'normal dired-mode-map "J"
-        (cond ((configuration-layer/layer-used-p 'helm) 'spacemacs/helm-find-files)
-              ((configuration-layer/layer-used-p 'ivy) 'spacemacs/counsel-find-file))))))
+    (evil-define-key 'normal dired-mode-map "J"
+      (cond ((configuration-layer/layer-used-p 'helm) 'spacemacs/helm-find-files)
+            ((configuration-layer/layer-used-p 'ivy) 'spacemacs/counsel-find-file)))))
 
 (defun spacemacs-evil/init-evil-escape ()
   (use-package evil-escape

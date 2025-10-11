@@ -1,6 +1,6 @@
-;;; packages.el --- ESS (R) Layer packages File for Spacemacs
+;;; packages.el --- ESS (R) Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -96,7 +96,7 @@
 
     :config
     (require 'ess-site)                 ; ensure fully loaded for config to work
-    (define-key ess-mode-map (kbd "<s-return>") #'ess-eval-line)
+    (define-key ess-mode-map (kbd "s-<return>") #'ess-eval-line)
     (spacemacs/ess-bind-keys-for-julia)
     (spacemacs/ess-bind-keys-for-r)
     (unless (eq ess-r-backend 'lsp)

@@ -1,4 +1,4 @@
-;;; erc-yank --- Automagically create a Gist if pasting more than 5 lines
+;;; erc-yank --- Automagically create a Gist if pasting more than 5 lines  -*- lexical-binding: nil; -*-
 
 ;; Copyright (C) 2012-2024 John Wiegley
 
@@ -98,7 +98,7 @@
             (gist-region (point-min) (point-max) nil
                          `(lambda (gist)
                             (with-current-buffer ,buf
-                              (insert (oref gist :html-url)))))))
+                              (insert (oref gist html-url)))))))
       (yank arg))))
 
 (provide 'erc-yank)

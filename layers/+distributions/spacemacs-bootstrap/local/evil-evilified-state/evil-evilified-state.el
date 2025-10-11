@@ -1,6 +1,6 @@
-;;; evil-evilified-state.el --- A minimalistic evil state
+;;; evil-evilified-state.el --- A minimalistic evil state  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; Keywords: convenience editing evil spacemacs

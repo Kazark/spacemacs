@@ -1,6 +1,6 @@
-;;; packages.el --- xclipboard layer packages file for Spacemacs.
+;;; packages.el --- xclipboard layer packages file for Spacemacs.  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Authors: Charles Weill <weill@google.com>
 ;;          Google LLC.

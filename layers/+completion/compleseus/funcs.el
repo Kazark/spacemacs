@@ -1,6 +1,6 @@
 ;;; funcs.el --- compleseus Layer functions File for Spacemacs -*- lexical-binding: t; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Thanh Vuong <thanhvg@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -19,21 +19,6 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
-(defun spacemacs//compleseus-selectrum-hjkl-navigation (style)
-  "Set navigation on 'hjkl' for the given editing STYLE."
-  (cond
-   ((or (eq 'vim style)
-        (and (eq 'hybrid style)
-             hybrid-style-enable-hjkl-bindings))
-
-    (dolist (map (list selectrum-minibuffer-map))
-      (define-key map (kbd "C-j") 'selectrum-next-candidate)
-      (define-key map (kbd "C-k") 'selectrum-previous-candidate)))
-   (t
-    (define-key selectrum-minibuffer-map (kbd "C-j") 'selectrum-next-candidate)
-    (define-key selectrum-minibuffer-map (kbd "C-k") 'selectrum-previous-candidate))))
 
 
 (defun compleseus//persp-contain-buffer-p (buf)
@@ -303,26 +288,26 @@ Note: this function relies on embark internals and might break upon embark updat
 (defun spacemacs/consult-narrow-cycle-backward ()
   "Cycle backward through the narrowing keys."
   (interactive)
-  (when consult--narrow-keys
+  (when-let* ((narrow-keys (plist-get consult--narrow-config :keys)))
     (consult-narrow
      (if consult--narrow
-         (let ((idx (seq-position consult--narrow-keys
-                                  (assq consult--narrow consult--narrow-keys))))
+         (let ((idx (seq-position narrow-keys
+                                  (assq consult--narrow narrow-keys))))
            (unless (eq idx 0)
-             (car (nth (1- idx) consult--narrow-keys))))
-       (caar (last consult--narrow-keys))))))
+             (car (nth (1- idx) narrow-keys))))
+       (caar (last narrow-keys))))))
 
 (defun spacemacs/consult-narrow-cycle-forward ()
   "Cycle forward through the narrowing keys."
   (interactive)
-  (when consult--narrow-keys
+  (when-let* ((narrow-keys (plist-get consult--narrow-config :keys)))
     (consult-narrow
      (if consult--narrow
-         (let ((idx (seq-position consult--narrow-keys
-                                  (assq consult--narrow consult--narrow-keys))))
-           (unless (eq idx (1- (length consult--narrow-keys)))
-             (car (nth (1+ idx) consult--narrow-keys))))
-       (caar consult--narrow-keys)))))
+         (let ((idx (seq-position narrow-keys
+                                  (assq consult--narrow narrow-keys))))
+           (unless (eq idx (1- (length narrow-keys)))
+             (car (nth (1+ idx) narrow-keys))))
+       (caar narrow-keys)))))
 
 (defun spacemacs/consult-edit ()
   "Export the consult buffer and make the buffer editable righ away."

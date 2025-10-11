@@ -1,6 +1,6 @@
 ;;; funcs.el --- Ivy Layer functions File for Spacemacs -*- lexical-binding: t; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -246,7 +246,6 @@ that directory."
  for (tools tool-name) in '((dotspacemacs-search-tools "auto")
                             ((list "rg") "rg")
                             ((list "ag") "ag")
-                            ((list "pt") "pt")
                             ((list "ack") "ack")
                             ((list "grep") "grep"))
  do

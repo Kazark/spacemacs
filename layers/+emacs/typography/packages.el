@@ -1,6 +1,6 @@
-;;; packages.el --- typography Layer packages File for Spacemacs
+;;; packages.el --- typography Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sebastian Wiesner <swiesner@lunaryorn.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -23,7 +23,8 @@
 
 (setq typography-packages
       '(tildify
-        typo))
+        (typo :location (recipe :fetcher github
+                                :repo "jorgenschaefer/typoel"))))
 
 (defun typography/init-typo ()
   (use-package typo

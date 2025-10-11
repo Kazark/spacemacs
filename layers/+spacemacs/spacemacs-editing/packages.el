@@ -1,6 +1,6 @@
-;;; packages.el --- Spacemacs Editing Layer packages File
+;;; packages.el --- Spacemacs Editing Layer packages File  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -36,6 +36,7 @@
     link-hint
     lorem-ipsum
     (origami :toggle (eq 'origami dotspacemacs-folding-method))
+    (replace :location built-in)
     password-generator
     (persistent-scratch :toggle dotspacemacs-scratch-buffer-persistent)
     pcre2el
@@ -637,3 +638,11 @@ See variable `undo-fu-session-directory'." dir))
   (evil-define-key 'normal wgrep-mode-map ",r" #'wgrep-toggle-readonly-area)
   (evil-define-key 'normal wgrep-mode-map ",d" #'wgrep-mark-deletion)
   (evil-define-key 'normal wgrep-mode-map ",f" #'next-error-follow-minor-mode))
+
+(defun spacemacs-editing/init-replace ()
+  (spacemacs/set-leader-keys-for-major-mode 'occur-mode
+    "w" 'occur-edit-mode)
+  (spacemacs/set-leader-keys-for-major-mode 'occur-edit-mode
+    "," 'occur-cease-edit)
+  (spacemacs/set-leader-keys-for-major-mode 'occur-edit-mode
+    "c" 'occur-cease-edit))

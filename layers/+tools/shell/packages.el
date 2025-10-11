@@ -1,6 +1,6 @@
-;;; packages.el --- shell packages File for Spacemacs
+;;; packages.el --- shell packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -355,7 +355,8 @@
     (spacemacs/set-leader-keys "atsa" 'spacemacs/shell-pop-eat)
     (spacemacs/register-repl 'eat 'eat)
     :config
-    (setq eat-shell shell-default-term-shell)))
+    (setq eat-shell shell-default-term-shell)
+    (add-hook 'eat-mode-hook 'spacemacs/disable-hl-line-mode)))
 
 (defun shell/init-vterm ()
   (use-package vterm

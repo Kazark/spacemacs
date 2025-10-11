@@ -1,6 +1,6 @@
-;;; config.el --- Djvu Layer Configuration File for Spacemacs
+;;; config.el --- Djvu Layer Configuration File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2021-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2021-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Daniel Nicolai <dalanicolai@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs

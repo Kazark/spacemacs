@@ -53,11 +53,11 @@ You can choose the side on which the diff appears (by default it's the right sid
 #+END_SRC
 
 To automatically enable diff margins in all buffers, set
-=version-control-global-margin=
+=version-control-margin=
 
 #+BEGIN_SRC emacs-lisp
   '(version-control :variables
-                    version-control-global-margin t)
+                    version-control-margin 'global)
 #+END_SRC
 
 ** Differences between margin packages
@@ -74,8 +74,12 @@ one over the other:
 | Stage hunks from buffer             |         | X          |
 | Dired support                       | X       |            |
 
+The =diff-hl= or =git-gutter-fringe= supports GUI/Fringe, while the
+=diff-hl-margin= or =git-gutter= supports the TUI/Margin. Check the variable
+=version-control-margin= for how Spacemace selecting the margin features.
+
 * Key bindings
-VC commands:
+VC commands (not exhaustive):
 
 | Key binding | Description                                            |
 |-------------+--------------------------------------------------------|
@@ -94,8 +98,8 @@ VC commands:
 | ~SPC g v l~ | List the change log                                    |
 | ~SPC g v L~ | List the change log for the current VC controlled tree |
 | ~SPC g v v~ | Do the next logical VC operation (=vc-next-action=)    |
-| ~SPC g v I~ | Ignore file (=vc-ignore=)                              |
-| ~SPC g v r~ | Resolve conflicts in file                              |
+| ~SPC g v G~ | Ignore file (=vc-ignore=)                              |
+| ~SPC g v R~ | Resolve conflicts in file                              |
 
 ** VC Directory buffer commands
 You can hit ~SPC pv~ from the current project to open the VC Directory buffer,

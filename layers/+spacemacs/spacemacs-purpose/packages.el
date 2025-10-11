@@ -1,6 +1,6 @@
-;;; packages.el --- Spacemacs Purpose Layer packages File for Spacemacs
+;;; packages.el --- Spacemacs Purpose Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Bar Magal
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -106,7 +106,7 @@
 
 (defun spacemacs-purpose/init-window-purpose ()
   (use-package window-purpose
-    :defer (spacemacs/defer)
+    :defer t
     :init
     (add-hook 'emacs-startup-hook
               (lambda ()

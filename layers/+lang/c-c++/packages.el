@@ -1,6 +1,6 @@
-;;; packages.el --- C/C++ Layer packages File for Spacemacs
+;;; packages.el --- C/C++ Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -60,7 +60,7 @@
     (ycmd :toggle (eq c-c++-backend 'ycmd))))
 
 (defun c-c++/init-gendoxy ()
-  "Initialise gendoxy (doxygen package)"
+  "Initialize gendoxy (doxygen package)"
   (use-package gendoxy
     :defer t
     :init (dolist (mode c-c++-modes)
@@ -86,6 +86,8 @@
                    `("\\.h\\'" . ,c-c++-default-mode-for-headers)))
     (when c-c++-enable-auto-newline
       (add-hook 'c-mode-common-hook 'spacemacs//c-toggle-auto-newline))
+    (when c-c++-formatter-indent-line
+      (add-hook 'c-mode-common-hook 'spacemacs//c-c++-setup-formatter-indent-line))
     :config
     (require 'compile)
     (dolist (mode c-c++-modes)

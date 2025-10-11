@@ -1,6 +1,6 @@
-;;; packages.el --- ipython Layer packages File for Spacemacs
+;;; packages.el --- ipython Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -39,8 +39,8 @@
       (mapc
        (lambda (mode)
          (evil-define-minor-mode-key mode 'ein:notebook-mode
-           (kbd "<C-return>") 'ein:worksheet-execute-cell-km
-           (kbd "<S-return>") 'ein:worksheet-execute-cell-and-goto-next-km))
+           (kbd "C-<return>") 'ein:worksheet-execute-cell-km
+           (kbd "S-<return>") 'ein:worksheet-execute-cell-and-goto-next-km))
        '(insert hybrid normal))
       (evil-define-minor-mode-key 'normal 'ein:notebook-mode
         "gj" 'ein:worksheet-goto-next-input-km

@@ -1,6 +1,6 @@
-;;; config.el --- Spacemacs Mode-line Visual Layer configuration File
+;;; config.el --- Spacemacs Mode-line Visual Layer configuration File  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2020-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2020-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Riccardo Murri <riccardo.murri@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs

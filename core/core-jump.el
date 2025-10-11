@@ -1,6 +1,6 @@
 ;;; core-jump.el --- Spacemacs Core File -*- lexical-binding: t -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -106,7 +106,6 @@ They are in order: `spacemacs-jump-handlers',
   (evil-set-command-property 'spacemacs/jump-to-definition :jump t))
 
 (spacemacs|eval-until-emacs-min-version "29.1"
-  "The `xref-go-back' is a built-in function since Emacs 29.1."
   (unless (fboundp 'xref-go-back)
     (defalias 'xref-pop-marker-stack 'xref-go-back)))
 

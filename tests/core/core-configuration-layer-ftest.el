@@ -1,6 +1,6 @@
 ;;; core-configuration-layer-ftest.el --- Spacemacs Functional Test File
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -32,7 +32,7 @@
         (dotspacemacs-configuration-layers '(emacs-lisp
                                              (git :variables foo 'bar)))
         configuration-layer--used-layers
-        (configuration-layer--indexed-layers (make-hash-table :size 1024)))
+        (configuration-layer--indexed-layers (make-hash-table)))
     (configuration-layer/discover-layers 'refresh-index)
     (configuration-layer//declare-used-layers dotspacemacs-configuration-layers)
     (should (eq 'spacemacs-bootstrap
@@ -43,7 +43,7 @@
         (dotspacemacs-configuration-layers '(emacs-lisp
                                              (git :variables foo 'bar)))
         configuration-layer--used-layers
-        (configuration-layer--indexed-layers (make-hash-table :size 1024)))
+        (configuration-layer--indexed-layers (make-hash-table)))
     (configuration-layer/discover-layers 'refresh-index)
     (configuration-layer//declare-used-layers dotspacemacs-configuration-layers)
     (should (eq 'spacemacs-defaults (cadr configuration-layer--used-layers)))))
@@ -53,7 +53,7 @@
         (dotspacemacs-configuration-layers '(emacs-lisp
                                              (git :variables foo 'bar)))
         configuration-layer--used-layers
-        (configuration-layer--indexed-layers (make-hash-table :size 1024)))
+        (configuration-layer--indexed-layers (make-hash-table)))
     (configuration-layer/discover-layers 'refresh-index)
     (configuration-layer//declare-used-layers dotspacemacs-configuration-layers)
     (should (eq 'spacemacs-base (caddr configuration-layer--used-layers)))))

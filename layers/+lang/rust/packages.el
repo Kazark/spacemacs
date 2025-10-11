@@ -1,6 +1,6 @@
-;;; packages.el --- Rust Layer packages File for Spacemacs
+;;; packages.el --- Rust Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Chris Hoeppner <me@mkaito.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -24,6 +24,7 @@
 (defconst rust-packages
   '(
     dap-mode
+    flycheck
     ggtags
     ron-mode
     rustic
@@ -34,6 +35,9 @@
   (when (eq rust-backend 'lsp)
     (add-to-list 'spacemacs--dap-supported-modes 'rustic-mode)
     (add-hook 'rustic-mode-local-vars-hook #'spacemacs//rust-setup-dap)))
+
+(defun rust/post-init-flycheck ()
+  (spacemacs/enable-flycheck 'rustic-mode))
 
 (defun rust/post-init-ggtags ()
   (add-hook 'rustic-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
@@ -73,7 +77,6 @@
       "tt" 'rustic-cargo-current-test)
 
     (with-eval-after-load 'flycheck
-      (spacemacs/enable-flycheck 'rustic-mode)
       (push 'rustic-clippy flycheck-checkers))
 
     (with-eval-after-load 'lsp-mode

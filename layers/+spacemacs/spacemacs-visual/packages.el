@@ -1,6 +1,6 @@
-;;; packages.el --- Spacemacs UI Visual Layer packages File
+;;; packages.el --- Spacemacs UI Visual Layer packages File  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -28,7 +28,7 @@
         desktop
         (display-fill-column-indicator :location built-in)
         hl-todo
-        nerd-icons
+        (nerd-icons :toggle (eq dotspacemacs-default-icons-font 'nerd-icons))
         popup
         popwin
         posframe
@@ -137,5 +137,5 @@
     (spacemacs/set-leader-keys "zf" 'spacemacs/zoom-frm-transient-state/body)
 
     ;; Font size, either with ctrl + mouse wheel
-    (global-set-key (kbd "<C-wheel-up>") 'spacemacs/zoom-frm-in)
-    (global-set-key (kbd "<C-wheel-down>") 'spacemacs/zoom-frm-out)))
+    (global-set-key (kbd "C-<wheel-up>") 'spacemacs/zoom-frm-in)
+    (global-set-key (kbd "C-<wheel-down>") 'spacemacs/zoom-frm-out)))

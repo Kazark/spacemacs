@@ -1,4 +1,4 @@
-;;; helm-spacemacs-help.el --- Spacemacs layer exploration with `helm'.
+;;; helm-spacemacs-help.el --- Spacemacs layer exploration with `helm'.  -*- lexical-binding: nil; -*-
 
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; Keywords: helm, spacemacs
@@ -194,10 +194,10 @@
 (defvar helm-spacemacs-help--layer-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map helm-map)
-    (define-key map (kbd "<S-return>") (lambda ()
+    (define-key map (kbd "S-<return>") (lambda ()
                                          "Install a layer, the current Helm candidate."
                                          (interactive) (helm-select-nth-action 5)))
-    (define-key map (kbd "<M-return>") (lambda ()
+    (define-key map (kbd "M-<return>") (lambda ()
                                          "Open the `packages.el' file of a layer, the current Helm candidate."
                                          (interactive) (helm-select-nth-action 1)))
     map)
@@ -226,18 +226,18 @@
                             "owner" "init")))
         (when owner
           (push (format "%s (%s: %S layer)"
-                        (propertize (symbol-name (oref pkg :name))
+                        (propertize (symbol-name (oref pkg name))
                                     'face 'font-lock-type-face)
                         init-type
                         owner)
                 result))
-        (dolist (initfuncs `((,(oref pkg :owners) "init")
-                             (,(oref pkg :pre-layers) "pre-init")
-                             (,(oref pkg :post-layers) "post-init")))
+        (dolist (initfuncs `((,(oref pkg owners) "init")
+                             (,(oref pkg pre-layers) "pre-init")
+                             (,(oref pkg post-layers) "post-init")))
           (dolist (layer (car initfuncs))
             (unless (and owner (eq owner layer))
               (push (format "%s (%s: %S layer)"
-                            (propertize (symbol-name (oref pkg :name))
+                            (propertize (symbol-name (oref pkg name))
                                         'face 'font-lock-type-face)
                             (cadr initfuncs)
                             layer)
@@ -389,7 +389,7 @@ open org files in view mode."
 
 (defun helm-spacemacs-help//go-to-dotfile-variable (candidate)
   "Go to candidate in the dotfile."
-  (find-file dotspacemacs-filepath)
+  (find-file (dotspacemacs/location))
   (goto-char (point-min))
   ;; try to exclude comments
   (re-search-forward (format "^[a-z\s\\(\\-]*%s" candidate))

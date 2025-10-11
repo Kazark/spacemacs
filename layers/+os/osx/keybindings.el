@@ -1,6 +1,6 @@
-;;; keybindings.el --- OSX Layer keybindings File for Spacemacs
+;;; keybindings.el --- OSX Layer keybindings File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -106,6 +106,6 @@ default."
   (global-set-key (kbd "M-s-h") 'ns-do-hide-others)
 
   ;; Emacs sometimes registers C-s-f as this weird keycode
-  ;; (global-set-key (kbd "<C-s-268632070>") 'spacemacs/toggle-frame-fullscreen)
+  ;; (global-set-key (kbd "C-s-<268632070>") 'spacemacs/toggle-frame-fullscreen)
   ;; (global-set-key [142607065] 'ns-do-hide-others)
   )

@@ -1,6 +1,6 @@
-;;; packages.el --- Markdown Layer packages File for Spacemacs
+;;; packages.el --- Markdown Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -204,7 +204,8 @@
     :init
     (dolist (mode markdown--key-bindings-modes)
       (spacemacs/set-leader-keys-for-major-mode mode
-        "it" 'markdown-toc-generate-toc))))
+        "it" 'markdown-toc-generate-toc
+        "p" 'markdown-toc-follow-link-at-point))))
 
 (defun markdown/init-vmd-mode ()
   (use-package vmd-mode

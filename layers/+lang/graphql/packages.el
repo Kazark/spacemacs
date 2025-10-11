@@ -1,6 +1,6 @@
-;;; packages.el --- graphql layer packages file for Spacemacs.
+;;; packages.el --- graphql layer packages file for Spacemacs.  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Thanh Vuong <thanh@gmail.com>
 ;; URL: https://github.com/thanhvg

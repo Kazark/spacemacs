@@ -1,6 +1,6 @@
-;;; funcs.el --- Emacs Lisp functions File
+;;; funcs.el --- Emacs Lisp functions File  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -154,8 +154,9 @@ Intended for use in mode hooks."
 (defun spacemacs//format-elisp-buffer ()
   "Format the given buffer if required."
   (when emacs-lisp-format-on-save
-    (indent-region (point-min) (point-max))
-    (whitespace-cleanup)))
+    (save-excursion
+      (indent-region (point-min) (point-max))
+      (whitespace-cleanup))))
 
 
 

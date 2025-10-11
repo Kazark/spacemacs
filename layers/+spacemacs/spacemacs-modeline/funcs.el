@@ -1,6 +1,6 @@
-;;; funcs.el --- Spacemacs Mode-line Layer functions File
+;;; funcs.el --- Spacemacs Mode-line Layer functions File  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -50,6 +50,10 @@ Return nil if no scale is defined."
 
 ;; spaceline
 
+(defun spacemacs//enable-spaceline-p ()
+  (memq (spacemacs/get-mode-line-theme-name)
+        '(spacemacs all-the-icons custom)))
+
 (defun spacemacs/spaceline-config-startup-hook ()
   "Install a transient hook to delay spaceline config after Emacs starts."
   (spacemacs|add-transient-hook window-configuration-change-hook
@@ -81,16 +85,22 @@ Return nil if no scale is defined."
 (defun spacemacs//restore-buffers-powerline ()
   "Restore the powerline in the buffers.
 Excluding which-key."
-  (dolist (buffer (buffer-list))
-    (unless (string-match-p "\\*which-key\\*" (buffer-name buffer))
-      (with-current-buffer buffer
-        (setq-local mode-line-format (default-value 'mode-line-format)))))
-  (powerline-reset)
-  (powerline-set-selected-window)
-  (force-mode-line-update t))
+  (if (spacemacs//enable-spaceline-p)
+      (progn
+        (dolist (buffer (buffer-list))
+          (unless (string-match-p "\\*which-key\\*" (buffer-name buffer))
+            (with-current-buffer buffer
+              (setq-local mode-line-format (default-value 'mode-line-format)))))
+        (powerline-reset)
+        (powerline-set-selected-window)
+        (force-mode-line-update t))
+    ;; In case `dotspacemacs-mode-line-theme' has changed and the configuration
+    ;; was reloaded.
+    (remove-hook 'spacemacs-post-user-config-hook
+                 #'spacemacs//restore-buffers-powerline)))
 
 (defun spacemacs//prepare-diminish ()
-  (when spaceline-minor-modes-p
+  (when (bound-and-true-p spaceline-minor-modes-p)
     (let ((unicodep (dotspacemacs|symbol-value
                      dotspacemacs-mode-line-unicode-symbols)))
       (setq spaceline-minor-modes-separator

@@ -272,8 +272,7 @@ and bugs are fixed quickly.
 - *Minimalistic and nice graphical UI* keeps your available screen space for
   what matters: your text files.
 - *Fast boot time*: packages and configuration are lazy-loaded as much as
-  possible. For even faster boot time, Spacemacs now provides full support for
-  the new portable dumper available in Emacs 27 and later.
+  possible.
 - *Lower the risk of RSI* by heavily using the space bar instead of modifiers.
   If you have issues with your thumbs you can still use Spacemacs using
   modifiers.
@@ -290,7 +289,7 @@ project.
 
 * Who can benefit from this?
 - Spacemacs was initially intended to be used by *Vim users* who want to go to
-  the next level by using Emacs (see [[https://github.com/syl20bnr/spacemacs/blob/master/doc/VIMUSERS.org][guide]] for Vimmers). But it is now
+  the next level by using Emacs (see [[https://github.com/syl20bnr/spacemacs/blob/develop/doc/VIMUSERS.org][guide]] for Vimmers). But it is now
   perfectly *usable by non Vim users* by choosing the =emacs= editing style.
 - It is also a good fit for people wanting to *lower the [[https://en.wikipedia.org/wiki/Repetitive_strain_injury][risk of RSI]]* induced by
   the default Emacs key bindings. (This is an assumption, there are no official
@@ -356,7 +355,7 @@ and choosing a rollback slot (sorted by date). This button uses the command
 
 * Configuration layers
 This section is an overview of layers. A more extensive introduction to writing
-configuration layers can be found [[https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org][here]] (recommended reading!).
+configuration layers can be found [[https://github.com/syl20bnr/spacemacs/blob/develop/doc/LAYERS.org][here]] (recommended reading!).
 
 ** Purpose
 Layers help collect related packages together to provide features. For example,
@@ -420,7 +419,7 @@ properly. For instance, if package =A= depends on =B= then you can configure
   (with-eval-after-load 'B ...)
 #+END_SRC
 
-For details on installing packages using quelpa or local packages see [[https://github.com/syl20bnr/spacemacs/blob/master/doc/LAYERS.org#packagesel][LAYERS]].
+For details on installing packages using quelpa or local packages see [[https://github.com/syl20bnr/spacemacs/blob/develop/doc/LAYERS.org#packagesel][LAYERS]].
 
 **** Initialization
 To initialize a package =xxx=, define a function with this format in
@@ -656,7 +655,7 @@ can be set directly in the =dotspacemacs-configuration-layers= like this:
         (git :variables
              git-magit-status-fullscreen t
              git-variable-example nil)
-        smex)))
+        amx)))
 #+END_SRC
 
 The =:variables= keyword is a convenience to keep layer configuration close to
@@ -1076,12 +1075,12 @@ will go to the function =dotspacemacs/user-env= instead of opening the file
 ** Note about the function dotspacemacs/user-env
 It's possible that you don't have this function defined if you have an older
 dotfile. It is recommended to update your dotfile by adding this function,
-see the file =~/.emacs.d/core/template/.spacemacs.template= to copy it.
+see the file =~/.emacs.d/core/template/dotspacemacs-template.el= to copy it.
 If you don't create such function then Spacemacs assumes you are using the
 default behavior described above.
 
 * Binding keys
-To be compatible with all Spacemacs bindings, please refer to [[https://github.com/syl20bnr/spacemacs/blob/master/doc/CONVENTIONS.org#key-bindings-conventions][Conventions]].
+To be compatible with all Spacemacs bindings, please refer to [[https://github.com/syl20bnr/spacemacs/blob/develop/doc/CONVENTIONS.org#key-bindings-conventions][Conventions]].
 In brief, ~SPC o~ is reserved for user custom bindings in =global-map=,
 and ~SPC m o~ in major modes.
 
@@ -2024,7 +2023,7 @@ and more...
 
 Mastering your choice of completion system will make you a Spacemacs power user.
 
-For more information go to the layers documentation for [[https://github.com/syl20bnr/spacemacs/blob/master/layers/+completion/helm/README.org][Helm]] and [[https://github.com/syl20bnr/spacemacs/blob/master/layers/+completion/ivy/README.org][Ivy]].
+For more information go to the layers documentation for [[https://github.com/syl20bnr/spacemacs/blob/develop/layers/+completion/helm/README.org][Helm]] and [[https://github.com/syl20bnr/spacemacs/blob/develop/layers/+completion/ivy/README.org][Ivy]].
 
 *Note*: To open the Spacemacs documentation for Helm of Ivy in Emacs, open the
 =spacemacs-help= menu with ~SPC h SPC~ and type ~helm~ or ~ivy~ then ~return~.
@@ -2473,10 +2472,10 @@ listed above. For example window resizing.
 | ~j~ ~<down>~    | go to window below                                            |
 | ~k~ ~<up>~      | go to window above                                            |
 | ~l~ ~<right>~   | go to window on the right                                     |
-| ~H~ ~<S-left>~  | move window to the left                                       |
-| ~J~ ~<S-down>~  | move window to the bottom                                     |
-| ~K~ ~<S-up>~    | move bottom to the top                                        |
-| ~L~ ~<S-right>~ | move window to the right                                      |
+| ~H~ ~S-<left>~  | move window to the left                                       |
+| ~J~ ~S-<down>~  | move window to the bottom                                     |
+| ~K~ ~S-<up>~    | move bottom to the top                                        |
+| ~L~ ~S-<right>~ | move window to the right                                      |
 | ~m~             | toggle maximization of current window                         |
 | ~o~             | focus other frame                                             |
 | ~a~             | call ace window mode                                          |
@@ -2629,7 +2628,7 @@ navigate between =Emacs= and Spacemacs specific files.
 | Key binding   | Description                                                                                             |
 |---------------+---------------------------------------------------------------------------------------------------------|
 | ~SPC f e d~   | open the spacemacs dotfile (=~/.spacemacs=)                                                             |
-| ~SPC f e D~   | open =ediff= buffer of =~/.spacemacs= and =.spacemacs.template=                                         |
+| ~SPC f e D~   | open =ediff= buffer of =~/.spacemacs= and =dotspacemacs-template.el=                                    |
 | ~SPC f e e~   | open the =~/.spacemacs.env= file where environment variables are set or goes to =dotspacemacs/user-env= |
 | ~SPC f e E~   | reload the environment variables by executing the function =dotspacemacs/user-env=                      |
 | ~SPC f e C-e~ | reinitialize the =~/.spacemacs.env= file by importing system and shell environment variables            |
@@ -2713,14 +2712,16 @@ Initiate the transient state with ~M-SPC~ or ~s-M-SPC~ while in an =ido= buffer.
 Bookmarks can be set anywhere in a file. Bookmarks are persistent. They are very
 useful to jump to/open a known project.
 
-Open the bookmark completion window by pressing= ~SPC f b~
+Open the bookmark completion window by pressing= ~SPC f b~. Inside this
+completion window, the following key bindings are available when using the helm
+layer:
 
-| Key binding | Description                                  |
-|-------------+----------------------------------------------|
-| ~C-d~       | delete the selected bookmark                 |
-| ~C-e~       | edit the selected bookmark                   |
-| ~C-f~       | toggle filename location                     |
-| ~C-o~       | open the selected bookmark in another window |
+| Key binding  | Description                                  |
+|--------------+----------------------------------------------|
+| ~C-d~        | delete the selected bookmark                 |
+| ~C-e~        | edit the selected bookmark                   |
+| ~C-f~        | toggle filename location                     |
+| ~S-<return>~ | open the selected bookmark in another window |
 
 To save a new bookmark, just type the name of the bookmark and press ~RET~.
 
@@ -2784,7 +2785,6 @@ You can toggle auto-save in a buffer by calling the command =auto-save-mode=.
 Spacemacs can be interfaced with different search utilities like:
 - [[https://github.com/BurntSushi/ripgrep][rg]]
 - [[https://github.com/ggreer/the_silver_searcher][ag]]
-- [[https://github.com/monochromegane/the_platinum_searcher][pt]]
 - [[https://beyondgrep.com/][ack]]
 - grep
 
@@ -2796,11 +2796,12 @@ If the last key (determining the scope) is uppercase then the current region or
 symbol under point is used as default input for the search. For instance
 ~SPC s a B~ will search with symbol under point (if there is no active region).
 
-If the tool key is omitted then a default tool will be automatically selected
-for the search. This tool corresponds to the first tool found on the system of
-the list =dotspacemacs-search-tools=, the default order is =rg=, =ag=, =pt=,
-=ack= then =grep=. For instance ~SPC s b~ will search in the opened buffers
-using =pt= if =rg= and =ag= have not been found on the system.
+If the tool key is omitted then a default tool will be automatically
+selected for the search. This tool corresponds to the first tool found
+on the system of the list =dotspacemacs-search-tools=, the default
+order is =rg=, =ag=, =ack= then =grep=. For instance ~SPC s b~ will
+search in the opened buffers using =ack= if =rg= and =ag= have not
+been found on the system.
 
 The tool keys are:
 
@@ -2810,7 +2811,6 @@ The tool keys are:
 | grep | g   |
 | ack  | k   |
 | rg   | r   |
-| pt   | t   |
 
 The available scopes and corresponding keys are:
 
@@ -2825,13 +2825,10 @@ of the sequence, for instance ~SPC s a a~ will search in the current
 file with =ag=.
 
 *Notes*:
-- =rg=, =ag= and =pt= are optimized to be used in a source control repository but
-  they can be used in an arbitrary directory as well.
+- =rg= and =ag= are optimized to be used in a source control
+  repository but they can be used in an arbitrary directory as well.
 - It is also possible to search in several directories at once by marking
   them in the Helm buffer (not available in Ivy).
-
-*Beware* if you use =pt=, [[https://core.tcl.tk/tcllib/doc/tcllib-1-17/embedded/www/tcllib/files/apps/pt.html][TCL parser tools]] also install a command line tool
-called =pt=.
 
 **** Useful key bindings
 
@@ -2874,8 +2871,6 @@ bindings (~SPC e n~ and ~SPC e p~) as well as the error transient state (~SPC e 
 | ~SPC s k B~ | =ack= with default text                             |
 | ~SPC s r b~ | =rg=                                                |
 | ~SPC s r B~ | =rg= with default text                              |
-| ~SPC s t b~ | =pt=                                                |
-| ~SPC s t B~ | =pt= with default text                              |
 
 **** Searching in files in an arbitrary directory
 
@@ -2891,8 +2886,6 @@ bindings (~SPC e n~ and ~SPC e p~) as well as the error transient state (~SPC e 
 | ~SPC s k F~ | =ack= with default text                             |
 | ~SPC s r f~ | =rg=                                                |
 | ~SPC s r F~ | =rg= with default text                              |
-| ~SPC s t f~ | =pt=                                                |
-| ~SPC s t F~ | =pt= with default text                              |
 
 **** Searching in current directory
 
@@ -2905,8 +2898,6 @@ bindings (~SPC e n~ and ~SPC e p~) as well as the error transient state (~SPC e 
 | ~SPC s g d~          | =grep= with default text                            |
 | ~SPC s k d~          | =ack=                                               |
 | ~SPC s k D~          | =ack= with default text                             |
-| ~SPC s t d~          | =pt=                                                |
-| ~SPC s t D~          | =pt= with default text                              |
 | ~SPC s r d~          | =rg=                                                |
 | ~SPC s r D~          | =rg= with default text                              |
 
@@ -2921,8 +2912,6 @@ bindings (~SPC e n~ and ~SPC e p~) as well as the error transient state (~SPC e 
 | ~SPC s g p~          | =grep= with default text                            |
 | ~SPC s k p~          | =ack=                                               |
 | ~SPC s k P~          | =ack= with default text                             |
-| ~SPC s t p~          | =pt=                                                |
-| ~SPC s t P~          | =pt= with default text                              |
 | ~SPC s r p~          | =rg=                                                |
 | ~SPC s r P~          | =rg= with default text                              |
 
@@ -3351,8 +3340,8 @@ an ~occurrence~.
 
 *** Replacing text in several files
 **** Helm
-If you have =rg=, =ag=, =pt= or =ack= installed, replacing an occurrence of text
-in several files can be performed via [[https://github.com/syohex/emacs-helm-ag][helm-ag]].
+If you have =rg=, =ag=, or =ack= installed, replacing an occurrence of
+text in several files can be performed via [[https://github.com/syohex/emacs-helm-ag][helm-ag]].
 
 Say you want to replace all =foo= occurrences by =bar= in your current
 project:
@@ -3362,8 +3351,8 @@ project:
 - edit the occurrences then leave the =iedit state=
 - press ~C-c C-c~
 
-*Note*: In Spacemacs, =helm-ag= despite its name works with =rg=, =pt= and =ack=
-as well (but not with =grep=).
+*Note*: In Spacemacs, =helm-ag= despite its name works with =rg= and
+=ack= as well (but not with =grep=).
 
 **** Compleseus
 The same above steps as with the =helm= layer work with the =compleseus= layer.
@@ -3742,7 +3731,6 @@ To search in a project see [[#searching-in-a-project][project searching]].
 | ~SPC s a p~ | run =ag=                                                                                 |
 | ~SPC s g p~ | run =grep=                                                                               |
 | ~SPC s k p~ | run =ack=                                                                                |
-| ~SPC s t p~ | run =pt=                                                                                 |
 | ~SPC s r p~ | run =rg=                                                                                 |
 | ~SPC f y C~ | show and copy current file path relative to the project root with line and column number |
 | ~SPC f y D~ | show and copy current directory path relative to the project root                        |
@@ -3897,7 +3885,23 @@ server is to use the following bindings:
 If any errors happen during the loading the mode-line will turn red and the
 errors should appear inline in the startup buffer. Spacemacs should still be
 usable; if it is not then restart Emacs with =emacs --debug-init= and open a
-[[https://github.com/syl20bnr/spacemacs/issues][GitHub issue]] with the backtrace.
+[[https://github.com/syl20bnr/spacemacs/issues][GitHub issue]] with the backtrace. However, please note that in many cases, errors
+are caught by Spacemacs. Such errors will not trigger the debugger in Emacs 30
+or later, even when using =--debug-init=. In order to obtain a backtrace you
+need to add the following to =dotspacemacs/user-init=:
+
+#+BEGIN_SRC emacs-lisp
+  (setq debug-on-error t)
+#+END_SRC
+
+(This variable can also be toggled during a session using ~SPC t D~.)
+
+Additionally, in the rare case where the type of the error is one of those
+listed in =debug-ignored-errors=, you need to remove it from the list, for example:
+
+#+BEGIN_SRC emacs-lisp
+  (setq debug-ignored-errors (delq 'buffer-read-only debug-ignored-errors))
+#+END_SRC
 
 ** Upgrading/Downgrading Emacs version
 To ensure that packages are correctly compiled for the new Emacs version you

@@ -1,6 +1,6 @@
-;;; config.el --- Org configuration File for Spacemacs
+;;; config.el --- Org configuration File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -20,11 +20,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-;; Dumper
-
-(defun org/pre-dump ()
-  (spacemacs/dump-modes '(org-mode)))
 
 ;; Variables
 
@@ -47,7 +42,7 @@ the project root). If it an absolute path, one global file is
 used.")
 
 (defvar org-enable-notifications nil
-  "If non-nil org-wild-notifier is configured.")
+  "If non-nil org-alert is configured.")
 
 (defvar org-start-notification-daemon-on-startup nil
   "If non-nil start the notification daemon on startup.")

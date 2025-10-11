@@ -1,6 +1,6 @@
-;;; config.el --- Spacemacs Defaults Layer configuration File
+;;; config.el --- Spacemacs Defaults Layer configuration File  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -46,6 +46,16 @@ Such useless buffers are skipped by `previous-buffer',
 (defvar spacemacs-useful-buffers-regexp '()
   "Regexp used to define buffers that are useful despite matching
 `spacemacs-useless-buffers-regexp'.")
+
+(spacemacs|defc spacemacs-recentf-exclude-not-modified '()
+  "List of regexps and predicates for filenames excluded from the recent
+list which does NOT modified, similar to `recentf-exclude'.
+
+For example the `org-agenda-list' will open *.org files for collecting
+entries, then the *.org files will be listed on the recentf. To avoid
+that, add the files into this variable will exclude them when they does
+NOT modified."
+  '(repeat (choice regexp function)))
 
 (spacemacs|defc spacemacs-useful-buffers-restrict-spc-tab t
   "When non-nil, \\[spacemacs/alternate-buffer] does not switch to
@@ -253,6 +263,7 @@ variables (see `savehist-mode' and `savehist-additional-variables')."
 
 ;; cache files
 (setq tramp-persistency-file-name (concat spacemacs-cache-directory "tramp"))
+(setq request-storage-directory (concat spacemacs-cache-directory "request/"))
 
 ;; seems pointless to warn. There's always undo.
 (put 'narrow-to-region 'disabled nil)

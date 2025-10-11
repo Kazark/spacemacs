@@ -1,6 +1,6 @@
-;;; config.el --- mu4e Layer configuration File for Spacemacs
+;;; config.el --- mu4e Layer configuration File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -32,9 +32,6 @@
 
 (defvar mu4e-spacemacs-kill-layout-on-exit t
   "When non-nil, exiting mu4e app will automatically kill its layout")
-
-(defvar mu4e-enable-async-operations nil
-  "Prefer async operations when sending emails.")
 
 (defvar mu4e-enable-notifications nil
   "If non-nil, enable desktop notifications for unread emails.")

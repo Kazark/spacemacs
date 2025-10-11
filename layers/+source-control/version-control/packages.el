@@ -1,6 +1,6 @@
-;;; packages.el --- Source Control Layer packages File for Spacemacs
+;;; packages.el --- Source Control Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -26,8 +26,14 @@
     ;; Git-gutter+ is not longer maintained and will break with latest magit version
     ;; therefore we switch to diff-hl for users which have configered git-gutter+ to avoid
     ;; breaking there config.
-    (diff-hl            :toggle (or (eq 'diff-hl version-control-diff-tool)
-                                    (eq 'git-gutter+ version-control-diff-tool)))
+    ;; (diff-hl            :toggle (or (eq 'diff-hl version-control-diff-tool)
+    ;;                                 (eq 'git-gutter+ version-control-diff-tool)))
+    (diff-hl :location (recipe
+                        :fetcher github
+                        :repo "smile13241324/diff-hl"
+                        :branch "frame-local-diff-hl-margin-mode")
+             :toggle (or (eq 'diff-hl version-control-diff-tool)
+                         (eq 'git-gutter+ version-control-diff-tool)))
     diff-mode
     evil-unimpaired
     (git-gutter         :toggle (eq 'git-gutter version-control-diff-tool))
@@ -40,22 +46,11 @@
     :defer t
     :commands (vc-ignore)
     :init
+    (spacemacs/set-leader-keys "gv" vc-prefix-map)
     (spacemacs/declare-prefix "gv" "version-control")
-    (spacemacs/set-leader-keys
-      "gvv" 'vc-next-action
-      "gvg" 'vc-annotate
-      "gvD" 'vc-root-diff
-      "gve" 'vc-ediff
-      "gvd" 'vc-dir
-      "gv+" 'vc-update
-      "gvh" 'vc-region-history
-      "gvi" 'vc-register
-      "gvI" 'vc-ignore
-      "gvu" 'vc-revert
-      "gvl" 'vc-print-log
-      "gvL" 'vc-print-root-log
-      "gvr" 'vc-resolve-conflicts)
     :config
+    (define-key vc-prefix-map "e" #'vc-ediff)
+    (define-key vc-prefix-map "R" #'vc-resolve-conflicts)
     (with-eval-after-load 'vc-dir
       (evilified-state-evilify-map vc-dir-mode-map
         :mode vc-dir-mode
@@ -149,15 +144,20 @@
     :defer t
     :init
     (spacemacs/set-leader-keys "gv=" 'diff-hl-diff-goto-hunk)
-    (if version-control-global-margin
-        (progn
-          (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-          (run-with-idle-timer 1 nil 'global-diff-hl-mode))
-      (run-with-idle-timer 1 nil 'diff-hl-margin-mode))
-    :config
-    (spacemacs|do-after-display-system-init
-      (setq diff-hl-side (if (eq version-control-diff-side 'left)
-                             'left 'right)))))
+    (setq diff-hl-side (if (eq version-control-diff-side 'left)
+                           'left 'right))
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+    (define-advice turn-on-diff-hl-mode (:after (&rest _) AUTOMARGIN)
+      (and (memq version-control-margin '(t auto))
+           (not diff-hl-margin-mode)    ; not global mode
+           (not (display-graphic-p (window-frame (get-buffer-window))))
+           (diff-hl-margin-local-mode)
+           (diff-hl-update)))
+    (when (eq version-control-margin 'global)
+        (run-with-idle-timer 1 nil 'spacemacs/vcs-enable-margin-globally))
+    ;; The diff-hl-margin mode requests the diff-hl-mode to be enabled, so
+    ;; enable the diff-hl-mode anyway.
+    (run-with-idle-timer 1 nil 'global-diff-hl-mode)))
 
 (defun version-control/post-init-evil-unimpaired ()
   (define-key evil-normal-state-map (kbd "[ h") 'spacemacs/vcs-previous-hunk)
@@ -168,7 +168,7 @@
     :defer t
     :init
     ;; If you enable global minor mode
-    (when version-control-global-margin
+    (when version-control-margin
       (run-with-idle-timer 1 nil 'global-git-gutter-mode))
     (setq git-gutter:update-interval 2
           git-gutter:modified-sign " "

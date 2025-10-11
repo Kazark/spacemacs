@@ -1,6 +1,6 @@
-;;; packages.el --- plantuml layer packages file for Spacemacs.
+;;; packages.el --- plantuml layer packages file for Spacemacs.  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Robert O'Connor <robby.oconnor@gmail.com>
 ;; Contributor: Carlo Sciolla <carlo.sciolla@gmail.com>
@@ -43,6 +43,9 @@
     :config
     ;; Our default is jar execution, not server as server is not working reliable see #13574
     (setq plantuml-default-exec-mode 'jar)
+    ;; Convenient for GUI and TUI buffers
+    (define-advice plantuml-jar-output-type-opt (:around (ORIG output-type))
+      (funcall ORIG (if (display-graphic-p) output-type "txt")))
     ;; for now plantuml electric indentation is buggy and does not
     ;; really work, let's disable auto-indentation on paste for
     ;; this mode

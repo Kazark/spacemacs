@@ -1,6 +1,6 @@
-;;; packages.el --- GPU layer packages File for Spacemacs
+;;; packages.el --- GPU layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Evan Klitzke <evan@eklitzke.org>
 ;; URL: https://github.com/eklitzke

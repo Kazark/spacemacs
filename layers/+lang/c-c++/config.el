@@ -1,6 +1,6 @@
-;;; config.el --- C/C++ Layer config File for Spacemacs
+;;; config.el --- C/C++ Layer config File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -92,6 +92,12 @@ Add `dap-gdb-lldb' for the WebFreak Native Debug extension.")
 
 (defvar c-c++-default-mode-for-headers (unless (functionp 'c-or-c++-mode) 'c-mode)
   "Default mode to open header files. Can be `c-mode' or `c++-mode', or `c-or-c++-mode' for Emacs > 26+.")
+
+(defvar c-c++-formatter-indent-line nil
+  "When non-nil, indent the line with formatter.
+If the `lsp' available, try `lsp-format-region' to indent the line;
+If the `clang-format' available, try `clang-format-region' to indent the line;
+Otherwise indent the line with built-in functions.")
 
 (defvar c-c++-adopt-subprojects nil
   "When non-nil, projectile will remember project root when visiting files in subprojects")

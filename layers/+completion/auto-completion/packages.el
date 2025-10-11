@@ -1,6 +1,6 @@
-;;; packages.el --- Auto-completion Layer packages File for Spacemacs
+;;; packages.el --- Auto-completion Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -77,7 +77,7 @@
     (add-to-list 'completion-styles 'initials t)
     (define-key ac-completing-map (kbd "C-j") 'ac-next)
     (define-key ac-completing-map (kbd "C-k") 'ac-previous)
-    (define-key ac-completing-map (kbd "<S-tab>") 'ac-previous)
+    (define-key ac-completing-map (kbd "S-<tab>") 'ac-previous)
     (spacemacs|diminish auto-complete-mode " ⓐ" " a")))
 
 (defun auto-completion/init-auto-yasnippet ()
@@ -249,10 +249,7 @@
           ;; unique.
           try-complete-lisp-symbol-partially
           ;; Try to complete word as an Emacs Lisp symbol.
-          try-complete-lisp-symbol))
-  (when (configuration-layer/package-used-p 'yasnippet)
-    ;; Try to expand yasnippet snippets based on prefix
-    (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)))
+          try-complete-lisp-symbol)))
 
 (defun auto-completion/init-ivy-yasnippet ()
   (use-package ivy-yasnippet
@@ -305,7 +302,8 @@
       ;; ~/.emacs.d/layers/auto-completion/snippets
       (add-to-list 'yas-snippet-dirs spacemacs-layer-snippets-dir)
       ;; ~/.emacs.d/private/snippets
-      (add-to-list 'yas-snippet-dirs emacs-directory-snippets-dir)
+      (when (file-exists-p emacs-directory-snippets-dir)
+        (add-to-list 'yas-snippet-dirs emacs-directory-snippets-dir))
       ;; ~/.spacemacs.d/snippets
       (when dotspacemacs-directory-snippets-dir
         (add-to-list 'yas-snippet-dirs dotspacemacs-directory-snippets-dir))
@@ -322,11 +320,13 @@
      'spacemacs/force-yasnippet-off '(term-mode-hook
                                       shell-mode-hook
                                       eshell-mode-hook))
-    (spacemacs|require-when-dumping 'yasnippet)
     (spacemacs/add-to-hooks 'spacemacs/load-yasnippet '(prog-mode-hook
                                                         markdown-mode-hook
                                                         org-mode-hook))
 
-    :config (spacemacs|diminish yas-minor-mode " ⓨ" " y")))
+    :config
+    (spacemacs|diminish yas-minor-mode " ⓨ" " y")
+    ;; Try to expand yasnippet snippets based on prefix
+    (add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)))
 
 (defun auto-completion/init-yasnippet-snippets ())

@@ -1,3 +1,4 @@
+ielm-history.eld
 *.db
 *.elc
 *.pyc
@@ -6,7 +7,9 @@
 /*.zip
 .DS_Store
 .ac-php-conf.json
+.aider.*
 .cache
+.claude*
 .dap-breakpoints
 .directory
 .emacs.desktop

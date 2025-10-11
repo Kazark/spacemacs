@@ -1,6 +1,6 @@
-;;; packages.el --- Helm Layer packages File
+;;; packages.el --- Helm Layer packages File  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -22,7 +22,8 @@
 
 
 (defconst helm-packages
-  '(ace-jump-helm-line
+  '((avy-jump-helm-line
+     :location (recipe :fetcher github :repo "sunlin7/avy-jump-helm-line"))
     auto-highlight-symbol
     bookmark
     helm
@@ -35,12 +36,13 @@
     helm-make
     helm-mode-manager
     helm-org
-    (helm-posframe :toggle helm-use-posframe)
     helm-projectile
-    helm-swoop
-    helm-themes
+    ;; FIXME Remove obsolete packages helm-swoop
+    ;; helm-ag etc. (see https://github.com/melpa/melpa/pull/9520)
+    (helm-swoop :location (recipe
+                           :fetcher github
+                           :repo "emacsattic/helm-swoop"))
     (helm-spacemacs-help :location local)
-    (helm-spacemacs-faq :location local)
     helm-xref
     imenu
     persp-mode
@@ -49,12 +51,12 @@
 
 
 ;; Initialization of packages
-(defun helm/init-ace-jump-helm-line ()
-  (use-package ace-jump-helm-line
-    :defer (spacemacs/defer)
+(defun helm/init-avy-jump-helm-line ()
+  (use-package avy-jump-helm-line
+    :defer t
     :init
     (with-eval-after-load 'helm
-      (define-key helm-map (kbd "C-q") 'ace-jump-helm-line))))
+      (define-key helm-map (kbd "C-q") 'avy-jump-helm-line))))
 
 (defun helm/pre-init-auto-highlight-symbol ()
   (spacemacs|use-package-add-hook auto-highlight-symbol
@@ -75,7 +77,8 @@
 
 (defun helm/init-helm ()
   (use-package helm
-    :defer (spacemacs/defer)
+    :defer t
+    :commands (helm-grep-git-1)
     :init
     (spacemacs|diminish helm-ff-cache-mode)
     (spacemacs|add-transient-hook completing-read
@@ -93,13 +96,13 @@
     (unless (configuration-layer/package-used-p 'ibuffer)
       (evil-ex-define-cmd "buffers" 'helm-buffers-list))
     ;; use helm by default for M-x, C-x C-f, and C-x b
-    (unless (configuration-layer/layer-usedp 'smex)
+    (unless (configuration-layer/layer-usedp 'amx)
       (global-set-key (kbd "M-x") 'spacemacs/helm-M-x-fuzzy-matching))
     (global-set-key (kbd "C-x C-f") 'spacemacs/helm-find-files)
     (global-set-key (kbd "C-x b") 'helm-buffers-list)
     ;; use helm to switch last(/previous) visited buffers with C(-S)-tab
-    (evil-global-set-key 'motion (kbd "<C-tab>") 'helm-buffers-list)
-    (evil-global-set-key 'motion (kbd "<C-iso-lefttab>") 'helm-buffers-list)
+    (evil-global-set-key 'motion (kbd "C-<tab>") 'helm-buffers-list)
+    (evil-global-set-key 'motion (kbd "C-<iso-lefttab>") 'helm-buffers-list)
     ;; use helm everywhere
     (spacemacs||set-helm-key "<f1>" helm-apropos)
     (spacemacs||set-helm-key "a'"   helm-available-repls)
@@ -123,13 +126,21 @@
     (spacemacs||set-helm-key "ry"   helm-show-kill-ring)
     (spacemacs||set-helm-key "sl"   spacemacs/resume-last-search-buffer)
     (spacemacs||set-helm-key "sj"   spacemacs/helm-jump-in-buffer)
+    (evil-add-command-properties 'spacemacs/helm-jump-in-buffer :jump t)
+    (evil-add-command-properties 'lazy-helm/spacemacs/helm-jump-in-buffer :jump t)
     ;; search with grep
     (spacemacs||set-helm-key "sgb"  spacemacs/helm-buffers-do-grep)
-    (spacemacs||set-helm-key "sgB"  spacemacs/helm-buffers-do-grep-region-or-symbol)
+    (spacemacs||set-helm-key
+     "sgB" ("grep-search buffers w/ input" .
+            spacemacs/helm-buffers-do-grep-region-or-symbol))
     (spacemacs||set-helm-key "sgf"  spacemacs/helm-files-do-grep)
-    (spacemacs||set-helm-key "sgF"  spacemacs/helm-files-do-grep-region-or-symbol)
+    (spacemacs||set-helm-key
+     "sgF" ("grep-search files w/ input" .
+            spacemacs/helm-files-do-grep-region-or-symbol))
     (spacemacs||set-helm-key "sgg"  spacemacs/helm-file-do-grep)
-    (spacemacs||set-helm-key "sgG"  spacemacs/helm-file-do-grep-region-or-symbol)
+    (spacemacs||set-helm-key
+     "sgG" ("grep-search file w/ input" .
+            spacemacs/helm-file-do-grep-region-or-symbol))
     ;; various key bindings
     (spacemacs||set-helm-key "fel" helm-locate-library)
     (spacemacs||set-helm-key "hdx" spacemacs/describe-ex-command)
@@ -171,11 +182,18 @@
                 (spacemacs||set-helm-key "hPw" profiler-report-write-profile)
                 ;; define the key binding at the very end in order to allow the user
                 ;; to overwrite any key binding
-                (unless (configuration-layer/layer-usedp 'smex)
+                (unless (configuration-layer/layer-usedp 'amx)
                   (spacemacs/set-leader-keys
                     dotspacemacs-emacs-command-key 'spacemacs/helm-M-x-fuzzy-matching))))
     ;; avoid duplicates in `helm-M-x' history.
     (setq history-delete-duplicates t)
+    ;; bind for helm-themes
+    (spacemacs/set-leader-keys "Ts" 'spacemacs/helm-themes)
+    ;; bind for grep in git
+    (when (configuration-layer/layer-used-p 'git)
+      (spacemacs/set-leader-keys
+        "g/" 'spacemacs/helm-git-grep
+        "g*" 'spacemacs/helm-git-grep-at-point))
     :config
     (helm-mode)
     (spacemacs|hide-lighter helm-mode)
@@ -198,8 +216,8 @@
     (setq helm-ff-allow-non-existing-file-at-point t)
 
     ;; use helm to switch last(/previous) visited buffers with C(-S)-tab
-    (define-key helm-map (kbd "<C-tab>") 'helm-follow-action-forward)
-    (define-key helm-map (kbd "<C-iso-lefttab>") 'helm-follow-action-backward)
+    (define-key helm-map (kbd "C-<tab>") 'helm-follow-action-forward)
+    (define-key helm-map (kbd "C-<iso-lefttab>") 'helm-follow-action-backward)
     ;; alter helm-bookmark key bindings to be simpler
     (defun simpler-helm-bookmark-keybindings ()
       (define-key helm-bookmark-map (kbd "C-d") 'helm-bookmark-run-delete)
@@ -221,16 +239,16 @@
 
 (defun helm/init-helm-comint ()
   (use-package helm-comint
-    :defer (spacemacs/defer)
+    :defer t
     :after helm))
 
 (defun helm/init-helm-ag ()
   (use-package helm-ag
-    :defer (spacemacs/defer)
+    :defer t
     :init
     (setq helm-ag-use-grep-ignore-list t)
     ;; This overrides the default C-s action in helm-projectile-switch-project
-    ;; to search using rg/ag/pt/whatever instead of just grep
+    ;; to search using rg/ag/whatever instead of just grep
     (with-eval-after-load 'helm-projectile
       (define-key helm-projectile-projects-map
                   (kbd "C-s") 'spacemacs/helm-projectile-grep)
@@ -250,15 +268,17 @@
       "s`"  'helm-ag-pop-stack
       ;; opened buffers scope
       "sb"  'spacemacs/helm-buffers-smart-do-search
-      "sB"  'spacemacs/helm-buffers-smart-do-search-region-or-symbol
+      "sB"  '("smart-search buffers w/ input" .
+              spacemacs/helm-buffers-smart-do-search-region-or-symbol)
       "sab" 'helm-do-ag-buffers
-      "saB" 'spacemacs/helm-buffers-do-ag-region-or-symbol
+      "saB" '("ag-search buffers w/ input" .
+              spacemacs/helm-buffers-do-ag-region-or-symbol)
       "skb" 'spacemacs/helm-buffers-do-ack
-      "skB" 'spacemacs/helm-buffers-do-ack-region-or-symbol
+      "skB" '("ack-search buffers w/ input" .
+              spacemacs/helm-buffers-do-ack-region-or-symbol)
       "srb" 'spacemacs/helm-buffers-do-rg
-      "srB" 'spacemacs/helm-buffers-do-rg-region-or-symbol
-      "stb" 'spacemacs/helm-buffers-do-pt
-      "stB" 'spacemacs/helm-buffers-do-pt-region-or-symbol
+      "srB" '("rg-search buffers w/ input" .
+              spacemacs/helm-buffers-do-rg-region-or-symbol)
       ;; current file scope
       "ss"  'spacemacs/helm-file-smart-do-search
       "sS"  'spacemacs/helm-file-smart-do-search-region-or-symbol
@@ -266,39 +286,42 @@
       "saA" 'spacemacs/helm-file-do-ag-region-or-symbol
       ;; files scope
       "sf"  'spacemacs/helm-files-smart-do-search
-      "sF"  'spacemacs/helm-files-smart-do-search-region-or-symbol
+      "sF"  '("smart-search files w/ input" .
+              spacemacs/helm-files-smart-do-search-region-or-symbol)
       "saf" 'helm-do-ag
-      "saF" 'spacemacs/helm-files-do-ag-region-or-symbol
+      "saF" '("ag-search files w/ input" .
+              spacemacs/helm-files-do-ag-region-or-symbol)
       "skf" 'spacemacs/helm-files-do-ack
-      "skF" 'spacemacs/helm-files-do-ack-region-or-symbol
+      "skF" '("ack-search files w/ input" .
+              spacemacs/helm-files-do-ack-region-or-symbol)
       "srf" 'spacemacs/helm-files-do-rg
-      "srF" 'spacemacs/helm-files-do-rg-region-or-symbol
-      "stf" 'spacemacs/helm-files-do-pt
-      "stF" 'spacemacs/helm-files-do-pt-region-or-symbol
+      "srF" '("rg-search files w/ input" .
+              spacemacs/helm-files-do-rg-region-or-symbol)
       ;; current dir scope
       "sd"  'spacemacs/helm-dir-smart-do-search
-      "sD"  'spacemacs/helm-dir-smart-do-search-region-or-symbol
+      "sD"  '("smart-search dir w/ input" .
+              spacemacs/helm-dir-smart-do-search-region-or-symbol)
       "sad" 'spacemacs/helm-dir-do-ag
       "saD" 'spacemacs/helm-dir-do-ag-region-or-symbol
       "skd" 'spacemacs/helm-dir-do-ack
       "skD" 'spacemacs/helm-dir-do-ack-region-or-symbol
       "srd" 'spacemacs/helm-dir-do-rg
       "srD" 'spacemacs/helm-dir-do-rg-region-or-symbol
-      "std" 'spacemacs/helm-dir-do-pt
-      "stD" 'spacemacs/helm-dir-do-pt-region-or-symbol
       ;; current project scope
       "/"   'spacemacs/helm-project-smart-do-search
       "*"   'spacemacs/helm-project-smart-do-search-region-or-symbol
       "sp"  'spacemacs/helm-project-smart-do-search
-      "sP"  'spacemacs/helm-project-smart-do-search-region-or-symbol
+      "sP"  '("smart-search project w/ input" .
+              spacemacs/helm-project-smart-do-search-region-or-symbol)
       "sap" 'spacemacs/helm-project-do-ag
-      "saP" 'spacemacs/helm-project-do-ag-region-or-symbol
+      "saP" '("ag-search project w/ input" .
+              spacemacs/helm-project-do-ag-region-or-symbol)
       "skp" 'spacemacs/helm-project-do-ack
-      "skP" 'spacemacs/helm-project-do-ack-region-or-symbol
+      "skP" '("ack-search project w/ input" .
+              spacemacs/helm-project-do-ack-region-or-symbol)
       "srp" 'spacemacs/helm-project-do-rg
-      "srP" 'spacemacs/helm-project-do-rg-region-or-symbol
-      "stp" 'spacemacs/helm-project-do-pt
-      "stP" 'spacemacs/helm-project-do-pt-region-or-symbol)
+      "srP" '("rg-search project w/ input" .
+              spacemacs/helm-project-do-rg-region-or-symbol))
     :config
     (advice-add 'helm-ag--save-results :after 'spacemacs//gne-init-helm-ag)
     (evil-define-key 'normal helm-ag-map
@@ -315,7 +338,7 @@
 
 (defun helm/init-helm-descbinds ()
   (use-package helm-descbinds
-    :defer (spacemacs/defer)
+    :defer t
     :init
     (setq helm-descbinds-window-style 'split
           helm-descbinds-disable-which-key nil)
@@ -366,21 +389,7 @@
 (defun helm/init-helm-org ()
   (use-package helm-org
     :commands (helm-org-in-buffer-headings)
-    :defer (spacemacs/defer)))
-
-(defun helm/init-helm-posframe ()
-  (use-package helm-posframe
-    :defer t
-    :init
-    (setq helm-posframe-poshandler 'posframe-poshandler-frame-center)
-    (setq helm-posframe-width (round (* 0.618 (frame-width))))
-    (setq helm-posframe-height (round (* 0.618 (frame-height))))
-    (setq helm-posframe-parameters
-          '((internal-border-width . 2)
-            (left-fringe . 4)
-            (right-fringe . 4)
-            (undecorated . nil)))
-    (helm-posframe-enable)))
+    :defer t))
 
 (defun helm/pre-init-helm-projectile ()
   ;; overwrite projectile settings
@@ -422,33 +431,28 @@
   (use-package helm-spacemacs-help
     :commands (helm-spacemacs-help-dotspacemacs
                helm-spacemacs-help
-               helm-spacemacs-help-faq
                helm-spacemacs-help-layers
                helm-spacemacs-help-packages
                helm-spacemacs-help-docs
                helm-spacemacs-help-toggles)
-    :init (spacemacs/set-leader-keys
-            "h ."   'helm-spacemacs-help-dotspacemacs
-            "h SPC" 'helm-spacemacs-help
-            "h f"   'helm-spacemacs-help-faq
-            "h l"   'helm-spacemacs-help-layers
-            "h p"   'helm-spacemacs-help-packages
-            "h r"   'helm-spacemacs-help-docs
-            "h t"   'helm-spacemacs-help-toggles)))
-
-(defun helm/init-helm-spacemacs-faq ()
-  (use-package helm-spacemacs-faq
-    :commands helm-spacemacs-help-faq
-    :init (spacemacs/set-leader-keys "h f" 'helm-spacemacs-help-faq)))
+    :init
+    (autoload 'helm-spacemacs-help-faq "helm-spacemacs-faq" nil t)
+    (spacemacs/set-leader-keys
+      "h ."   'helm-spacemacs-help-dotspacemacs
+      "h SPC" 'helm-spacemacs-help
+      "h f"   'helm-spacemacs-help-faq
+      "h l"   'helm-spacemacs-help-layers
+      "h p"   'helm-spacemacs-help-packages
+      "h r"   'helm-spacemacs-help-docs
+      "h t"   'helm-spacemacs-help-toggles)))
 
 (defun helm/init-helm-swoop ()
   (use-package helm-swoop
-    :defer (spacemacs/defer)
+    :defer t
     :init
     (setq helm-swoop-split-with-multiple-windows t
           helm-swoop-split-direction 'split-window-vertically
-          helm-swoop-split-window-function 'spacemacs/helm-swoop-split-window-function
-          helm-swoop-pre-input-function (lambda () ""))
+          helm-swoop-split-window-function 'spacemacs/helm-swoop-split-window-function)
 
     (defun spacemacs/helm-swoop-split-window-function (&rest args)
       "Override to make helm settings (like `helm-split-window-default-side') work"
@@ -456,18 +460,6 @@
             (helm-full-frame nil)
             (pop-up-windows t))
         (apply 'helm-default-display-buffer args)))
-
-    (defun spacemacs/helm-swoop-region-or-symbol ()
-      "Call `helm-swoop' with default input."
-      (interactive)
-      (let ((helm-swoop-pre-input-function
-             (lambda ()
-               (if (region-active-p)
-                   (buffer-substring-no-properties (region-beginning)
-                                                   (region-end))
-                 (let ((thing (thing-at-point 'symbol t)))
-                   (if thing thing ""))))))
-        (call-interactively 'helm-swoop)))
 
     (defun spacemacs/helm-swoop-clear-cache ()
       "Call `helm-swoop--clear-cache' to clear the cache"
@@ -478,17 +470,10 @@
     (spacemacs/set-leader-keys
       "sC"    'spacemacs/helm-swoop-clear-cache
       "ss"    'helm-swoop
-      "sS"    'spacemacs/helm-swoop-region-or-symbol
+      "sS"    'helm-multi-swoop
       "s C-s" 'helm-multi-swoop-all)
 
     (evil-add-command-properties 'helm-swoop :jump t)))
-
-(defun helm/init-helm-themes ()
-  (use-package helm-themes
-    :defer t
-    :init
-    (spacemacs/set-leader-keys
-      "Ts" 'spacemacs/helm-themes)))
 
 (defun helm/init-helm-xref ()
   (use-package helm-xref

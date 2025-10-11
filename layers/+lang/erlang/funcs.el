@@ -1,6 +1,6 @@
-;;; funcs.el --- Erlang Layer functions File for Spacemacs
+;;; funcs.el --- Erlang Layer functions File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Carlos F. Clavijo <arkan1313@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs

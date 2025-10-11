@@ -1,6 +1,6 @@
-;;; packages.el --- Extempore Layer packages File for Spacemacs
+;;; packages.el --- Extempore Layer packages File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2020-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2020-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Ben Swift <ben@benswift.me>
 ;; URL: https://github.com/syl20bnr/spacemacs

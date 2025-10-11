@@ -1,6 +1,6 @@
-;;; config.el --- Version Control configuration File for Spacemacs
+;;; config.el --- Version Control configuration File for Spacemacs  -*- lexical-binding: nil; -*-
 ;;
-;; Copyright (c) 2012-2024 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -24,40 +24,25 @@
 (defvar spacemacs--smerge-ts-full-hint-toggle nil
   "Display smerge transient-state documentation.")
 
-(spacemacs|defc version-control-global-margin t
-  "If non-nil, will show diff margins globally."
-  'boolean)
+(spacemacs|defc version-control-margin 'auto
+  "Options to apply the margin for diff-tool.
+
+For git-gutter it only checkes the option as nil or non-nil to
+activate/diactivate the margin feature.
+
+For diff-hl it supports:
+`auto'/t: Activate the margin feature for TTY frames,
+          and activate the fringe feature for graphic frame.
+`global': Activate the margin globally.
+`nil': do not activate the margin feature."
+  '(choice (const auto) (const global) boolean))
 
 (spacemacs|defc version-control-diff-tool 'diff-hl
   "Options are `diff-hl' (the preferred choice) or `git-gutter' to show
-version-control markers."
+version-control markers, `nil' to disable this feature."
   '(choice (const diff-hl) (const git-gutter) nil))
 
 (spacemacs|defc version-control-diff-side 'right
   "Side on which to show version-control markers.
 Options are `left' and `right'."
   '(choice (const left) (const right)))
-
-;; change face
-(defface diff-hl-change
-  '((default :foreground "blue3")
-    (((class color) (min-colors 88) (background light))
-     :background "#ddddff")
-    (((class color) (min-colors 88) (background dark))
-     :background "#333355"))
-  "Face used to highlight changed lines."
-  :group 'diff-hl)
-
-;; added face
-(defface diff-hl-insert
-  '((default :inherit diff-added)
-    (((class color)) :foreground "green4"))
-  "Face used to highlight inserted lines."
-  :group 'diff-hl)
-
-;; deleted face
-(defface diff-hl-delete
-  '((default :inherit diff-removed)
-    (((class color)) :foreground "red3"))
-  "Face used to highlight deleted lines."
-  :group 'diff-hl)
