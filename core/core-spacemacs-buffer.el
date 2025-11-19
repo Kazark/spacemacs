@@ -23,6 +23,7 @@
 ;;; Code:
 
 (require 'core-dotspacemacs)
+(require 'core-obsolete)
 (eval-when-compile
   (defvar dotspacemacs-distribution)
   (defvar dotspacemacs-filepath)
