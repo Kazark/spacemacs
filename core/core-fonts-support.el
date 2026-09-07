@@ -34,10 +34,10 @@
 PLISTS has either the form (\"fontname\" :prop1 val1 :prop2 val2 ...)
 or is a list of such. The first font that can be found will be used.
 
-The return value is nil if no font was found, truthy otherwise."
+The return value is nil if no font was found, non-nil otherwise."
   (unless (listp (car plists))
     (setq plists (list plists)))
-  (catch 'break
+  (catch 'success
     (dolist (plist plists)
       (when (find-font (font-spec :name (car plist)))
         (let* ((font (car plist))
@@ -49,15 +49,7 @@ The return value is nil if no font was found, truthy otherwise."
                             :powerline-offset))
                (fontspec (apply 'font-spec :name font font-props)))
           (spacemacs-buffer/message "Setting font \"%s\"..." font)
-          ;; We set the INHIBIT-CUSTOMIZE parameter to t to tell set-frame-font
-          ;; not to fiddle with the default face in the user's Customization
-          ;; settings. We don't need Customization because our way of ensuring
-          ;; that the font is applied to future frames is to modify
-          ;; default-frame-alist, and Customization causes issues, see
-          ;; https://github.com/syl20bnr/spacemacs/issues/5353.
-          ;; INHIBIT-CUSTOMIZE is only present in recent emacs versions.
-          (set-frame-font fontspec nil t t)
-          (push `(font . ,(frame-parameter nil 'font)) default-frame-alist)
+          (set-face-attribute 'default nil :font fontspec)
 
           ;; Make sure that our font is used for fixed-pitch face as well
           (set-face-attribute 'fixed-pitch nil :family 'unspecified)
@@ -82,20 +74,33 @@ The return value is nil if no font was found, truthy otherwise."
                      (fallback-spec2 (apply 'font-spec
                                             :name fallback-font-name2
                                             fallback-props)))
-                ;; window numbers (ding bang circled digits)
-                (set-fontset-font "fontset-default"
-                                  '(#x2776 . #x2793) fallback-spec nil 'prepend)
-                ;; mode-line circled letters (circled latin capital/small letters)
-                (set-fontset-font "fontset-default"
-                                  '(#x24b6 . #x24e9) fallback-spec nil 'prepend)
-                ;; mode-line additional characters (circled/squared mathematical operators)
-                (set-fontset-font "fontset-default"
-                                  '(#x2295 . #x22a1) fallback-spec nil 'prepend)
-                ;; new version lighter (arrow block)
-                (set-fontset-font "fontset-default"
-                                  '(#x2190 . #x21ff) fallback-spec2 nil 'prepend)))))
-        (throw 'break t)))
+                ;; Active fontset might be `fontset-default', `fontset-startup',
+                ;; or something else.
+                (let ((active-fontset (face-attribute 'default :fontset)))
+                  ;; window numbers (ding bang circled digits)
+                  (set-fontset-font active-fontset
+                                    '(#x2776 . #x2793) fallback-spec nil 'prepend)
+                  ;; mode-line circled letters (circled latin capital/small letters)
+                  (set-fontset-font active-fontset
+                                    '(#x24b6 . #x24e9) fallback-spec nil 'prepend)
+                  ;; mode-line additional characters (circled/squared mathematical operators)
+                  (set-fontset-font active-fontset
+                                    '(#x2295 . #x22a1) fallback-spec nil 'prepend)
+                  ;; new version lighter (arrow block)
+                  (set-fontset-font active-fontset
+                                    '(#x2190 . #x21ff) fallback-spec2 nil 'prepend))))))
+        (throw 'success t)))
     nil))
+
+(defun spacemacs//set-default-font-from-dotfile ()
+  "Set the `default' face based on `dotspacemacs-default-font'."
+  (spacemacs|do-after-display-system-init
+    (unless (spacemacs/set-default-font dotspacemacs-default-font)
+      (spacemacs-buffer/warning
+       "Cannot find any of the specified fonts (%s)! Font settings may not be correct."
+       (if (listp (car dotspacemacs-default-font))
+           (mapconcat 'car dotspacemacs-default-font ", ")
+         (car dotspacemacs-default-font))))))
 
 (defun spacemacs/compute-mode-line-height ()
   "Return an adjusted mode-line height."

@@ -21,10 +21,6 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-(defvar compleseus-engine 'vertico
-  "Options are `selectrum', and `vertico' to use as completion
-  engine.")
-
 (defvar compleseus-use-nerd-icons nil
   "Use nerd-icons with marginalia to provide icons in the mini-buffer")
 
@@ -34,7 +30,7 @@
 (defvar compleseus-buffer-search-restrict-project t
   "If non-nil, `spacemacs/consult-line-multi' and `spacemacs/consult-line-multi-symbol'
 will be restricted to buffers of the current project.
-This is the default behaviour of `consult-line-multi', but it can be overriden
+This is the default behaviour of `consult-line-multi', but it can be overridden
 by using a prefix argument.
 
 If nil, we invert the default behaviour, and thus restrict to buffers
@@ -44,16 +40,16 @@ To restrict the commands to buffers of the current layout, customize
 the variable `spacemacs-layouts-restricted-functions'.")
 
 (defcustom compleseus-switch-to-buffer-sources
-  '(consult--source-hidden-buffer
+  '(consult-source-hidden-buffer
     compleseus--source-buffers-hidden
     compleseus--source-persp-buffers
     compleseus--source-persp-modified-buffers
     compleseus--source-other-persp-modified-buffers
-    consult--source-recent-file
-    consult--source-bookmark
+    consult-source-recent-file
+    consult-source-bookmark
     compleseus--source-persp-project-buffers
     compleseus--source-other-persp-project-buffers
-    consult--source-project-recent-file-hidden
+    consult-source-project-recent-file-hidden
     compleseus--source-window-buffers
     compleseus--source-workspace-buffers)
   "Sources used by `spacemacs/compleseus-switch-to-buffer'
@@ -64,14 +60,14 @@ of the source data structure."
   :type '(repeat symbol))
 
 (defvar compleseus--source-buffers-hidden nil
-  "Like `consult--source-buffer' but hidden by default
+  "Like `consult-source-buffer' but hidden by default
 and with narrowing key \"B\".")
 (with-eval-after-load 'consult
   (setq compleseus--source-buffers-hidden
         `(:name "Buffers (all layouts)"
           :hidden t
           :narrow (?B . "Buffers")
-          ,@consult--source-buffer)))
+          ,@consult-source-buffer)))
 
 (defvar compleseus--source-persp-modified-buffers
   `(:name "Modified Buffer (current layout)"
@@ -91,8 +87,6 @@ and with narrowing key \"B\".")
         ;; :directory 'project
         :as #'consult--buffer-pair)))
   "Modified buffer (current layout) candidate source for `consult-buffer'.")
-(define-obsolete-variable-alias 'consult--source-modified-persp-buffers
-  'compleseus--source-persp-modified-buffers "2024-09")
 
 (defvar compleseus--source-other-persp-modified-buffers
   `(:name "Modified Buffer (other layouts)"
@@ -127,8 +121,6 @@ and with narrowing key \"B\".")
         :predicate #'compleseus//persp-contain-buffer-p
         :as #'consult--buffer-pair)))
   "Layout buffer candidate source for `consult-buffer'.")
-(define-obsolete-variable-alias 'consult--source-persp-buffers
-  'compleseus--source-persp-buffers "2024-09")
 
 (defvar compleseus--source-persp-project-buffers
   `(:name     "Project Buffer (current layout)"

@@ -1,4 +1,4 @@
-;;; layers.el --- Org layers File for Spacemacs  -*- lexical-binding: nil; -*-
+;;; layers.el --- Org layers File for Spacemacs  -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (c) 2012-2025 Sylvain Benner & Contributors
 ;;
@@ -21,4 +21,8 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-(configuration-layer/declare-layer-dependencies '(spacemacs-org))
+(configuration-layer/declare-layer-dependencies
+ (append '(spacemacs-org)
+         (when (bound-and-true-p org-enable-mermaid-support)
+           '(mermaid))))
+

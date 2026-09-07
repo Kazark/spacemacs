@@ -829,19 +829,19 @@ a new object."
           (and (configuration-layer/layer-used-p layer-name)
                (or excluded (oref obj excluded))))
     (if location
-      (if (and (listp location)
-               (eq (car location) 'recipe)
-               (eq (plist-get (cdr location) :fetcher) 'local))
-          (cond
-           (layer (let ((path (expand-file-name
-                               (format "%s%s"
-                                       (configuration-layer/get-layer-local-dir
-                                        layer-name)
-                                       pkg-name))))
-                    (oset
-                     obj location `(recipe :fetcher file :path ,path))))
-           ((eq 'dotfile layer-name) nil))
-        (oset obj location location))
+        (if (and (listp location)
+                 (eq (car location) 'recipe)
+                 (eq (plist-get (cdr location) :fetcher) 'local))
+            (cond
+             (layer (let ((path (expand-file-name
+                                 (format "%s%s"
+                                         (configuration-layer/get-layer-local-dir
+                                          layer-name)
+                                         pkg-name))))
+                      (oset
+                       obj location `(recipe :fetcher file :path ,path))))
+             ((eq 'dotfile layer-name) nil))
+          (oset obj location location))
       (when (and ownerp (package-built-in-p pkg-name))
         (oset obj location 'built-in)))
     ;; cannot override protected packages
@@ -1290,7 +1290,7 @@ USEDP if non-nil indicates that made packages are used packages."
 
 (defun configuration-layer//filter-distant-packages
     (packages usedp &optional predicate)
-  "Return the distant packages (ie to be intalled).
+  "Return the distant packages (ie to be installed).
 If USEDP is non nil then returns only the used packages; if it is nil then
 return both used and unused packages.
 PREDICATE is an additional expression that eval to a boolean."
@@ -1350,7 +1350,7 @@ Possible return values:
                (directory-file-name
                 (concat configuration-layer-directory path))))
         'category
-      ;; most frequent files encoutered in a layer are tested first
+      ;; most frequent files encountered in a layer are tested first
       (when (or (locate-file "packages" (list path) load-suffixes)
                 (locate-file "layers" (list path) load-suffixes)
                 (locate-file "config" (list path) load-suffixes)
@@ -1715,11 +1715,10 @@ RNAME is the name symbol of another existing layer."
            ((and (listp location) (eq 'recipe (car location)))
             (configuration-layer//install-from-recipe pkg)
             (oset pkg lazy-install nil))
-           (t (configuration-layer//warning "Cannot install package %S."
-                                            pkg-name)))
-        ('error
+           (t (configuration-layer//warning "Cannot install package %s" pkg-name)))
+        (error
          (configuration-layer//error
-          (concat "\nAn error occurred while installing %s " "(error: %s)\n")
+          (concat "An error occurred while installing %s:\n" "(error: %s)\n")
           pkg-name
           err)
          (spacemacs//redisplay))))))
@@ -1808,7 +1807,7 @@ RNAME is the name symbol of another existing layer."
           ;; example, if hypothetically, org (optionally) requires transient in
           ;; the future, we should take care to update transient before org.
           (let* (built-in bootstrap-pre remaining
-                 sorted-upkg-names)
+                          sorted-upkg-names)
             (dolist (pkg-name upkg-names)
               (let ((pkg (configuration-layer/get-package pkg-name)))
                 (push pkg-name
@@ -2057,6 +2056,36 @@ LAYER must not be the owner of PKG."
              (memq layer enabled)
            (not (memq layer disabled))))))
 
+(defun configuration-layer//funcall-recording-load-history (func)
+  "Call FUNC while attributing any definitions to the correct source file.
+
+Layer init functions are called via `funcall' during Spacemacs startup.
+At that point, `load-file-name' typically points to init.el (because we
+are still inside init.el's `load'), so any `defun' or `defvar' evaluated
+during FUNC is incorrectly recorded under init.el in `load-history'.
+
+This function fixes that by:
+1. Looking up the file where FUNC was defined (via `symbol-file').
+2. Let-binding `load-file-name' to that file and `current-load-list' to
+   nil, so that definitions made during FUNC are captured separately.
+3. After FUNC returns, merging the captured definitions into the correct
+   file's `load-history' entry.
+
+Definitions are merged even if FUNC signals an error, since any
+definitions evaluated before the error are live in the runtime and
+should be navigable via `find-function'."
+  (if-let* ((source-file (symbol-file func 'defun)))
+      (let ((current-load-list nil)
+            (load-file-name source-file))
+        (unwind-protect
+            (funcall func)
+          ;; Merge captured definitions into the source file's load-history.
+          (when current-load-list
+            (if-let* ((entry (assoc source-file load-history)))
+                (setcdr entry (append current-load-list (cdr entry)))
+              (push (cons source-file current-load-list) load-history)))))
+    (funcall func)))
+
 (defun configuration-layer//pre-configure-package (pkg)
   "Pre-configure PKG object, i.e. call its pre-init functions."
   (let* ((pkg-name (oref pkg name)))
@@ -2069,7 +2098,8 @@ LAYER must not be the owner of PKG."
            (spacemacs-buffer/message
             (format "%S -> pre-init (%S)..." pkg-name layer))
            (condition-case-unless-debug err
-               (funcall (intern (format "%S/pre-init-%S" layer pkg-name)))
+               (configuration-layer//funcall-recording-load-history
+                (intern (format "%S/pre-init-%S" layer pkg-name)))
              ('error
               (configuration-layer//error
                (concat "\nAn error occurred while pre-configuring %S "
@@ -2084,7 +2114,8 @@ LAYER must not be the owner of PKG."
          (owner (car (oref pkg owners))))
     ;; init
     (spacemacs-buffer/message (format "%S -> init (%S)..." pkg-name owner))
-    (funcall (intern (format "%S/init-%S" owner pkg-name)))))
+    (configuration-layer//funcall-recording-load-history
+     (intern (format "%S/init-%S" owner pkg-name)))))
 
 (defun configuration-layer//post-configure-package (pkg)
   "Post-configure PKG object, i.e. call its post-init functions."
@@ -2098,7 +2129,8 @@ LAYER must not be the owner of PKG."
            (spacemacs-buffer/message
             (format "%S -> post-init (%S)..." pkg-name layer))
            (condition-case-unless-debug err
-               (funcall (intern (format "%S/post-init-%S" layer pkg-name)))
+               (configuration-layer//funcall-recording-load-history
+                (intern (format "%S/post-init-%S" layer pkg-name)))
              ('error
               (configuration-layer//error
                (concat "\nAn error occurred while post-configuring %S "
@@ -2283,20 +2315,20 @@ in the back-up directory."
        ((memq action '(nil t lambda))
         (when (eq dirs 'unset)
           (let ((rolldir configuration-layer-rollback-directory))
-            (when (file-exists-p rolldir)
-              (setq dirs
-                    (delq nil
-                          (mapcar
-                           (lambda (slot-dir)
-                             (when (and (file-directory-p (concat rolldir slot-dir))
-                                        (not (or (string= "." slot-dir) (string= ".." slot-dir))))
-                               (let ((p (length (cl-set-difference
-                                                 (directory-files (file-name-as-directory
-                                                                   (concat rolldir slot-dir)))
-                                                 '("." ".." "rollback-info")
-                                                 :test #'string=))))
-                                 (cons slot-dir p))))
-                           (directory-files rolldir)))))))
+            (setq dirs
+                  (and (file-exists-p rolldir)
+                       (delq nil
+                             (mapcar
+                              (lambda (slot-dir)
+                                (when (and (file-directory-p (concat rolldir slot-dir))
+                                           (not (or (string= "." slot-dir) (string= ".." slot-dir))))
+                                  (let ((p (length (cl-set-difference
+                                                    (directory-files (file-name-as-directory
+                                                                      (concat rolldir slot-dir)))
+                                                    '("." ".." "rollback-info")
+                                                    :test #'string=))))
+                                    (cons slot-dir p))))
+                              (directory-files rolldir)))))))
         (complete-with-action action dirs string predicate))))))
 
 (defun configuration-layer/rollback (slot-dir)
@@ -2566,20 +2598,23 @@ Return nil if MODE does not appear in `auto-mode-alist'."
   (let ((stats (configuration-layer/configured-packages-stats
                 configuration-layer--used-packages)))
     (with-current-buffer (get-buffer-create spacemacs-buffer-name)
-      (let ((buffer-read-only nil))
-        (spacemacs-buffer/append
-         ;; The messsage should less than 76 characters for tty frame
-         (format "\n%s packages loaded in %.3fs (%s)"
-                 (cadr (assq 'total stats))
-                 configuration-layer--spacemacs-startup-time
-                 (string-join
-                  (mapcar (lambda (key) (format "%s %s" key (cadr (assq key stats))))
-                          (delq 'total (mapcar #'car stats)))
-                  ", ")))
-        (spacemacs-buffer//center-line)
-        (spacemacs-buffer/append (format "\n(%.3f seconds spent in your user-config)"
-                                         dotspacemacs--user-config-elapsed-time))
-        (spacemacs-buffer//center-line)))))
+      (save-excursion
+        (spacemacs-buffer/insert-page-break)
+        (let ((buffer-read-only nil))
+          (spacemacs-buffer/append
+           ;; The message should less than 76 characters for tty frame
+           (format "\n%s packages loaded in %.3fs (%s)"
+                   (cadr (assq 'total stats))
+                   configuration-layer--spacemacs-startup-time
+                   (string-join
+                    (mapcar (lambda (key) (format "%s %s" key (cadr (assq key stats))))
+                            (delq 'total (mapcar #'car stats)))
+                    ", ")))
+          (spacemacs-buffer//center-line)
+          (spacemacs-buffer/append (format "\n(%.3f seconds spent in your user-config)"
+                                           dotspacemacs--user-config-elapsed-time))
+          (spacemacs-buffer//center-line)
+          (insert "\n"))))))
 
 (defun configuration-layer//get-indexed-elpa-package-names ()
   "Return a list of all ELPA packages in indexed packages and dependencies."
@@ -2876,7 +2911,7 @@ happened during the download."
     result))
 
 (defun configuration-layer//stable-elpa-disable-repository ()
-  "Remove stable ELPA repostiory from `package.el' archive.."
+  "Remove stable ELPA repository from `package.el' archive.."
   (setq configuration-layer-elpa-archives
         (cl-delete configuration-layer-stable-elpa-name
                    configuration-layer-elpa-archives

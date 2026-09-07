@@ -34,8 +34,10 @@ the [[file:CHANGELOG.org][CHANGELOG.org]] file.
 * Release 0.300.x
 ** 0.300.0
 *** Hot new feature
+- Fixed typos
 - Remove obsolete hack erc-sasl
 - Remove =spacemacs/counsel-gtags-define-keys-for-mode= warnings
+- Add configuration layer for just (thanks to Dietrich Daroch)
 - Add configuration layer for gleam-lang (thanks to Qynn Schwaab)
 - Highlight ruby debugger lines appropriately
 - Add support for Android emacs.
@@ -496,6 +498,7 @@ both Racer and RLS not being maintained anymore.
 - cmake (thanks to Alexander Dalshov, Sylvain Benner and Jonas Jelten)
 - dap (thanks to Ivan Yonchovski)
 - debug (thanks to Hodge Shen, Troy Hinckley, and Sylvain Benner)
+- dirvish integration in ranger (thanks to Jaehyun Yeom)
 - dotnet (thanks to Jordan Kaye)
 - eaf (thanks to Daniel Nicolai)
 - import-js (thanks to Thanh Vuong and Seong Yong-ju)
@@ -806,6 +809,8 @@ Other:
     (thanks to mark30247)
   - Fixed evil undo in =spacemacs-base= (thanks to duianto)
   - Fix macOS GUI full screen button wreck caused by GUI setup in early-init.el
+  - Fixed installation of =solarized-selenized-*= themes by mapping them to
+    the =solarized-theme= package (thanks to Sven Koschnicke)
 - Other:
   - New function =configuration-layer/message= to display message in
     =*Messages*= buffer (thanks to Sylvain Benner)
@@ -1219,6 +1224,8 @@ Other:
   - Added ~s~ =hydra-dired-quick-sort/body= (thanks to duianto)
   - Added ~SPC p E~ for =projectile-find-references= (thanks to Alfonso Montero)
   - Evilify =proced= (thanks to Jaehyun Yeom)
+  - Removed ~SPC p g~ and ~SPC p G~ for tags-related commands, which
+    have been deleted (thanks to Aaron Zeng)
 - Improvements:
   - Inhibited golden-ratio mode from interfering with ediff windows
   - Rewrote window layout functions for ~SPC w 1~, ~SPC w 2~, ~SPC w 3~, and
@@ -1980,6 +1987,9 @@ Other:
     - ~SPC m d s n~ Create a new dotnet solution
     - ~SPC m d s r~ Remove from the current dotnet solution
     - ~SPC m d t~   Run tests for the current dotnet project
+**** Eglot
+- Key bindings:
+  - Added basic key bindings and jump handler for =eglot= (thanks to kenkangxgwe)
 **** Elfeed
 - Fixed selection bindings in visual state (thanks to Jeremy Symon)
 - Fixed not saving on quit (thanks to Andrew Stevanus)
@@ -3622,6 +3632,10 @@ files (thanks to Daniel Nicolai)
 - Added support for multi-vterm as default terminal option
 - Added ~M-l~ for =eshell= mode and ~SPC m H~ for both =shell= and =eshell=
   modes for =consult-history= (thanks to Jaehyun Yeom)
+- Fixed =shell-pop= popup toggling failing with void-variable errors
+  on =shell-pop= =20260510= and later, which moved last-buffer and
+  last-window tracking from globals to window parameters
+  (thanks to Mariusz Klochowicz)
 **** Shell Scripts
 - Added new company-shell environment variable backend
   (thanks to Alexander-Miller)
@@ -3695,6 +3709,8 @@ files (thanks to Daniel Nicolai)
 - Added ~SPC m g~ prefix: =goto= (thanks to duianto)
 - Added regional ~sqlfmt~ invocation, error handling, and formatting bindings
   (thanks to 0x6362)
+**** Python
+- Added ty support (thanks to ClarityStorm)
 **** Spell-checking
 - Added spell checking transient state (thanks to Francesc Elies Henar)
 - Update to flyspell-correct v0.5 (thanks to Boris Buliga)
@@ -3792,6 +3808,9 @@ files (thanks to Daniel Nicolai)
   - ~SPC m s D~ is to set days for =transmission-turtle-mode= to be active.
   - ~SPC m s S~ is to set speed limits for =transmission-turtle-mode=.
   - ~SPC m s T~ is to set time range for =transmission-turtle-mode to be active.
+**** Translate
+- Update =go-translate= references to =gt= following upstream package rename
+  (thanks to klochowicz)
 **** Treemacs
 - =Treemacs= replaces =NeoTree= as the default sidebar
 - Added missing ~SPC p t~ to =readme.org= (thanks to oo6)
@@ -3994,6 +4013,7 @@ files (thanks to Daniel Nicolai)
   Holla, Vlad Bokov, Vladimir Kochnev, weihua-lu, wenpin, Wieland Hoffmann,
   Witoslaw Koczewski, Xiang Ji, Yi Liu, Zach Latta, Zane Sterling, zer09, Zhige
   Xin)
+- Fixed install when username contains space (thanks to ClarityStorm)
 **** Documentation and website
   - DOCUMENTATION.org:
     - Fixed the example for how to change the separator style

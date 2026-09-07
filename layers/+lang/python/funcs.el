@@ -92,6 +92,7 @@
         (require (pcase python-lsp-server
                    ('pylsp 'lsp-pylsp)
                    ('pyright 'lsp-pyright)
+                   ('ty 'lsp-python-ty)
                    (x (user-error "Unknown value for `python-lsp-server': %s" x))))
         (lsp-deferred))
     (message "`lsp' layer is not installed, please add `lsp' layer to your dotfile.")))
@@ -243,7 +244,6 @@ Equivalent to: autoflake --remove-all-unused-imports --in-place <FILE>"
                                        (line-beginning-position)
                                        (line-end-position)))))))
     (cond ((member version (pyenv-mode-versions))
-           (setenv "VIRTUAL_ENV" version)
            (pyenv-mode-set version))
           (t (message "pyenv: version `%s' is not installed (set by %s)"
                       version file-path)))))

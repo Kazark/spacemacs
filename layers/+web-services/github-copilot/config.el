@@ -18,7 +18,9 @@
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 (defvar github-copilot-enable-commit-messages nil
-  "If non-nil, automatically generate commit messages (for magit) using Copilot.")
+  "If non-nil, automatically generate commit messages (for magit) using Copilot.
+If set to 't', it uses the standard Copilot prompt.
+If set to 'golem', it uses the strict G.O.L.E.M. (Tim Pope) standard.")
 
 (defcustom github-copilot-mcp-servers nil
   "A list of MCP servers for `mcp-hub' to manage.
@@ -30,3 +32,13 @@ The format is an alist: '((\"name\" . (:command \"...\" :args (\"...\")))
                           (\"ollama\" . (:url \"http://localhost:11434\")))"
   :group 'github-copilot
   :type '(list (cons string (list symbol string))))
+
+(defconst github-copilot--golem-jokes
+  '("# *Grind*... Assessing structural integrity..."
+    "# *Crack*... Parsing shards of logic..."
+    "# *Rumble*... Carving history into stone..."
+    "# *Krrzt*... Measuring compliance levels..."
+    "# *Thud*... Adding weight to the repository..."
+    "# *Rumble*... I prefer granite, but this will do...")
+  "A collection of short G.O.L.E.M. status messages.
+Must contain %s to display the model name (or handle the format arg).")

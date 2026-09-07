@@ -45,6 +45,8 @@
     terminal-here
     vi-tilde-fringe
     window-purpose
+    (ghostel :toggle shell-enable-ghostel-support)
+    (evil-ghostel :toggle shell-enable-ghostel-support)
     (multi-vterm
      :toggle (and shell-enable-vterm-support
                   module-file-suffix
@@ -132,6 +134,7 @@
       (add-hook 'eshell-output-filter-functions #'eshell-truncate-buffer))))
 
 (defun shell/pre-init-evil-collection ()
+  (add-to-list 'spacemacs-evil-collection-allowed-list 'evil-ghostel)
   (add-to-list 'spacemacs-evil-collection-allowed-list 'vterm))
 
 (defun shell/init-eshell-prompt-extras ()
@@ -258,9 +261,7 @@
       (evil-set-initial-state initial-shell-mode 'insert))
 
     (when (fboundp 'spacemacs/make-variable-layout-local)
-      (spacemacs/make-variable-layout-local 'shell-pop-last-shell-buffer-index 1
-                                            'shell-pop-last-shell-buffer-name ""
-                                            'shell-pop-last-buffer nil))
+      (spacemacs/make-variable-layout-local 'shell-pop-last-shell-buffer-index 1))
 
     (add-hook 'term-mode-hook 'ansi-term-handle-close)
 
@@ -271,9 +272,7 @@
       "atsm" 'spacemacs/shell-pop-multiterm
       "atst" 'spacemacs/shell-pop-ansi-term
       "atsT" 'spacemacs/shell-pop-term)
-    (spacemacs/declare-prefix "'" "open shell")
-    :config
-    (add-hook 'shell-pop-out-hook #'spacemacs//shell-pop-restore-window)))
+    (spacemacs/declare-prefix "'" "open shell")))
 
 (defun shell/init-term ()
   (spacemacs/register-repl 'term 'term)
@@ -358,6 +357,31 @@
     (setq eat-shell shell-default-term-shell)
     (add-hook 'eat-mode-hook 'spacemacs/disable-hl-line-mode)))
 
+(defun shell/init-ghostel ()
+  (use-package ghostel
+    :defer t
+    :commands (ghostel ghostel-other-window)
+    :init
+    (make-shell-pop-command "ghostel" ghostel)
+    (spacemacs/set-leader-keys "atsg" 'spacemacs/shell-pop-ghostel)
+    (spacemacs/register-repl 'ghostel 'ghostel)
+    :config
+    (setq ghostel-shell shell-default-term-shell)
+    (add-hook 'ghostel-mode-hook 'spacemacs/disable-hl-line-mode)
+    (with-eval-after-load 'centered-cursor-mode
+      (add-hook 'ghostel-mode-hook 'spacemacs//inhibit-global-centered-cursor-mode))
+    (spacemacs/set-leader-keys-for-major-mode 'ghostel-mode
+      "c" 'multighostel
+      "n" 'ghostel-next
+      "N" 'ghostel-previous
+      "p" 'ghostel-previous)))
+
+(defun shell/init-evil-ghostel ()
+  (use-package evil-ghostel
+    :defer t
+    :after (ghostel evil)
+    :hook (ghostel-mode . evil-ghostel-mode)))
+
 (defun shell/init-vterm ()
   (use-package vterm
     :defer t
@@ -407,5 +431,6 @@
    :shell-layer
    (purpose-conf :mode-purposes '((vterm-mode . terminal)
                                   (eshell-mode . terminal)
+                                  (ghostel-mode . terminal)
                                   (shell-mode . terminal)
                                   (term-mode . terminal)))))

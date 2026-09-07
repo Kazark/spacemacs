@@ -115,7 +115,12 @@
         (dired-quick-sort-setup))
       (advice-remove 'dired-noselect 'dired-noselect@quick-sort-setup))
     :config
-    (evil-define-key 'normal dired-mode-map "s" 'hydra-dired-quick-sort/body)))
+    (evil-define-key 'normal dired-mode-map "s" 'dired-quick-sort-transient)
+    ;; prevent `evil-collection' from changing this binding
+    (add-to-list 'evil-collection-binding-overrides
+                 '(search-or-filter :enabled
+                                    (lambda (map-sym _ _ _)
+                                      (not (eq map-sym 'dired-mode-map)))))))
 
 (defun spacemacs-editing/init-drag-stuff ()
   (use-package drag-stuff
@@ -226,7 +231,7 @@
       :documentation "Delete consecutive horizontal whitespace with a single key."
       :evil-leader "td")
     :config
-    (nconc hungry-delete-except-modes '(term-mode vterm-mode))
+    (nconc hungry-delete-except-modes '(term-mode vterm-mode ghostel-mode))
     (setq-default hungry-delete-chars-to-skip " \t\f\v") ; only horizontal whitespace
     (define-key hungry-delete-mode-map (kbd "DEL") 'hungry-delete-backward)
     (define-key hungry-delete-mode-map (kbd "S-DEL") 'delete-backward-char)))
@@ -312,12 +317,10 @@
 
 (defun spacemacs-editing/init-vimish-fold ()
   (use-package vimish-fold
-    :ensure
     :after evil))
 
 (defun spacemacs-editing/init-evil-vimish-fold ()
   (use-package evil-vimish-fold
-    :ensure
     :after vimish-fold
     :init
     (setq evil-vimish-fold-target-modes '(prog-mode conf-mode text-mode))

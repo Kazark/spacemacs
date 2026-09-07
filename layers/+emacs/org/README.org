@@ -39,6 +39,7 @@
   - [[#transclusion-support][Transclusion support]]
   - [[#verb-support][Verb support]]
   - [[#asciidoc-support][AsciiDoc support]]
+  - [[#mermaid-support][Mermaid support]]
   - [[#spacemacs-layout-integration][Spacemacs layout integration]]
 - [[#key-bindings][Key bindings]]
   - [[#starting-org-mode][Starting org-mode]]
@@ -71,6 +72,7 @@
     - [[#verb-mode-bindings][Verb-mode bindings]]
     - [[#verb-response-body-mode-bindings][Verb-response-body-mode bindings]]
     - [[#verb-response-headers-mode-bindings][Verb-response-headers-mode bindings]]
+  - [[#org-modern][Org-modern]]
   - [[#org-roam][Org-roam]]
   - [[#transclusion][Transclusion]]
 
@@ -570,7 +572,11 @@ To enable it by default, set the =org-enable-modern-support= to =t=:
    '((org :variables org-enable-modern-support t)))
 #+END_SRC
 
-To toggle its features, either call ~M-x org-modern-mode~ or ~ESC , T m~.
+To toggle its features in the current buffer, press either ~M-x
+org-modern-mode~ or ~, T m~.
+
+To toggle its features in all org buffers (and agenda buffers), press
+either ~M-x global-org-modern-mode~ or ~, T M~.
 
 Org-modern and valign (above) both provide visual enhancements for org
 tables (if =org-modern-table= is non-nil), and they are not compatible
@@ -613,6 +619,27 @@ variable =org-enable-asciidoc-support= to =t=.
   (setq-default dotspacemacs-configuration-layers
     '((org :variables org-enable-asciidoc-support t)))
 #+END_SRC
+
+** Mermaid support
+To enable Mermaid diagram support in Org mode, set the variable
+=org-enable-mermaid-support= to =t= (this will automatically enable
+the [[https://github.com/syl20bnr/spacemacs/blob/develop/layers/+lang/mermaid/README.org][Mermaid layer]]).
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default dotspacemacs-configuration-layers '(
+    (org :variables org-enable-mermaid-support t)))
+#+END_SRC
+
+With this feature enabled, you can use Mermaid diagrams in Org mode source blocks:
+
+#+BEGIN_SRC mermaid
+  graph TD
+      A[Client] --> B[Load Balancer]
+      B --> C[Server1]
+      B --> D[Server2]
+#+END_SRC
+
+This will render the diagram directly in your Org buffer when you evaluate the source block with ~SPC m b e~ or ~SPC m b b~.
 
 ** Spacemacs layout integration
 A [[https://github.com/syl20bnr/spacemacs/blob/develop/doc/DOCUMENTATION.org#layouts-and-workspaces][Spacemacs custom layout]] =@Org= is defined by the layer and accessible via =SPC l o=. The startup behavior can be customized with the following layer variables:
@@ -711,7 +738,7 @@ for some of the most frequently used commands
 
 | Key binding   | Description                                       |
 |---------------+---------------------------------------------------|
-| ~M-RET M-RET~ | org-meta-return (dwim retrun)                     |
+| ~M-RET M-RET~ | org-meta-return (dwim return)                     |
 | ~M-h/l~       | org-meta-left/right (e.g. promote/demote heading) |
 
 *Normal state*
@@ -954,7 +981,7 @@ The evilified org agenda supports the following bindings:
 Use ~SPC m .~, ~M-SPC~ or ~s-M-SPC~ in an org agenda buffer to activate its
 transient state. The transient state aims to list the most useful org agenda
 commands and visually organize them by category. The commands associated with
-each binding are listed bellow.
+each binding are listed below.
 
 | Key binding | Description         | Command                           |
 |-------------+---------------------+-----------------------------------|
@@ -1178,6 +1205,13 @@ Key binding prefixes:
 | Key binding | Description                                         |
 |-------------+-----------------------------------------------------|
 | ~SPC m r q~ | Kill current response headers buffer and its window |
+
+** Org-modern
+
+| Key binding | Description                                         |
+|-------------+-----------------------------------------------------|
+| ~SPC m T m~ | Toggle org-modern in current buffer                 |
+| ~SPC m T M~ | Toggle org-modern in all org and org agenda buffers |
 
 ** Org-roam
 Key binding prefixes:

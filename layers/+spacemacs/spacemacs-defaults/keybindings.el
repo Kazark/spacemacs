@@ -101,8 +101,6 @@
 
 ;; instantly display current keystrokes in mini buffer
 (setq echo-keystrokes 0.02)
-;; auto-indent on RET
-(define-key global-map (kbd "RET") 'newline-and-indent)
 
 ;; improve delete-other-windows
 (define-key global-map (kbd "C-x 1") 'spacemacs/toggle-maximize-window)
@@ -1137,7 +1135,7 @@ If FRAME is nil, it defaults to the selected frame."
       (set-frame-parameter frame 'alpha-background increased-alpha))))
 
 (defun spacemacs/decrease-background-transparency (&optional frame)
-  "Decrease backrgound transparency for FRAME.
+  "Decrease background transparency for FRAME.
 If FRAME is nil, it defaults to the selected frame."
   (interactive)
   (let* ((current-alpha (or (frame-parameter frame 'alpha-background) 100))

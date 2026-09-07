@@ -38,12 +38,8 @@
     orderless
     persp-mode
     savehist
-    (selectrum :toggle (eq compleseus-engine 'selectrum))
-    (vertico
-     :toggle (eq compleseus-engine 'vertico)
-     :location elpa)
-    (vertico-posframe :toggle (and (eq compleseus-engine 'vertico)
-                                   compleseus-use-vertico-posframe))))
+    (vertico :location elpa)
+    (vertico-posframe :toggle compleseus-use-vertico-posframe)))
 
 (defun compleseus/pre-init-auto-highlight-symbol ()
   (spacemacs|use-package-add-hook auto-highlight-symbol
@@ -148,11 +144,6 @@
            ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
            ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
            ("M-s l" . consult-line))                 ;; needed by consult-line to detect isearch
-
-    ;; Enable automatic preview at point in the *Completions* buffer.
-    ;; This is relevant when you use the default completion UI,
-    ;; and not necessary for Selectrum, Vertico etc.
-    :hook (completion-list-mode . consult-preview-at-point-mode)
 
     ;; The :init configuration is always executed (Not lazy)
     :init
@@ -329,13 +320,7 @@
 
 (defun compleseus/init-embark-consult ()
   (use-package embark-consult
-    :ensure t
-    :after (embark consult)
-    :demand t ; only necessary if you have the hook below
-    ;; if you want to have consult previews as you move around an
-    ;; auto-updating embark collect buffer
-    :hook
-    (embark-collect-mode . consult-preview-at-point-mode)))
+    :after (embark consult)))
 
 (defun compleseus/init-orderless ()
   (use-package orderless
@@ -373,33 +358,17 @@
     :config
     (add-to-list 'orderless-style-dispatchers #'orderless-kwd-dispatch)))
 
-(defun compleseus/init-selectrum ()
-  (use-package selectrum
-    :init
-    ;; Disable ido. We want to use the regular find-file etc.; enhanced by selectrum
-    (setq ido-mode nil)
-
-    (selectrum-mode)
-    (spacemacs/set-leader-keys
-      "rl" 'selectrum-repeat
-      "sl" 'selectrum-repeat)
-
-    :config
-    (when (spacemacs//support-hjkl-navigation-p)
-      (define-key selectrum-minibuffer-map (kbd "C-j") 'selectrum-next-candidate)
-      (define-key selectrum-minibuffer-map (kbd "C-r") 'consult-history)
-      (define-key selectrum-minibuffer-map (kbd "C-k") 'selectrum-previous-candidate)
-      (define-key selectrum-minibuffer-map (kbd "C-M-k") #'spacemacs/selectrum-previous-candidate-preview)
-      (define-key selectrum-minibuffer-map (kbd "C-M-j") #'spacemacs/selectrum-next-candidate-preview)
-      (define-key selectrum-minibuffer-map (kbd "C-SPC") #'spacemacs/embark-preview))))
-
 (defun compleseus/init-vertico ()
   (use-package vertico
     :init
-    ;; Add prompt indicator to `completing-read-multiple'.
+    ;; In Emacs <31, add prompt indicator to `completing-read-multiple'.  In
+    ;; Emacs 31+, `crm-prompt' already suffices to inform the user that the
+    ;; prompt is a `completing-read-multiple'.
     (defun crm-indicator (args)
       (cons (concat "[CRM] " (car args)) (cdr args)))
-    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+    (with-eval-after-load 'crm
+      (unless (boundp 'crm-prompt)
+        (advice-add #'completing-read-multiple :filter-args #'crm-indicator)))
     ;; Grow and shrink minibuffer
     ;;(setq resize-mini-windows t)
     ;; Do not allow the cursor in the minibuffer prompt
@@ -467,7 +436,6 @@
 
   (use-package vertico-directory
     :after vertico
-    :ensure nil
     ;; More convenient directory navigation commands
     :init (bind-key "C-h" 'vertico-directory-up vertico-map
                     (spacemacs//support-hjkl-navigation-p))
@@ -476,14 +444,12 @@
 
   (use-package vertico-quick
     :after vertico
-    :ensure nil
     :init
     (define-key vertico-map "\M-q" #'vertico-quick-insert)
     (define-key vertico-map "\C-q" #'vertico-quick-exit))
 
   (use-package vertico-repeat
     :after vertico
-    :ensure nil
     :init
     (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
     (spacemacs/set-leader-keys

@@ -342,6 +342,22 @@ to `auto', tags may not be properly aligned. "
      `(dired-symlink ((,class (:foreground ,cyan :background ,bg1 :inherit bold))))
      `(dired-warning ((,class (:foreground ,war))))
 
+;;;;; diredfl
+     `(diredfl-file-name ((,class (:foreground ,base))))
+     `(diredfl-file-suffix ((,class (:foreground ,magenta))))
+     `(diredfl-dir-name ((,class (:foreground ,keyword :inherit bold))))
+     `(diredfl-symlink ((,class (:foreground ,cyan :background ,bg1 :inherit bold))))
+     `(diredfl-deletion-file-name ((,class (:foreground ,red))))
+     `(diredfl-ignored-file-name ((,class (:inherit shadow))))
+     `(diredfl-dir-heading ((,class (:foreground ,comp :inherit bold))))
+     `(diredfl-date-time ((,class (:foreground ,yellow))))
+     `(diredfl-number ((,class (:foreground ,keyword))))
+     `(diredfl-write-priv ((,class (:foreground ,magenta))))
+     `(diredfl-exec-priv ((,class (:foreground ,cyan))))
+     `(diredfl-read-priv ((,class (:foreground ,aqua))))
+     `(diredfl-no-priv ((,class (:foreground ,base))))
+     `(diredfl-dir-priv ((,class (:foreground ,type))))
+
 ;;;;; dired-subtree
      `(dired-subtree-depth-1-face ((,class (:background ,bg1))))
      `(dired-subtree-depth-2-face ((,class (:background ,bg1))))
@@ -708,6 +724,13 @@ to `auto', tags may not be properly aligned. "
      `(lsp-ui-doc-background ((,class (:background ,bg2))))
      `(lsp-ui-doc-header ((,class (:foreground ,head1 :background ,head1-bg))))
      `(lsp-ui-sideline-code-action ((,class (:foreground ,comp))))
+     `(lsp-ui-peek-header ((,class (:foreground ,bg1 :background ,base))))
+     `(lsp-ui-peek-peek ((,class (:background ,bg2))))
+     `(lsp-ui-peek-list ((,class (:background ,bg2))))
+     `(lsp-ui-peek-highlight ((,class (:background ,highlight))))
+     `(lsp-ui-peek-line-number ((,class (:foreground ,base))))
+     `(lsp-ui-peek-selection ((,class (:background ,bg3))))
+     `(lsp-ui-peek-filename ((,class (:foreground ,base))))
 
 ;;;;; magit
      `(magit-blame-culprit ((,class :background ,yellow-bg :foreground ,yellow)))
@@ -902,6 +925,9 @@ to `auto', tags may not be properly aligned. "
      `(powerline-inactive1 ((,class (:background ,bg2 :foreground ,base))))
      `(powerline-inactive2 ((,class (:background ,bg2 :foreground ,base))))
 
+;;;;; pulse
+     `(pulse-highlight-start-face ((,class (:background ,blue-bg-s))))
+
 ;;;;; rainbow-delimiters
      `(rainbow-delimiters-depth-1-face ((,class :foreground ,keyword)))
      `(rainbow-delimiters-depth-2-face ((,class :foreground ,func)))
@@ -1050,6 +1076,13 @@ to `auto', tags may not be properly aligned. "
      `(web-mode-symbol-face ((,class (:foreground ,type))))
      `(web-mode-type-face ((,class (:inherit ,font-lock-type-face))))
      `(web-mode-warning-face ((,class (:inherit ,font-lock-warning-face))))
+
+;;;;; wgrep
+     `(wgrep-face ((,class (:foreground ,green))))
+     `(wgrep-delete-face ((,class (:foreground ,red))))
+     `(wgrep-reject-face ((,class (:foreground ,red))))
+     `(wgrep-file-face ((,class (:foreground ,green))))
+     `(wgrep-done-face ((,class (:foreground ,blue))))
 
 ;;;;; which-key
      `(which-key-command-description-face ((,class (:foreground ,base))))

@@ -8,6 +8,7 @@
   - [[#rcirc][RCIRC]]
   - [[#slack][Slack]]
 - [[#checkers][Checkers]]
+  - [[#languagetool][LanguageTool]]
   - [[#spell-checking][Spell Checking]]
   - [[#syntax-checking][Syntax Checking]]
 - [[#completion][Completion]]
@@ -97,6 +98,7 @@
       - [[#jsonnet][Jsonnet]]
       - [[#latex][LaTeX]]
       - [[#markdown][Markdown]]
+      - [[#mermaid][Mermaid]]
       - [[#plantuml][Plantuml]]
       - [[#restructuredtext][ReStructuredText]]
       - [[#semantic-web][Semantic Web]]
@@ -191,8 +193,6 @@
   - [[#epub][Epub]]
   - [[#pdf][PDF]]
   - [[#speed-reading][Speed Reading]]
-- [[#readmeorg-files-that-need-proper-tags][README.org files that need proper tags]]
-  - [[#languagetool][LanguageTool]]
 - [[#source-control][Source control]]
   - [[#git][Git]]
   - [[#perforce][Perforce]]
@@ -230,6 +230,7 @@
   - [[#geolocation][Geolocation]]
   - [[#imenu-list][Imenu-list]]
   - [[#import-js][Import-js]]
+  - [[#just][Just]]
   - [[#kubernetes][Kubernetes]]
   - [[#lsp][LSP]]
   - [[#meson][Meson]]
@@ -343,6 +344,15 @@ Features:
 - Notifications with [[https://github.com/jwiegley/alert][alert.el]]
 
 * Checkers
+** LanguageTool
+[[file:+checkers/languagetool/README.org][+checkers/languagetool/README.org]]
+
+This layer adds grammar checking using [[https://www.languagetool.org/][LanguageTool]]. LanguageTool will use the
+language set using ~SPC S d~ if the =spell-checking= layer is enabled.
+
+Features:
+- Spelling and grammar checking
+
 ** Spell Checking
 [[file:+checkers/spell-checking/README.org][+checkers/spell-checking/README.org]]
 
@@ -380,7 +390,7 @@ Features:
 [[file:+completion/compleseus/README.org][+completion/compleseus/README.org]]
 
 This layer implements completion provided by combining the following packages:
-- =selectrum= or =vertico=: vertical completion user interface
+- =vertico=: vertical completion user interface
 - =consult=: useful commands using ~completing-read~
 - =embark=: provides minibuffer actions
 - =marginalia=: annotations to completion candidates
@@ -1296,7 +1306,7 @@ This layer adds support for the [[https://fountain.io/][fountain]] screenwriting
 
 Features:
 - Fountain files support via [[https://github.com/rnkn/fountain-mode/][fountain-mode]]
-- Confortable writing layout via [[https://github.com/rnkn/olivetti/][olivetti-mode]]
+- Comfortable writing layout via [[https://github.com/rnkn/olivetti/][olivetti-mode]]
 
 **** Graphviz
 [[file:+lang/graphviz/README.org][+lang/graphviz/README.org]]
@@ -1373,6 +1383,30 @@ Features:
 - Completion of Emojis using [[https://github.com/dunn/company-emoji][company-emoji]] (still needs a way of showing, either
   using the =emoji= layer or having a proper font) :clap:
 
+**** Mermaid
+[[file:+lang/mermaid/README.org][+lang/mermaid/README.org]]
+
+This layer adds support for [[https://mermaid.js.org/][Mermaid]] diagrams to Spacemacs. Mermaid is
+a JavaScript-based diagramming and charting tool that renders
+Markdown-inspired text definitions to create and display diagrams.
+
+For help with how to use Mermaid, see the [[https://mermaid.js.org/intro/getting-started][reference guide]].
+
+The official file extension supported by this layer is =.mmd=. If you want something else,
+set it in your =user-config= function of your =~/.spacemacs= file.
+
+For example, the following diagram can be defined as follows:
+
+#+BEGIN_SRC mermaid
+  sequenceDiagram
+      Server<<->>Client: Hello
+#+END_SRC
+
+Features:
+- Syntax highlighting for Mermaid files (with .mmd extension)
+- Diagram preview on region/buffer/file
+- Key bindings for compiling and changing output types
+
 **** Plantuml
 [[file:+lang/plantuml/README.org][+lang/plantuml/README.org]]
 
@@ -1390,7 +1424,7 @@ For example, the following diagram can be defined as follows:
   @startuml
   JAremko->robbyoconnor : I think the docs can benefit from some kind of illustration
   JAremko<-robbyoconnor : I'm too lazy -- I have actual work to do. I link to the docs. If you can write me a diagram in plantuml, I'll gladly compile and add it.
-  JAremko->robbyoconnor : *gives ths diagram*
+  JAremko->robbyoconnor : *gives this diagram*
   robbyoconnor<-JAremko : *robbyoconnor adds it and JAremko is happy*
   ...
   robbyoconnor->theOtherPerson : And they thinks it's funny? Yup, they definitely finds it funny. Right?
@@ -1908,8 +1942,7 @@ Features:
 [[file:+lang/csharp/README.org][+lang/csharp/README.org]]
 
 This layer adds support for the C# language using the [[https://github.com/OmniSharp/omnisharp-roslyn][omnisharp-roslyn]]
-language server with either the [[https://github.com/OmniSharp/omnisharp-emacs][omnisharp-emacs]]
-or the [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] packages.
+language server with the [[https://github.com/emacs-lsp/lsp-mode][lsp-mode]] package.
 
 Features:
 - Syntax checking with flycheck (when =syntax-checking= layer is used)
@@ -2230,9 +2263,10 @@ This layer adds support for the Python language.
 Features:
 - Support for the following backends:
   - [[https://github.com/proofit404/anaconda-mode][anaconda]] (default),
-  - [[https://github.com/emacs-lsp/lsp-mode/blob/master/clients/lsp-pylsp.el][Language Server Protocol]] (experimental - 2 implementations),
+  - [[https://github.com/emacs-lsp/lsp-mode][Language Server Protocol]] (3 implementations),
     - python-lsp-server
     - Microsoft pyright language server
+    - ty language server
 - Auto-completion
 - Code Navigation
 - Documentation Lookup using [[https://github.com/proofit404/anaconda-mode][anaconda-mode]] and [[https://github.com/tsgates/pylookup][pylookup]]
@@ -2533,7 +2567,6 @@ This layer integrates a web feed reader into spacemacs.
 Features:
 - Support for reading RSS and Atom feeds directly within emacs via [[https://github.com/skeeto/elfeed][Elfeed]].
 - Support for managing feeds via org files supplied by [[https://github.com/remyhonig/elfeed-org][elfeed-org]].
-- Support for displaying feed database content in the browser via [[https://github.com/skeeto/elfeed#web-interface][web interface]].
 
 ** Epub
 [[file:+readers/epub/README.org][+readers/epub/README.org]]
@@ -2578,16 +2611,6 @@ A speed reading mode for Emacs.
 
 Features:
 - Support for =speed-reading= of arbitrary texts
-
-* README.org files that need proper tags
-** LanguageTool
-[[file:+tools/languagetool/README.org][+tools/languagetool/README.org]]
-
-This layer adds grammar checking using [[https://www.languagetool.org/][LanguageTool]]. LanguageTool will use the
-language set using ~SPC S d~ if the =spell-checking= layer is enabled.
-
-Features:
-- Spelling and grammar checking
 
 * Source control
 ** Git
@@ -2996,6 +3019,15 @@ Features:
 - Import missing modules and remove unused one
 - Go to module location
 
+** Just
+[[file:+tools/just/README.org][+tools/just/README.org]]
+
+This layer adds [[https://just.systems/][just]] support.
+
+Features:
+- Adds [[https://github.com/psibi/justl.el][justl]] and sets up ~SPC p j/J~.
+- Adds [[https://github.com/leon-barrett/just-ts-mode.el][just-ts-mode]] for syntax highlighting
+
 ** Kubernetes
 [[file:+tools/kubernetes/README.org][+tools/kubernetes/README.org]]
 
@@ -3134,7 +3166,8 @@ Features:
 ** Ranger
 [[file:+tools/ranger/README.org][+tools/ranger/README.org]]
 
-This layer brings Ranger features to spacemacs from the =ranger= package.
+This layer brings Ranger features to spacemacs from the =ranger= package, with
+optional =dirvish= integration.
 
 To use this configuration layer, add it to your =~/.spacemacs=. You will need to
 add =ranger= to the existing =dotspacemacs-configuration-layers= list in this
@@ -3142,9 +3175,11 @@ file.
 
 To use ranger/deer by default set ~ranger-override-dired~ to ~ranger/deer~ like
 shown in the example below (setting this via customize as explained by the
-original [[https://github.com/ralesi/ranger.el#installation][ranger installation instructions]] will not work). To default with
-preview enabled when entering ranger set ~ranger-show-preview~ to ~t~. The following
-example code shows how you can set both variables at once via the
+original [[https://github.com/ralesi/ranger.el#installation][ranger installation instructions]] will not work). You can also use
+=dirvish= for a modern dired experience; dired opens a single column, while
+~SPC a t r r~ opens dirvish with the full layout. To default with preview enabled
+when entering ranger set ~ranger-show-preview~ to ~t~. The following example code
+shows how you can set both variables at once via the
 ~dotspacemacs-configuration-layers~ of your dotfiles as follows:
 
 #+BEGIN_SRC emacs-lisp
@@ -3220,7 +3255,7 @@ Features:
 - Syntax highlighting
 - Auto completion
 - Syntax checking via =systemd-analyze=
-- Viewing systemd system and user unit via [[https://github.com/SebastianMeisel/journalctl-mode][journalctl-mode]]
+- Viewing systemd system and user unit logs via [[https://github.com/SebastianMeisel/journalctl-mode][journalctl-mode]]
 
 ** Tern
 [[file:+tools/tern/README.org][+tools/tern/README.org]]
@@ -3452,7 +3487,7 @@ Features:
 ** Large Language Model Client
 [[file:+web-services/llm-client/README.org][+web-services/llm-client/README.org]]
 
-This layer enables usage of GPT Clients in Spacemacs using [[https://github.com/karthink/gptel][GPTel]] and [[https://github.com/s-kostyaev/ellama][Ellama]].
+This layer enables usage of GPT Clients in Spacemacs using [[https://github.com/karthink/gptel][gptel]] and [[https://github.com/s-kostyaev/ellama][Ellama]].
 
 Features:
 
