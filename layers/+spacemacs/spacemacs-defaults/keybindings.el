@@ -962,11 +962,11 @@ Select: _a_ _h_ _j_ _k_ _l_ _w_ _0_.._9_ Move: _H_ _J_ _K_ _L_ _r_ _R_ Split: _s
 
 ;; Text Transient State
 
-(defun spacemacs/scale-up-or-down-font-size (direction)
+(defun spacemacs/scale-up-or-down-font-size (direction &optional scale-override)
   "Scale the font. If DIRECTION is positive or zero the font is scaled up,
 otherwise it is scaled down."
   (interactive)
-  (let ((scale 0.5))
+  (let ((scale (or scale-override 0.5)))
     (if (eq direction 0)
         (text-scale-set 0)
       (if (< direction 0)
@@ -978,10 +978,20 @@ otherwise it is scaled down."
   (interactive)
   (spacemacs/scale-up-or-down-font-size 1))
 
+(defun spacemacs/scale-up-font-fast ()
+  "Scale up the font."
+  (interactive)
+  (spacemacs/scale-up-or-down-font-size 1 2))
+
 (defun spacemacs/scale-down-font ()
   "Scale up the font."
   (interactive)
   (spacemacs/scale-up-or-down-font-size -1))
+
+(defun spacemacs/scale-down-font ()
+  "Scale up the font."
+  (interactive)
+  (spacemacs/scale-up-or-down-font-size -1 2))
 
 (defun spacemacs/reset-font-size ()
   "Reset the font size."
@@ -994,10 +1004,10 @@ otherwise it is scaled down."
   :bindings
   ("+" spacemacs/scale-up-font)
   ("=" spacemacs/scale-up-font)
-  ("k" spacemacs/scale-up-font)
+  ("k" spacemacs/scale-up-font-fast)
   ("-" spacemacs/scale-down-font)
   ("_" spacemacs/scale-down-font)
-  ("j" spacemacs/scale-down-font)
+  ("j" spacemacs/scale-down-font-fast)
   ("0" spacemacs/reset-font-size)
   ("q" nil :exit t))
 
